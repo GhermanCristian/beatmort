@@ -1,13 +1,10 @@
 from music21 import chord
 from pathlib import Path
 
+from dataset_parser import DatasetParser
 
-class JLBParser:
-    def _save_to_txt_file(self, notes: list[str], file_name: str) -> None:
-        with open(file_name, "a+") as f:
-            line = " ".join(notes)
-            f.write(line + "\n")
 
+class JLBParser(DatasetParser):
     def _piano_key_to_midi(self, piano_key: int) -> int:
         return piano_key + 20
 

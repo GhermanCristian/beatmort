@@ -1,13 +1,10 @@
 from pathlib import Path
 from music21 import chord, converter, instrument, note, stream
 
+from dataset_parser import DatasetParser
 
-class D1Parser:
-    def _save_to_txt_file(self, notes: list[str], file_name: str) -> None:
-        with open(file_name, "a+") as f:
-            line = " ".join(notes)
-            f.write(line + "\n")
 
+class D1Parser(DatasetParser):
     def _extract_notes(self, converted_midi_files: list[stream.Stream]) -> list[str]:
         notes = []
         for file in converted_midi_files:
@@ -35,4 +32,3 @@ class D1Parser:
             ]
             all_notes = self._extract_notes(converted_midi_files)
             self._save_to_txt_file(all_notes, "d1_parsed.txt")
-            print(f"Finished batch {i} - {i + BATCH_SIZE}")
