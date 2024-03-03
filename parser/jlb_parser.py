@@ -1,7 +1,7 @@
 from music21 import chord
 from pathlib import Path
 
-from dataset_parser import DatasetParser
+from parser.dataset_parser import DatasetParser
 
 
 class JLBParser(DatasetParser):

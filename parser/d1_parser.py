@@ -1,7 +1,7 @@
 from pathlib import Path
 from music21 import chord, converter, instrument, note, stream
 
-from dataset_parser import DatasetParser
+from parser.dataset_parser import DatasetParser
 
 
 class D1Parser(DatasetParser):
