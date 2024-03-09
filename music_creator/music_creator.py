@@ -99,10 +99,7 @@ class MusicCreator:
         melody_midi.insert(0, instr)
         return melody_midi
 
-    def run(self, song_length: int, output_name: str) -> None:
-        # measure = multiple bars; bar = 8 notes/chords
-        # TODO - pauzele afecteaza durata totala a piesei
-        # TODO - last note should be very long / there should be a pause so that the song doesn't end before it
+    def _compose_entire_song(self, song_length: int) -> stream.Score:
         main_score = stream.Score()
         for i, measure_length, dur, offset, octave_offset, vol, pause_duration in [
             (instrument.Piano(), 1, 0.5, 0, 0, 0.2, 0),
@@ -114,5 +111,12 @@ class MusicCreator:
                 song_length, i, measure_length, dur, offset, octave_offset, vol, pause_duration
             )
             main_score.insert(0, melody_midi)
+        return main_score
+
+    def run(self, song_length: int, output_name: str) -> None:
+        # measure = multiple bars; bar = 8 notes/chords
+        # TODO - pauzele afecteaza durata totala a piesei
+        # TODO - last note should be very long / there should be a pause so that the song doesn't end before it
+        main_score = self._compose_entire_song(song_length)
         main_score.write("midi", f"{output_name}.mid")
         main_score.write("musicxml", f"{output_name}.xml")
