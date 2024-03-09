@@ -52,7 +52,7 @@ class ModelCreator:
 
     @property
     def model_name(self) -> str:
-        return f"d1_1_n{self._n_notes}_fl{self._feature_length}_vs{self._validation_size}_ss{self._seed_size}_bs{self._batch_size}_lim{self._lim}_lr{self._learning_rate}.keras"
+        return f"Models/d1_1_n{self._n_notes}_fl{self._feature_length}_vs{self._validation_size}_ss{self._seed_size}_bs{self._batch_size}_lim{self._lim}_lr{self._learning_rate}.keras"
 
     def get_model(
         self, new_model: bool = False, first_layer_units: int = 512, dropout_rate: float = 0.25
