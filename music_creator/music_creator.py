@@ -1,6 +1,7 @@
 from music21 import chord, instrument, note, stream, duration
 import numpy as np
 from tensorflow.keras.models import Model
+import subprocess
 
 
 class MusicCreator:
@@ -119,4 +120,5 @@ class MusicCreator:
         # TODO - last note should be very long / there should be a pause so that the song doesn't end before it
         main_score = self._compose_entire_song(song_length)
         main_score.write("midi", f"{output_name}.mid")
-        main_score.write("musicxml", f"{output_name}.xml")
+        xml_path = main_score.write("musicxml", f"{output_name}.xml")
+        subprocess.run(["C:\Program Files\MuseScore 4\\bin\MuseScore4.exe", str(xml_path), "-o", f"{output_name}.png"])
