@@ -14,7 +14,7 @@ class DataContainer:
     y_seed: np.array
 
 
-class DataPreprocessor:
+class DataLoader:
     def __init__(self, feature_length: int, lim: int) -> None:
         self._feature_length = feature_length
         self._lim = lim

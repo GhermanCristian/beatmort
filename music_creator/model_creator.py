@@ -5,7 +5,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 from tensorflow.keras.optimizers import Adamax
 from tensorflow.keras.metrics import CategoricalAccuracy
 
-from music_creator.data_preprocesser import DataContainer
+from music_creator.data_loader import DataContainer
 
 
 class ModelCreator:
