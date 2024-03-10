@@ -44,7 +44,7 @@ class DataLoader:
         unique_notes = sorted(list(set(filtered_notes)))
 
         index = {note: ind for ind, note in enumerate(unique_notes)}
-        reverse_index = {ind: note for ind, note in enumerate(unique_notes)}
+        reverse_index = dict(enumerate(unique_notes))
         return index, reverse_index
 
     def run(
