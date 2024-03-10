@@ -198,4 +198,7 @@ Datasets/
 # Outputs
 Outputs/
 
+# Models
+Models/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
