@@ -4,6 +4,18 @@ from music21 import chord, instrument, note, stream, duration
 import numpy as np
 from tensorflow.keras.models import Model
 import subprocess
+from dataclasses import dataclass
+
+
+@dataclass
+class MelodyInfo:
+    instr: instrument.Instrument
+    measure_length: int
+    dur: float
+    offset: float
+    octave_offset: int
+    vol: float
+    pause_duration: float
 
 
 class MusicCreator:
@@ -84,35 +96,30 @@ class MusicCreator:
         # TODO - think of cases when song_length % (dur * measure_length) != 0
         return music
 
-    def _compose_melody(
-        self,
-        song_length: int,
-        instr: instrument.Instrument,
-        measure_length: int,
-        dur: float,
-        offset: float = 0.0,
-        octave_offset: int = 0,
-        vol: float = 1,
-        pause_duration: float = 0,
-    ) -> stream.Part:
-        notes = self._melody_generator(song_length, dur, measure_length)
+    def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
+        notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
         print(notes)
-        melody = self._chords_n_notes(notes, dur, offset, octave_offset, vol, pause_duration)
+        melody = self._chords_n_notes(
+            notes,
+            melody_info.dur,
+            melody_info.offset,
+            melody_info.octave_offset,
+            melody_info.vol,
+            melody_info.pause_duration,
+        )
         melody_midi = stream.Part(melody)
-        melody_midi.insert(0, instr)
+        melody_midi.insert(0, melody_info.instr)
         return melody_midi
 
     def _compose_entire_song(self, song_length: int) -> stream.Score:
         main_score = stream.Score()
-        for i, measure_length, dur, offset, octave_offset, vol, pause_duration in [
-            (instrument.Piano(), 1, 0.5, 0, 0, 0.2, 0),
-            # (instrument.Sampler(), 4, 1, 0, 2, 0.75, 1),
-            (instrument.Xylophone(), 1, 1, 0, 2, 0.5, 1),
-            (instrument.Vibraphone(), 1, 0.5, 0, 0, 1, 0),
+        for melody_info in [
+            MelodyInfo(instrument.Piano(), 1, 0.5, 0, 0, 0.2, 0),
+            # MelodyInfo(instrument.Sampler(), 4, 1, 0, 2, 0.75, 1),
+            MelodyInfo(instrument.Xylophone(), 1, 1, 0, 2, 0.5, 1),
+            MelodyInfo(instrument.Vibraphone(), 1, 0.5, 0, 0, 1, 0),
         ]:
-            melody_midi = self._compose_melody(
-                song_length, i, measure_length, dur, offset, octave_offset, vol, pause_duration
-            )
+            melody_midi = self._compose_melody(song_length, melody_info)
             main_score.insert(0, melody_midi)
         return main_score
 
