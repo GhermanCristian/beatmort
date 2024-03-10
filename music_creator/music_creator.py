@@ -1,3 +1,5 @@
+from pathlib import Path
+from typing import Optional
 from music21 import chord, instrument, note, stream, duration
 import numpy as np
 from tensorflow.keras.models import Model
@@ -114,11 +116,13 @@ class MusicCreator:
             main_score.insert(0, melody_midi)
         return main_score
 
-    def run(self, song_length: int, output_name: str) -> None:
+    def run(self, song_length: int, output_name: str, musescore_exe: Optional[Path]) -> None:
         # measure = multiple bars; bar = 8 notes/chords
         # TODO - pauzele afecteaza durata totala a piesei
         # TODO - last note should be very long / there should be a pause so that the song doesn't end before it
         main_score = self._compose_entire_song(song_length)
+        output_name = f"Outputs/{output_name}"
         main_score.write("midi", f"{output_name}.mid")
         xml_path = main_score.write("musicxml", f"{output_name}.xml")
-        subprocess.run(["C:\Program Files\MuseScore 4\\bin\MuseScore4.exe", str(xml_path), "-o", f"{output_name}.png"])
+        if musescore_exe:
+            subprocess.run([str(musescore_exe), str(xml_path), "-o", f"{output_name}.png"])

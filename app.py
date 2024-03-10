@@ -1,3 +1,4 @@
+from pathlib import Path
 from music_creator.data_preprocesser import DataContainer, DataPreprocessor
 from music_creator.model_creator import ModelCreator
 from music_creator.music_creator import MusicCreator
@@ -43,7 +44,7 @@ def create_music() -> None:
     music_creator = MusicCreator(
         model, data_container.x_seed, feature_length, vocab_size, reverse_index
     )
-    music_creator.run(32, "testsong1")
+    music_creator.run(32, "testsong1", Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe"))
 
 
 def run_app() -> None:
