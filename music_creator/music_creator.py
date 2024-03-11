@@ -1,21 +1,11 @@
 from pathlib import Path
 from typing import Optional
-from music21 import chord, instrument, note, stream, duration
+from music21 import chord, note, stream, duration
 import numpy as np
 from tensorflow.keras.models import Model
 import subprocess
-from dataclasses import dataclass
 
-
-@dataclass
-class MelodyInfo:
-    instr: instrument.Instrument
-    measure_length: int
-    dur: float
-    offset: float
-    octave_offset: int
-    vol: float
-    pause_duration: float
+from music_creator.sentiment_to_melodies import MelodyInfo
 
 
 class MusicCreator:
@@ -38,7 +28,6 @@ class MusicCreator:
         measures: list[str],
         duration_quarter_length: float,
         offset: float,
-        octave_offset: int,
         vol: float,
         pause_duration: float,
     ):
@@ -51,16 +40,14 @@ class MusicCreator:
                 if "." in s or s.isdigit():
                     chord_notes = s.split(".")
                     notes = []
-                    for j in chord_notes[1:]:
+                    for j in chord_notes:
                         inst_note = int(j)
-                        if 21 <= int(j) + (octave_offset * 12) <= 108:
-                            inst_note += octave_offset * 12
-                        note_snip = note.Note(inst_note, duration=dur)
+                        note_snip = note.Note(inst_note)
                         note_snip.volume.velocity = 127.0 * vol
                         notes.append(note_snip)
-                        chord_snip = chord.Chord(notes)
-                        chord_snip.offset = offset
-                        melody.append(chord_snip)
+                    chord_snip = chord.Chord(notes, duration=dur)
+                    chord_snip.offset = offset
+                    melody.append(chord_snip)
                 else:
                     note_snip = note.Note(s)
                     note_snip.offset = offset
@@ -103,31 +90,32 @@ class MusicCreator:
             notes,
             melody_info.dur,
             melody_info.offset,
-            melody_info.octave_offset,
             melody_info.vol,
             melody_info.pause_duration,
         )
         melody_midi = stream.Part(melody)
         melody_midi.insert(0, melody_info.instr)
+        melody_midi.transpose(12 * melody_info.octave_offset, inPlace=True)
         return melody_midi
 
-    def _compose_entire_song(self, song_length: int) -> stream.Score:
+    def _compose_entire_song(self, song_length: int, melodies: list[MelodyInfo]) -> stream.Score:
         main_score = stream.Score()
-        for melody_info in [
-            MelodyInfo(instrument.Piano(), 1, 0.5, 0, 0, 0.2, 0),
-            # MelodyInfo(instrument.Sampler(), 4, 1, 0, 2, 0.75, 1),
-            MelodyInfo(instrument.Xylophone(), 1, 1, 0, 2, 0.5, 1),
-            MelodyInfo(instrument.Vibraphone(), 1, 0.5, 0, 0, 1, 0),
-        ]:
+        for melody_info in melodies:
             melody_midi = self._compose_melody(song_length, melody_info)
             main_score.insert(0, melody_midi)
         return main_score
 
-    def run(self, song_length: int, output_name: str, musescore_exe: Optional[Path]) -> None:
+    def run(
+        self,
+        melodies: list[MelodyInfo],
+        song_length: int,
+        output_name: str,
+        musescore_exe: Optional[Path],
+    ) -> None:
         # measure = multiple bars; bar = 8 notes/chords
         # TODO - pauzele afecteaza durata totala a piesei
         # TODO - last note should be very long / there should be a pause so that the song doesn't end before it
-        main_score = self._compose_entire_song(song_length)
+        main_score = self._compose_entire_song(song_length, melodies)
         output_name = f"Outputs/{output_name}"
         main_score.write("midi", f"{output_name}.mid")
         xml_path = main_score.write("musicxml", f"{output_name}.xml")
