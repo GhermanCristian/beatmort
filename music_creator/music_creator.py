@@ -59,7 +59,7 @@ class MusicCreator:
                     melody.append(p)
                 offset += duration_quarter_length + pause_duration
         final_note_index = -1
-        if isinstance(melody[final_note_index], note.Rest):
+        while isinstance(melody[final_note_index], note.Rest):
             final_note_index -= 1
         final_note = copy.deepcopy(melody[final_note_index])
         final_note.duration = duration.Duration(4)
@@ -86,6 +86,7 @@ class MusicCreator:
         return measure
 
     def _melody_generator(self, song_length: int, dur: float, measure_length: int = 8):
+        assert song_length >= dur * measure_length * 8, "Song is too short for the given note durations and measure lengths"
         measure = self._measure_generator(measure_length)
         n_measures_in_song = int(song_length // dur // measure_length // 8)
         music = measure * n_measures_in_song
