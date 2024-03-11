@@ -1,3 +1,4 @@
+import copy
 from pathlib import Path
 from typing import Optional
 from music21 import chord, note, stream, duration
@@ -57,6 +58,11 @@ class MusicCreator:
                     p.offset = offset
                     melody.append(p)
                 offset += duration_quarter_length + pause_duration
+        final_note = copy.deepcopy(melody[-1])  # TODO - what if it is a pause
+        final_note.duration = duration.Duration(4)
+        final_note.offset = offset
+        final_note.volume.velocity = 127.0
+        melody.append(final_note)
         return melody
 
     def _measure_generator(self, measure_length: int = 8):
@@ -114,7 +120,6 @@ class MusicCreator:
     ) -> None:
         # measure = multiple bars; bar = 8 notes/chords
         # TODO - pauzele afecteaza durata totala a piesei
-        # TODO - last note should be very long / there should be a pause so that the song doesn't end before it
         main_score = self._compose_entire_song(song_length, melodies)
         output_name = f"Outputs/{output_name}"
         main_score.write("midi", f"{output_name}.mid")
