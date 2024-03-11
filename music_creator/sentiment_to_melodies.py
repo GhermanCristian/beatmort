@@ -55,27 +55,36 @@ class SentimentToMelodies:
             instrument.Ukulele(),
             instrument.Koto(),
             instrument.Tuba(),
-        ]
+        ],
+        Sentiment.ANGER: [
+            instrument.Sampler(),
+            instrument.Tuba(),
+            instrument.Dulcimer(),
+        ],
     }
 
     MEASURE_LENGTHS = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
+        Sentiment.ANGER: [1, 1],
     }
 
     DURATIONS = {
         Sentiment.JOY: [0.25, 0.5],
         Sentiment.FEAR: [1.5, 2],
+        Sentiment.ANGER: [0.25, 0.25],
     }
 
     OCTAVE_OFFSETS = {
         Sentiment.JOY: [1, 1.5, 2],
         Sentiment.FEAR: [-2.5, -2, -1.5],
+        Sentiment.ANGER: [-1.5, -1],
     }
 
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25, 0.25],
         Sentiment.FEAR: [1.5, 2],
+        Sentiment.ANGER: [0.5, 1, 1.5],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
@@ -93,5 +102,5 @@ class SentimentToMelodies:
         return [
             MelodyInfo(instruments[0], measure_lengths[0], durations[0], 0, octave_offsets[0], 1, pause_durations[0])
         ] + [
-            MelodyInfo(instruments[i], measure_lengths[i], durations[i], durations[i] / 2.0, octave_offsets[i], 0.5, pause_durations[i]) for i in range(1, n_melodies)
+            MelodyInfo(instruments[i], measure_lengths[i], durations[i], 0, octave_offsets[i], 0.5, pause_durations[i]) for i in range(1, n_melodies)
         ]
