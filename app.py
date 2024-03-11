@@ -2,9 +2,15 @@ from pathlib import Path
 from music_creator.data_loader import DataContainer, DataLoader
 from music_creator.model_creator import ModelCreator
 from music_creator.music_creator import MusicCreator
+from music_creator.sentiment_to_melodies import SentimentToMelodies
+from sentiment_detector.sentiment import Sentiment
 
 
-def create_music() -> None:
+def detect_sentiment() -> Sentiment:
+    return Sentiment.JOY
+
+
+def create_music(sentiment: Sentiment) -> None:
     seed_size = 0.05
     batch_size = 256
     learning_rate = 0.005
@@ -45,11 +51,15 @@ def create_music() -> None:
     music_creator = MusicCreator(
         model, data_container.x_seed, feature_length, vocab_size, reverse_index
     )
-    music_creator.run(32, "testsong1", Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe"))
+    melodies = SentimentToMelodies().run(sentiment)
+    music_creator.run(
+        melodies, 64, "test", Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe")
+    )
 
 
 def run_app() -> None:
-    create_music()
+    sentiment = detect_sentiment()
+    create_music(sentiment)
 
 
 if __name__ == "__main__":
