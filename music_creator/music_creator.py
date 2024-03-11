@@ -58,7 +58,10 @@ class MusicCreator:
                     p.offset = offset
                     melody.append(p)
                 offset += duration_quarter_length + pause_duration
-        final_note = copy.deepcopy(melody[-1])  # TODO - what if it is a pause
+        final_note_index = -1
+        if isinstance(melody[final_note_index], note.Rest):
+            final_note_index -= 1
+        final_note = copy.deepcopy(melody[final_note_index])
         final_note.duration = duration.Duration(4)
         final_note.offset = offset
         final_note.volume.velocity = 127.0
