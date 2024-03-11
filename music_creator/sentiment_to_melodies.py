@@ -61,30 +61,39 @@ class SentimentToMelodies:
             instrument.Tuba(),
             instrument.Dulcimer(),
         ],
+        Sentiment.SADNESS: [ # TODO - find more instruments
+            instrument.Piano(),
+        ],
     }
 
     MEASURE_LENGTHS = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
         Sentiment.ANGER: [1, 1],
+        Sentiment.SADNESS: [1, 1],
     }
 
     DURATIONS = {
         Sentiment.JOY: [0.25, 0.5],
         Sentiment.FEAR: [1.5, 2],
         Sentiment.ANGER: [0.25, 0.25],
+        Sentiment.SADNESS: [2, 2],
     }
+    # TODO - look into how to incorporate staccato and legato
+    # TODO - look into equalizers - especially for violins & stuff
 
     OCTAVE_OFFSETS = {
         Sentiment.JOY: [1, 1.5, 2],
         Sentiment.FEAR: [-2.5, -2, -1.5],
         Sentiment.ANGER: [-1.5, -1],
+        Sentiment.SADNESS: [-2.5, -2],
     }
 
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25, 0.25],
         Sentiment.FEAR: [1.5, 2],
         Sentiment.ANGER: [0.5, 1, 1.5],
+        Sentiment.SADNESS: [1.5, 2],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
