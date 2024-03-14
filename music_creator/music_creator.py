@@ -1,7 +1,7 @@
 import copy
 from pathlib import Path
 from typing import Optional
-from music21 import chord, note, stream, duration
+from music21 import chord, note, stream, duration, pitch, interval, key
 import numpy as np
 from tensorflow.keras.models import Model
 import subprocess
@@ -86,7 +86,9 @@ class MusicCreator:
         return measure
 
     def _melody_generator(self, song_length: int, dur: float, measure_length: int = 8):
-        assert song_length >= dur * measure_length * 8, "Song is too short for the given note durations and measure lengths"
+        assert (
+            song_length >= dur * measure_length * 8
+        ), "Song is too short for the given note durations and measure lengths"
         measure = self._measure_generator(measure_length)
         n_measures_in_song = int(song_length // dur // measure_length // 8)
         music = measure * n_measures_in_song
@@ -104,7 +106,18 @@ class MusicCreator:
             melody_info.pause_duration,
         )
         melody_midi = stream.Part(melody)
+
+        k: key.Key = melody_midi.analyze("key")
+        print(f"Initial key = {k}; target = {melody_info.key}")
         melody_midi.insert(0, melody_info.instr)
+
+        # attempts to transpose melody to another key only if their modes are equal
+        # TODO - scris la partea teoretica despre toate astea
+        major_target_key = any(c.isupper() for c in melody_info.key)
+        if k.mode == "major" and major_target_key or k.mode == "minor" and not major_target_key:
+            i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
+            melody_midi.transpose(i, inPlace=True)
+            print(f"Transposed to {melody_midi.analyze('key')}")
         melody_midi.transpose(12 * melody_info.octave_offset, inPlace=True)
         return melody_midi
 
