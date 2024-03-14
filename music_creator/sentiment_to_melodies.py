@@ -99,6 +99,23 @@ class SentimentToMelodies:
             instrument.Bass(),
             instrument.Choir(),
         ],
+        Sentiment.DISGUST: [
+            instrument.Harpsichord(),
+            instrument.Clavichord(),
+            instrument.Sampler(),
+            instrument.Organ(),
+            instrument.PipeOrgan(),
+            instrument.UnpitchedPercussion(),
+            instrument.ReedOrgan(),
+            instrument.Violin(),
+            instrument.Viola(),
+            instrument.Violoncello(),
+            instrument.Contrabass(),
+            instrument.Contrabassoon(),
+            instrument.Bassoon(),
+            instrument.AltoSaxophone(),
+            instrument.TenorSaxophone(),
+        ],
     }
 
     MEASURE_LENGTHS = {
@@ -107,6 +124,7 @@ class SentimentToMelodies:
         Sentiment.ANGER: [1, 1, 1],
         Sentiment.SADNESS: [1, 1],
         Sentiment.NEUTRAL: [1, 1],
+        Sentiment.DISGUST: [1, 2, 4],
     }
 
     DURATIONS = {
@@ -115,6 +133,7 @@ class SentimentToMelodies:
         Sentiment.ANGER: [0.25, 0.25, 0.25],
         Sentiment.SADNESS: [2, 2],
         Sentiment.NEUTRAL: [1, 1],
+        Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1, 1.33],
     }
     # TODO - look into how to incorporate staccato and legato
     # TODO - look into equalizers - especially for violins & stuff
@@ -125,6 +144,7 @@ class SentimentToMelodies:
         Sentiment.ANGER: [-2, -1, -2],
         Sentiment.SADNESS: [-2, -1],
         Sentiment.NEUTRAL: [0, 0],
+        Sentiment.DISGUST: [-2, 2],
     }
 
     KEYS = {
@@ -133,14 +153,17 @@ class SentimentToMelodies:
         Sentiment.ANGER: ["d", "e", "e"],
         Sentiment.SADNESS: ["a", "e-"],
         Sentiment.NEUTRAL: ["C", "a"],
+        Sentiment.DISGUST: ["f", "b-"],
     }
 
+    # TODO - disjointed pauses
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25, 0.25],
         Sentiment.FEAR: [1.5, 2],
         Sentiment.ANGER: [0.5, 1, 1.5],
         Sentiment.SADNESS: [1.5, 2],
         Sentiment.NEUTRAL: [0.5, 0.5],
+        Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1, 1.33],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
