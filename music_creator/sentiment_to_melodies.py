@@ -11,6 +11,7 @@ class MelodyInfo:
     dur: float
     offset: float
     octave_offset: int
+    key: str
     vol: float
     pause_duration: float
 
@@ -103,7 +104,7 @@ class SentimentToMelodies:
     MEASURE_LENGTHS = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
-        Sentiment.ANGER: [1, 1],
+        Sentiment.ANGER: [1, 1, 1],
         Sentiment.SADNESS: [1, 1],
         Sentiment.NEUTRAL: [1, 1],
     }
@@ -111,18 +112,25 @@ class SentimentToMelodies:
     DURATIONS = {
         Sentiment.JOY: [0.25, 0.5],
         Sentiment.FEAR: [1.5, 2],
-        Sentiment.ANGER: [0.25, 0.25],
+        Sentiment.ANGER: [0.25, 0.25, 0.25],
         Sentiment.SADNESS: [2, 2],
         Sentiment.NEUTRAL: [1, 1],
     }
     # TODO - look into how to incorporate staccato and legato
     # TODO - look into equalizers - especially for violins & stuff
-    # TODO - key sa fie parametru
 
     OCTAVE_OFFSETS = {
         Sentiment.JOY: [1, 1.5, 2],
         Sentiment.FEAR: [-2.5, -2, -1.5],
-        Sentiment.ANGER: [-1.5, -1],
+        Sentiment.ANGER: [-2, -1, -2],
+        Sentiment.SADNESS: [-2.5, -2],
+        Sentiment.NEUTRAL: [0, 0],
+    }
+
+    KEYS = {
+        Sentiment.JOY: [1, 1.5, 2],
+        Sentiment.FEAR: [-2.5, -2, -1.5],
+        Sentiment.ANGER: ["d", "e", "e"],
         Sentiment.SADNESS: [-2.5, -2],
         Sentiment.NEUTRAL: [0, 0],
     }
@@ -136,19 +144,21 @@ class SentimentToMelodies:
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
-        n_melodies = 2  # TODO - n_melodies for every sentiment
+        n_melodies = 3  # TODO - n_melodies for every sentiment
         instruments: list[instrument.Instrument] = random.sample(
             self.INSTRUMENTS[sentiment], n_melodies
         )
         measure_lengths: list[int] = random.sample(self.MEASURE_LENGTHS[sentiment], n_melodies)
         durations: list[float] = random.sample(self.DURATIONS[sentiment], n_melodies)
         octave_offsets: list[float] = random.sample(self.OCTAVE_OFFSETS[sentiment], n_melodies)
+        song_keys: list[str] = random.sample(self.KEYS[sentiment], n_melodies)
         pause_durations: list[float] = random.sample(self.PAUSE_DURATIONS[sentiment], n_melodies)
         # TODO - create a getter method for sample, so that I don't have to duplicate data
         print("instruments", instruments)
         print("measure_lengths", measure_lengths)
         print("durations", durations)
         print("octave_offsets", octave_offsets)
+        print("song_keys", song_keys)
         print("pause_durations", pause_durations)
         return [
             MelodyInfo(
@@ -157,6 +167,7 @@ class SentimentToMelodies:
                 durations[0],
                 0,
                 octave_offsets[0],
+                song_keys[0],
                 1,
                 pause_durations[0],
             )
@@ -167,6 +178,7 @@ class SentimentToMelodies:
                 durations[i],
                 0,
                 octave_offsets[i],
+                song_keys[i],
                 0.5,
                 pause_durations[i],
             )
