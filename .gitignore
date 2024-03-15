@@ -201,4 +201,7 @@ Outputs/
 # Models
 Models/
 
+# FluidSynth and SoundFont
+FluidSynth/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
