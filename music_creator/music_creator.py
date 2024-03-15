@@ -71,6 +71,7 @@ class MusicCreator:
     def _measure_generator(self, measure_length: int = 8):
         seed = self._x_seed[np.random.randint(0, len(self._x_seed) - 1)][:]
         notes = []
+        # TODO - ensure a measure has at least 2 different notes / chords
         for _ in range(measure_length):
             seed = seed.reshape(1, self._feature_length, 1)
             prediction = self._model.predict(seed, verbose=0)[0]
@@ -97,6 +98,7 @@ class MusicCreator:
 
     def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
         notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
+        # TODO - generate melody until the correct key mode is found ?
         print(notes)
         melody = self._chords_n_notes(
             notes,
@@ -134,12 +136,33 @@ class MusicCreator:
         song_length: int,
         output_name: str,
         musescore_exe: Optional[Path],
+        fluidsynth_exe: Optional[Path],
+        soundfont: Optional[Path],
     ) -> None:
         # measure = multiple bars; bar = 8 notes/chords
         # TODO - pauzele afecteaza durata totala a piesei
         main_score = self._compose_entire_song(song_length, melodies)
         output_name = f"Outputs/{output_name}"
         main_score.write("midi", f"{output_name}.mid")
-        xml_path = main_score.write("musicxml", f"{output_name}.xml")
+        # TODO - separate module for these outputs, maybe for the midi write part as well
         if musescore_exe:
-            subprocess.run([str(musescore_exe), str(xml_path), "-o", f"{output_name}.png"])
+            try:
+                xml_path = main_score.write("musicxml", f"{output_name}.xml")
+                subprocess.run([str(musescore_exe), str(xml_path), "-o", f"{output_name}.png"])
+            except:
+                print("Could not write score")
+        if fluidsynth_exe and soundfont:
+            try:
+                subprocess.run(
+                    [
+                        str(fluidsynth_exe),
+                        str(soundfont),
+                        f"{output_name}.mid",
+                        "-F",
+                        f"{output_name}.wav",
+                        "-r",
+                        "44100",
+                    ]
+                )
+            except:
+                print("Could not convert to audio")

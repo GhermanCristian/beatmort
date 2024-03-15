@@ -53,7 +53,12 @@ def create_music(sentiment: Sentiment) -> None:
     )
     melodies = SentimentToMelodies().run(sentiment)
     music_creator.run(
-        melodies, 64, "test", Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe")
+        melodies,
+        64,
+        "test",
+        Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe"),
+        Path("FluidSynth\\fluidsynth.exe"),
+        Path("FluidSynth\\GeneralUser GS v1.471.sf2"),
     )
 
 
