@@ -135,6 +135,54 @@ class SentimentToMelodies:
             instrument.ChurchBells(),
             instrument.TubularBells(),
         ],
+        Sentiment.SURPRISE: [
+            instrument.Piano(),
+            instrument.Harpsichord(),
+            instrument.Clavichord(),
+            instrument.Sampler(),
+            instrument.ElectricPiano(),
+            instrument.Organ(),
+            instrument.PipeOrgan(),
+            instrument.ElectricOrgan(),
+            instrument.Accordion(),
+            instrument.Harmonica(),
+            instrument.ElectricBass(),
+            instrument.FretlessBass(),
+            instrument.Mandolin(),
+            instrument.Ukulele(),
+            instrument.Banjo(),
+            instrument.Lute(),
+            instrument.Sitar(),
+            instrument.Sitar(),
+            instrument.Shamisen(),
+            instrument.Koto(),
+            instrument.Flute(),
+            instrument.Recorder(),
+            instrument.Shakuhachi(),
+            instrument.Oboe(),
+            instrument.EnglishHorn(),
+            instrument.Saxophone(),
+            instrument.SopranoSaxophone(),
+            instrument.BaritoneSaxophone(),
+            instrument.Bagpipes(),
+            instrument.Shehnai(),
+            instrument.BrassInstrument(),
+            instrument.Trumpet(),
+            instrument.Trombone(),
+            instrument.BassTrombone(),
+            instrument.UnpitchedPercussion(),
+            instrument.ChurchBells(),
+            instrument.Dulcimer(),
+            instrument.SteelDrum(),
+            instrument.Vocalist(),
+            instrument.Soprano(),
+            instrument.MezzoSoprano(),
+            instrument.Alto(),
+            instrument.Tenor(),
+            instrument.Baritone(),
+            instrument.Bass(),
+            instrument.Choir(),
+        ],
     }
 
     MEASURE_LENGTHS = {
@@ -145,6 +193,7 @@ class SentimentToMelodies:
         Sentiment.NEUTRAL: [1, 1],
         Sentiment.DISGUST: [1, 2, 4],
         Sentiment.ANTICIPATION: [1, 2],
+        Sentiment.SURPRISE: [1, 1],
     }
 
     DURATIONS = {
@@ -155,6 +204,7 @@ class SentimentToMelodies:
         Sentiment.NEUTRAL: [1, 1],
         Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1, 1.33],
         Sentiment.ANTICIPATION: [1.25, 1.5, 2],
+        Sentiment.SURPRISE: [0.25, 0.5],
     }
     # TODO - look into how to incorporate staccato and legato
     # TODO - look into equalizers - especially for violins & stuff
@@ -167,6 +217,7 @@ class SentimentToMelodies:
         Sentiment.NEUTRAL: [0, 0],
         Sentiment.DISGUST: [-2, 2],
         Sentiment.ANTICIPATION: [1, 2],
+        Sentiment.SURPRISE: [-1, 1, 2],
     }
 
     KEYS = {
@@ -177,6 +228,7 @@ class SentimentToMelodies:
         Sentiment.NEUTRAL: ["C", "a"],
         Sentiment.DISGUST: ["f", "b-"],
         Sentiment.ANTICIPATION: ["E", "D", "f#"],
+        Sentiment.SURPRISE: ["C", "G", "d"],
     }
 
     # TODO - disjointed pauses
@@ -188,6 +240,7 @@ class SentimentToMelodies:
         Sentiment.NEUTRAL: [0.5, 0.5],
         Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1, 1.33],
         Sentiment.ANTICIPATION: [0.25, 0.5],
+        Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
