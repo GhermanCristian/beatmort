@@ -183,6 +183,24 @@ class SentimentToMelodies:
             instrument.Bass(),
             instrument.Choir(),
         ],
+        Sentiment.TRUST: [
+            instrument.Celesta(),
+            instrument.StringInstrument(),
+            instrument.Harp(),
+            instrument.Whistle(),
+            instrument.Ocarina(),
+            instrument.Vibraphone(),
+            instrument.Marimba(),
+            instrument.Glockenspiel(),
+            instrument.Kalimba(),
+            instrument.Vocalist(),
+            instrument.Soprano(),
+            instrument.MezzoSoprano(),
+            instrument.Alto(),
+            instrument.Tenor(),
+            instrument.Baritone(),
+            instrument.Bass(),
+        ],
     }
 
     MEASURE_LENGTHS = {
@@ -194,6 +212,7 @@ class SentimentToMelodies:
         Sentiment.DISGUST: [1, 2, 4],
         Sentiment.ANTICIPATION: [1, 2],
         Sentiment.SURPRISE: [1, 1],
+        Sentiment.TRUST: [1, 2, 4],
     }
 
     DURATIONS = {
@@ -205,6 +224,7 @@ class SentimentToMelodies:
         Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1, 1.33],
         Sentiment.ANTICIPATION: [1.25, 1.5, 2],
         Sentiment.SURPRISE: [0.25, 0.5],
+        Sentiment.TRUST: [1, 1.5, 2],
     }
     # TODO - look into how to incorporate staccato and legato
     # TODO - look into equalizers - especially for violins & stuff
@@ -218,6 +238,7 @@ class SentimentToMelodies:
         Sentiment.DISGUST: [-2, 2],
         Sentiment.ANTICIPATION: [1, 2],
         Sentiment.SURPRISE: [-1, 1, 2],
+        Sentiment.TRUST: [1, 2],
     }
 
     KEYS = {
@@ -229,6 +250,7 @@ class SentimentToMelodies:
         Sentiment.DISGUST: ["f", "b-"],
         Sentiment.ANTICIPATION: ["E", "D", "f#"],
         Sentiment.SURPRISE: ["C", "G", "d"],
+        Sentiment.TRUST: ["D", "A"],
     }
 
     # TODO - disjointed pauses
@@ -241,6 +263,7 @@ class SentimentToMelodies:
         Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1, 1.33],
         Sentiment.ANTICIPATION: [0.25, 0.5],
         Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
+        Sentiment.TRUST: [0.5, 0.5],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
@@ -251,7 +274,9 @@ class SentimentToMelodies:
         measure_lengths: list[int] = random.sample(self.MEASURE_LENGTHS[sentiment], n_melodies)
         durations: list[float] = random.sample(self.DURATIONS[sentiment], n_melodies)
         octave_offsets: list[float] = random.sample(self.OCTAVE_OFFSETS[sentiment], n_melodies)
-        song_keys: list[str] = [random.choice(self.KEYS[sentiment])] * n_melodies  # keep same key throughout song
+        song_keys: list[str] = [
+            random.choice(self.KEYS[sentiment])
+        ] * n_melodies  # keep same key throughout song
         pause_durations: list[float] = random.sample(self.PAUSE_DURATIONS[sentiment], n_melodies)
         # TODO - create a getter method for sample, so that I don't have to duplicate data
         print("instruments", instruments)
