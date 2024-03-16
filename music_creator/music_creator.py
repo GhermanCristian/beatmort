@@ -1,7 +1,7 @@
 import copy
 from pathlib import Path
 from typing import Optional
-from music21 import chord, note, stream, duration, pitch, interval, key
+from music21 import articulations, chord, note, stream, duration, pitch, interval, key
 import numpy as np
 from tensorflow.keras.models import Model
 import subprocess
@@ -31,6 +31,7 @@ class MusicCreator:
         offset: float,
         vol: float,
         pause_duration: float,
+        articulation: articulations.Articulation
     ):
         melody = []
         offset: float = offset
@@ -45,6 +46,7 @@ class MusicCreator:
                         inst_note = int(j)
                         note_snip = note.Note(inst_note)
                         note_snip.volume.velocity = 127.0 * vol
+                        note_snip.articulations.append(articulation)
                         notes.append(note_snip)
                     chord_snip = chord.Chord(notes, duration=dur)
                     chord_snip.offset = offset
@@ -52,6 +54,7 @@ class MusicCreator:
                 else:
                     note_snip = note.Note(s)
                     note_snip.volume.velocity = 127.0 * vol
+                    note_snip.articulations.append(articulation)
                     note_snip.offset = offset
                     melody.append(note_snip)
                 if pause_duration:
@@ -101,12 +104,14 @@ class MusicCreator:
         notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
         # TODO - generate melody until the correct key mode is found ?
         print(notes)
+        # TODO - make the method receive melody_info directly
         melody = self._chords_n_notes(
             notes,
             melody_info.dur,
             melody_info.offset,
             melody_info.vol,
             melody_info.pause_duration,
+            melody_info.articulation,
         )
         melody_midi = stream.Part(melody)
 
@@ -116,6 +121,7 @@ class MusicCreator:
 
         # attempts to transpose melody to another key only if their modes are equal
         # TODO - scris la partea teoretica despre toate astea
+        # TODO - scris la partea teoretica despre articulations
         major_target_key = any(c.isupper() for c in melody_info.key)
         if k.mode == "major" and major_target_key or k.mode == "minor" and not major_target_key:
             i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
