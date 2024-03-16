@@ -51,6 +51,7 @@ class MusicCreator:
                     melody.append(chord_snip)
                 else:
                     note_snip = note.Note(s)
+                    note_snip.volume.velocity = 127.0 * vol
                     note_snip.offset = offset
                     melody.append(note_snip)
                 if pause_duration:
