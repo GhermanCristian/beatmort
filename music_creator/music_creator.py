@@ -1,7 +1,7 @@
 import copy
 from pathlib import Path
 from typing import Optional
-from music21 import articulations, chord, note, stream, duration, pitch, interval, key
+from music21 import chord, note, stream, duration, pitch, interval, key
 import numpy as np
 from tensorflow.keras.models import Model
 import subprocess
@@ -24,18 +24,10 @@ class MusicCreator:
         self._vocab_size = vocab_size
         self._reverse_index = reverse_index
 
-    def _chords_n_notes(
-        self,
-        measures: list[str],
-        duration_quarter_length: float,
-        offset: float,
-        vol: float,
-        pause_duration: float,
-        articulation: articulations.Articulation
-    ):
+    def _chords_n_notes(self, measures: list[str], melody_info: MelodyInfo):
         melody = []
-        offset: float = offset
-        dur = duration.Duration(duration_quarter_length)
+        offset: float = melody_info.offset
+        dur = duration.Duration(melody_info.dur)
         for b in measures:
             sounds = b.split("/")
             for s in sounds:
@@ -45,23 +37,23 @@ class MusicCreator:
                     for j in chord_notes:
                         inst_note = int(j)
                         note_snip = note.Note(inst_note)
-                        note_snip.volume.velocity = 127.0 * vol
-                        note_snip.articulations.append(articulation)
+                        note_snip.volume.velocity = 127.0 * melody_info.vol
+                        note_snip.articulations.append(melody_info.articulation)
                         notes.append(note_snip)
                     chord_snip = chord.Chord(notes, duration=dur)
                     chord_snip.offset = offset
                     melody.append(chord_snip)
                 else:
                     note_snip = note.Note(s)
-                    note_snip.volume.velocity = 127.0 * vol
-                    note_snip.articulations.append(articulation)
+                    note_snip.volume.velocity = 127.0 * melody_info.vol
+                    note_snip.articulations.append(melody_info.articulation)
                     note_snip.offset = offset
                     melody.append(note_snip)
-                if pause_duration:
-                    p = note.Rest(duration=duration.Duration(pause_duration))
+                if melody_info.pause_duration:
+                    p = note.Rest(duration=duration.Duration(melody_info.pause_duration))
                     p.offset = offset
                     melody.append(p)
-                offset += duration_quarter_length + pause_duration
+                offset += melody_info.dur + melody_info.pause_duration
         final_note_index = -1
         while isinstance(melody[final_note_index], note.Rest):
             final_note_index -= 1
@@ -104,15 +96,7 @@ class MusicCreator:
         notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
         # TODO - generate melody until the correct key mode is found ?
         print(notes)
-        # TODO - make the method receive melody_info directly
-        melody = self._chords_n_notes(
-            notes,
-            melody_info.dur,
-            melody_info.offset,
-            melody_info.vol,
-            melody_info.pause_duration,
-            melody_info.articulation,
-        )
+        melody = self._chords_n_notes(notes, melody_info)
         melody_midi = stream.Part(melody)
 
         k: key.Key = melody_midi.analyze("key")
