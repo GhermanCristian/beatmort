@@ -40,7 +40,7 @@ class SentimentToMelodies:
             instrument.ChurchBells(),
             instrument.Dulcimer(),
             instrument.ElectricBass(),
-            instrument.MezzoSoprano(),
+            instrument.MezzoSoprano(),  # ?
             instrument.Organ(),
             instrument.Piano(),
             instrument.PipeOrgan(),
@@ -54,10 +54,10 @@ class SentimentToMelodies:
             instrument.Ukulele(),
         ],
         Sentiment.ANGER: [
-            instrument.Bagpipes(),
-            instrument.Organ(),
+            instrument.Bagpipes(),  # asta uneori e mai mult surprise, disgust
+            instrument.Organ(),  # asta mai mult cauzeaza fear
             instrument.Piano(),
-            instrument.PipeOrgan(),
+            instrument.PipeOrgan(),  # si asta tot e mai mult fear
             instrument.Sampler(),
             instrument.Timpani(),
         ],
@@ -223,7 +223,7 @@ class SentimentToMelodies:
         Sentiment.ANGER: [0.25, 0.25, 0.25],
         Sentiment.SADNESS: [2, 2],
         Sentiment.NEUTRAL: [1, 1],
-        Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1, 1.33],
+        Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [1.25, 1.5, 2],
         Sentiment.SURPRISE: [0.25, 0.5],
         Sentiment.TRUST: [1, 1.5, 2],
@@ -255,16 +255,17 @@ class SentimentToMelodies:
     }
 
     # TODO - disjointed pauses
+    # TODO - durata + durata pauzelor sa fie egale, eventual doar un mic offset?
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25, 0.25],
         Sentiment.FEAR: [1.5, 2],
-        Sentiment.ANGER: [0.5, 1, 1.5],
+        Sentiment.ANGER: [0, 0.25, 0.5],
         Sentiment.SADNESS: [1.5, 2],
         Sentiment.NEUTRAL: [0.5, 0.5],
-        Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1, 1.33],
+        Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [0.25, 0.5],
         Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
-        Sentiment.TRUST: [0.5, 0.5],
+        Sentiment.TRUST: [0.25, 0.5],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
