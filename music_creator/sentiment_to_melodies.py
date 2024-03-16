@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from music21 import instrument
+from music21 import instrument, articulations
 import random
 from sentiment_detector.sentiment import Sentiment
 
 
+# TODO - think about lazy instantiation: don't instantiate the elements in the list, but rather when creating melodyinfo
 @dataclass
 class MelodyInfo:
     instr: instrument.Instrument
@@ -14,6 +15,7 @@ class MelodyInfo:
     key: str
     vol: float
     pause_duration: float
+    articulation: articulations.Articulation  # TODO - maybe make it optional ?
 
 
 class SentimentToMelodies:
@@ -55,9 +57,11 @@ class SentimentToMelodies:
         ],
         Sentiment.ANGER: [
             instrument.Bagpipes(),  # asta uneori e mai mult surprise, disgust
-            instrument.Organ(),  # asta mai mult cauzeaza fear
+            instrument.BrassInstrument(),  # ?
+            instrument.ElectricGuitar(),
+            # instrument.Organ(),  # asta mai mult cauzeaza fear
             instrument.Piano(),
-            instrument.PipeOrgan(),  # si asta tot e mai mult fear
+            # instrument.PipeOrgan(),  # si asta tot e mai mult fear
             instrument.Sampler(),
             instrument.Timpani(),
         ],
@@ -228,7 +232,6 @@ class SentimentToMelodies:
         Sentiment.SURPRISE: [0.25, 0.5],
         Sentiment.TRUST: [1, 1.5, 2],
     }
-    # TODO - look into how to incorporate staccato and legato
 
     OCTAVE_OFFSETS = {
         Sentiment.JOY: [1, 2],
@@ -256,6 +259,7 @@ class SentimentToMelodies:
 
     # TODO - disjointed pauses
     # TODO - durata + durata pauzelor sa fie egale, eventual doar un mic offset?
+    # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25, 0.25],
         Sentiment.FEAR: [1.5, 2],
@@ -266,6 +270,18 @@ class SentimentToMelodies:
         Sentiment.ANTICIPATION: [0.25, 0.5],
         Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
         Sentiment.TRUST: [0.25, 0.5],
+    }
+
+    ARTICULATIONS = {
+        Sentiment.JOY: [articulations.Staccatissimo(), articulations.Staccatissimo()],
+        Sentiment.FEAR: [articulations.DetachedLegato(), articulations.DetachedLegato()],
+        Sentiment.ANGER: [articulations.Accent(), articulations.StrongAccent()],
+        Sentiment.SADNESS: [articulations.BreathMark(), articulations.Tenuto()],
+        Sentiment.NEUTRAL: [articulations.Spiccato(), articulations.Spiccato()],
+        Sentiment.DISGUST: [articulations.Tenuto(), articulations.Tenuto()],
+        Sentiment.ANTICIPATION: [articulations.Staccato(), articulations.Staccato()],
+        Sentiment.SURPRISE: [articulations.Stress(), articulations.Stress()],
+        Sentiment.TRUST: [articulations.Unstress(), articulations.Unstress()],
     }
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
@@ -280,6 +296,9 @@ class SentimentToMelodies:
             random.choice(self.KEYS[sentiment])
         ] * n_melodies  # keep same key throughout song
         pause_durations: list[float] = random.sample(self.PAUSE_DURATIONS[sentiment], n_melodies)
+        articulations: list[articulations.Articulation] = random.sample(
+            self.ARTICULATIONS[sentiment], n_melodies
+        )
         # TODO - create a getter method for sample, so that I don't have to duplicate data
         print("instruments", instruments)
         print("measure_lengths", measure_lengths)
@@ -287,6 +306,7 @@ class SentimentToMelodies:
         print("octave_offsets", octave_offsets)
         print("song_keys", song_keys)
         print("pause_durations", pause_durations)
+        print("articulations", articulations)
         return [
             MelodyInfo(
                 instruments[0],
@@ -297,6 +317,7 @@ class SentimentToMelodies:
                 song_keys[0],
                 1,
                 pause_durations[0],
+                articulations[0],
             )
         ] + [
             MelodyInfo(
@@ -308,6 +329,7 @@ class SentimentToMelodies:
                 song_keys[i],
                 0.5,
                 pause_durations[i],
+                articulations[i],
             )
             for i in range(1, n_melodies)
         ]
