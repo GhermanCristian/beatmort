@@ -284,23 +284,36 @@ class SentimentToMelodies:
         Sentiment.TRUST: [articulations.Unstress()],
     }
 
-    def _sample_properties(self, property_list: list, n_melodies: int, identical: bool = False) -> list:
+    def _sample_properties(
+        self, property_list: list, n_melodies: int, identical: bool = False
+    ) -> list:
         n_samples = min(n_melodies, len(property_list))
         if identical:
             return [random.choice(property_list)] * n_melodies
         samples = random.sample(property_list, n_samples) * (n_melodies // n_samples + 1)
         return samples[:n_melodies]
 
-
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
         n_melodies = 2  # TODO - n_melodies for every sentiment
-        instruments: list[instrument.Instrument] = self._sample_properties(self.INSTRUMENTS[sentiment], n_melodies)
-        measure_lengths: list[int] = self._sample_properties(self.MEASURE_LENGTHS[sentiment], n_melodies)
+        instruments: list[instrument.Instrument] = self._sample_properties(
+            self.INSTRUMENTS[sentiment], n_melodies
+        )
+        measure_lengths: list[int] = self._sample_properties(
+            self.MEASURE_LENGTHS[sentiment], n_melodies
+        )
         durations: list[float] = self._sample_properties(self.DURATIONS[sentiment], n_melodies)
-        octave_offsets: list[float] = self._sample_properties(self.OCTAVE_OFFSETS[sentiment], n_melodies)
-        song_keys: list[str] = self._sample_properties(self.KEYS[sentiment], n_melodies, identical=True)
-        pause_durations: list[float] = self._sample_properties(self.PAUSE_DURATIONS[sentiment], n_melodies)
-        articulations: list[articulations.Articulation] = self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
+        octave_offsets: list[float] = self._sample_properties(
+            self.OCTAVE_OFFSETS[sentiment], n_melodies
+        )
+        song_keys: list[str] = self._sample_properties(
+            self.KEYS[sentiment], n_melodies, identical=True
+        )
+        pause_durations: list[float] = self._sample_properties(
+            self.PAUSE_DURATIONS[sentiment], n_melodies
+        )
+        articulations: list[articulations.Articulation] = self._sample_properties(
+            self.ARTICULATIONS[sentiment], n_melodies
+        )
         print("instruments", instruments)
         print("measure_lengths", measure_lengths)
         print("durations", durations)
@@ -308,19 +321,7 @@ class SentimentToMelodies:
         print("song_keys", song_keys)
         print("pause_durations", pause_durations)
         print("articulations", articulations)
-        return [
-            MelodyInfo(
-                instruments[0],
-                measure_lengths[0],
-                durations[0],
-                0,
-                octave_offsets[0],
-                song_keys[0],
-                1,
-                pause_durations[0],
-                articulations[0],
-            )
-        ] + [
+        melodies = [
             MelodyInfo(
                 instruments[i],
                 measure_lengths[i],
@@ -332,5 +333,7 @@ class SentimentToMelodies:
                 pause_durations[i],
                 articulations[i],
             )
-            for i in range(1, n_melodies)
+            for i in range(n_melodies)
         ]
+        melodies[0].vol = 1.0
+        return melodies
