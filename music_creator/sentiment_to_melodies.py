@@ -212,21 +212,21 @@ class SentimentToMelodies:
     MEASURE_LENGTHS = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
-        Sentiment.ANGER: [1, 1, 1],
-        Sentiment.SADNESS: [1, 1],
-        Sentiment.NEUTRAL: [1, 1],
+        Sentiment.ANGER: [1],
+        Sentiment.SADNESS: [1],
+        Sentiment.NEUTRAL: [1],
         Sentiment.DISGUST: [1, 2, 4],
         Sentiment.ANTICIPATION: [1, 2],
-        Sentiment.SURPRISE: [1, 1],
+        Sentiment.SURPRISE: [1],
         Sentiment.TRUST: [1, 2, 4],
     }
 
     DURATIONS = {
         Sentiment.JOY: [0.25, 0.5],
         Sentiment.FEAR: [1.5, 2],
-        Sentiment.ANGER: [0.25, 0.25, 0.25],
-        Sentiment.SADNESS: [2, 2],
-        Sentiment.NEUTRAL: [1, 1],
+        Sentiment.ANGER: [0.25],
+        Sentiment.SADNESS: [2],
+        Sentiment.NEUTRAL: [1],
         Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [1.25, 1.5, 2],
         Sentiment.SURPRISE: [0.25, 0.5],
@@ -238,7 +238,7 @@ class SentimentToMelodies:
         Sentiment.FEAR: [-3, -2],
         Sentiment.ANGER: [-2, -1, -2],
         Sentiment.SADNESS: [-2, -1],
-        Sentiment.NEUTRAL: [0, 0],
+        Sentiment.NEUTRAL: [0],
         Sentiment.DISGUST: [-2, 2],
         Sentiment.ANTICIPATION: [1, 2],
         Sentiment.SURPRISE: [-1, 1, 2],
@@ -261,11 +261,11 @@ class SentimentToMelodies:
     # TODO - durata + durata pauzelor sa fie egale, eventual doar un mic offset?
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
-        Sentiment.JOY: [0.25, 0.25],
+        Sentiment.JOY: [0.25],
         Sentiment.FEAR: [1.5, 2],
         Sentiment.ANGER: [0, 0.25, 0.5],
         Sentiment.SADNESS: [1.5, 2],
-        Sentiment.NEUTRAL: [0.5, 0.5],
+        Sentiment.NEUTRAL: [0.5],
         Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [0.25, 0.5],
         Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
@@ -273,33 +273,34 @@ class SentimentToMelodies:
     }
 
     ARTICULATIONS = {
-        Sentiment.JOY: [articulations.Staccatissimo(), articulations.Staccatissimo()],
-        Sentiment.FEAR: [articulations.DetachedLegato(), articulations.DetachedLegato()],
+        Sentiment.JOY: [articulations.Staccatissimo()],
+        Sentiment.FEAR: [articulations.DetachedLegato()],
         Sentiment.ANGER: [articulations.Accent(), articulations.StrongAccent()],
         Sentiment.SADNESS: [articulations.BreathMark(), articulations.Tenuto()],
-        Sentiment.NEUTRAL: [articulations.Spiccato(), articulations.Spiccato()],
-        Sentiment.DISGUST: [articulations.Tenuto(), articulations.Tenuto()],
-        Sentiment.ANTICIPATION: [articulations.Staccato(), articulations.Staccato()],
-        Sentiment.SURPRISE: [articulations.Stress(), articulations.Stress()],
-        Sentiment.TRUST: [articulations.Unstress(), articulations.Unstress()],
+        Sentiment.NEUTRAL: [articulations.Spiccato()],
+        Sentiment.DISGUST: [articulations.Tenuto()],
+        Sentiment.ANTICIPATION: [articulations.Staccato()],
+        Sentiment.SURPRISE: [articulations.Stress()],
+        Sentiment.TRUST: [articulations.Unstress()],
     }
+
+    def _sample_properties(self, property_list: list, n_melodies: int, identical: bool = False) -> list:
+        n_samples = min(n_melodies, len(property_list))
+        if identical:
+            return [random.choice(property_list)] * n_melodies
+        samples = random.sample(property_list, n_samples) * (n_melodies // n_samples + 1)
+        return samples[:n_melodies]
+
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
         n_melodies = 2  # TODO - n_melodies for every sentiment
-        instruments: list[instrument.Instrument] = random.sample(
-            self.INSTRUMENTS[sentiment], n_melodies
-        )
-        measure_lengths: list[int] = random.sample(self.MEASURE_LENGTHS[sentiment], n_melodies)
-        durations: list[float] = random.sample(self.DURATIONS[sentiment], n_melodies)
-        octave_offsets: list[float] = random.sample(self.OCTAVE_OFFSETS[sentiment], n_melodies)
-        song_keys: list[str] = [
-            random.choice(self.KEYS[sentiment])
-        ] * n_melodies  # keep same key throughout song
-        pause_durations: list[float] = random.sample(self.PAUSE_DURATIONS[sentiment], n_melodies)
-        articulations: list[articulations.Articulation] = random.sample(
-            self.ARTICULATIONS[sentiment], n_melodies
-        )
-        # TODO - create a getter method for sample, so that I don't have to duplicate data
+        instruments: list[instrument.Instrument] = self._sample_properties(self.INSTRUMENTS[sentiment], n_melodies)
+        measure_lengths: list[int] = self._sample_properties(self.MEASURE_LENGTHS[sentiment], n_melodies)
+        durations: list[float] = self._sample_properties(self.DURATIONS[sentiment], n_melodies)
+        octave_offsets: list[float] = self._sample_properties(self.OCTAVE_OFFSETS[sentiment], n_melodies)
+        song_keys: list[str] = self._sample_properties(self.KEYS[sentiment], n_melodies, identical=True)
+        pause_durations: list[float] = self._sample_properties(self.PAUSE_DURATIONS[sentiment], n_melodies)
+        articulations: list[articulations.Articulation] = self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
         print("instruments", instruments)
         print("measure_lengths", measure_lengths)
         print("durations", durations)
