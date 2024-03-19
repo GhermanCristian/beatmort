@@ -23,9 +23,9 @@ class SentimentToMelodies:
         Sentiment.JOY: [
             instrument.UnpitchedPercussion(),
             instrument.Alto(),
-            instrument.Clarinet(),
+            # instrument.Clarinet(),  # mai strica filmu uneori
             instrument.Marimba(),
-            instrument.Ocarina(),
+            # instrument.Ocarina(),  # mai strica filmu uneori
             instrument.Piano(),
             instrument.Recorder(),
             instrument.Soprano(),
@@ -36,7 +36,7 @@ class SentimentToMelodies:
         ],
         Sentiment.FEAR: [
             instrument.AcousticGuitar(),
-            instrument.Bagpipes(),
+            # instrument.Bagpipes(),  # daca e sus strica filmu
             instrument.BrassInstrument(),
             instrument.Choir(),
             instrument.ChurchBells(),
@@ -51,12 +51,12 @@ class SentimentToMelodies:
             instrument.Sitar(),
             instrument.StringInstrument(),
             instrument.Timpani(),
-            instrument.Tuba(),
+            # instrument.Tuba(),  # nu prea
             instrument.TubularBells(),
             instrument.Ukulele(),
         ],
         Sentiment.ANGER: [
-            instrument.Bagpipes(),  # asta uneori e mai mult surprise, disgust
+            # instrument.Bagpipes(),
             instrument.BrassInstrument(),  # ?
             instrument.ElectricGuitar(),
             # instrument.Organ(),  # asta mai mult cauzeaza fear
@@ -75,7 +75,7 @@ class SentimentToMelodies:
             instrument.Piano(),
             instrument.StringInstrument(),
             instrument.Violin(),
-            instrument.Violoncello(),
+            instrument.Violoncello(),  # e un pic cam agresiv
         ],
         Sentiment.NEUTRAL: [
             instrument.AcousticBass(),
@@ -87,7 +87,7 @@ class SentimentToMelodies:
             instrument.Bass(),
             instrument.BassClarinet(),
             instrument.Bassoon(),
-            instrument.BassTrombone(),
+            # instrument.BassTrombone(),  # suna cam rau
             instrument.Celesta(),
             instrument.ChurchBells(),
             instrument.Clarinet(),
@@ -135,14 +135,14 @@ class SentimentToMelodies:
             instrument.Harmonica(),
             instrument.Koto(),
             instrument.Oboe(),
-            instrument.Saxophone(),
+            # instrument.Saxophone(),  # uneori suna prea rau chiar si pt asta
             instrument.Shehnai(),
             instrument.SopranoSaxophone(),
             instrument.TenorSaxophone(),
             instrument.Trombone(),
         ],
         Sentiment.ANTICIPATION: [
-            instrument.Bagpipes(),
+            # instrument.Bagpipes(),  # cam omoara meciu
             instrument.Baritone(),
             instrument.BrassInstrument(),
             instrument.Choir(),
@@ -185,7 +185,7 @@ class SentimentToMelodies:
             instrument.Shamisen(),
             instrument.Soprano(),
             instrument.SopranoSaxophone(),
-            instrument.Trombone(),
+            instrument.Trombone(),  # un pic prea jos
             instrument.Trumpet(),
             instrument.Viola(),
             instrument.Violin(),
@@ -196,7 +196,7 @@ class SentimentToMelodies:
             instrument.Alto(),
             instrument.Baritone(),
             instrument.Celesta(),
-            instrument.Flute(),
+            instrument.Flute(),  # un pic prea ascutit uneori
             instrument.Glockenspiel(),
             instrument.Guitar(),
             instrument.Harp(),
@@ -223,14 +223,14 @@ class SentimentToMelodies:
 
     DURATIONS = {
         Sentiment.JOY: [0.25, 0.5],
-        Sentiment.FEAR: [1.5, 2],
+        Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
         Sentiment.ANGER: [0.25],
-        Sentiment.SADNESS: [2],
-        Sentiment.NEUTRAL: [1],
+        Sentiment.SADNESS: [1.25, 1.5, 2],
+        Sentiment.NEUTRAL: [0.75, 1],
         Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1],
-        Sentiment.ANTICIPATION: [1.25, 1.5, 2],
+        Sentiment.ANTICIPATION: [1, 1.25, 1.5, 2],
         Sentiment.SURPRISE: [0.25, 0.5],
-        Sentiment.TRUST: [1, 1.5, 2],
+        Sentiment.TRUST: [0.75, 1, 1.5, 2],
     }
 
     OCTAVE_OFFSETS = {
@@ -262,10 +262,10 @@ class SentimentToMelodies:
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25],
-        Sentiment.FEAR: [1.5, 2],
+        Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
         Sentiment.ANGER: [0, 0.25, 0.5],
-        Sentiment.SADNESS: [1.5, 2],
-        Sentiment.NEUTRAL: [0.5],
+        Sentiment.SADNESS: [1.25, 1.5, 2],
+        Sentiment.NEUTRAL: [0.25, 0.5],
         Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [0.25, 0.5],
         Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
