@@ -30,7 +30,7 @@ class SentimentToMelodies:
             instrument.Recorder(),
             instrument.Soprano(),
             instrument.SteelDrum(),
-            instrument.Tenor(),
+            # instrument.Tenor(),  # daca e prea sus strica filmu
             instrument.Vibraphone(),
             instrument.Xylophone(),
         ],
@@ -47,7 +47,7 @@ class SentimentToMelodies:
             instrument.Piano(),
             instrument.PipeOrgan(),
             instrument.Sampler(),
-            instrument.Shakuhachi(),
+            instrument.Shakuhachi(),  # nu e foarte fear
             instrument.Sitar(),
             instrument.StringInstrument(),
             instrument.Timpani(),
@@ -58,7 +58,7 @@ class SentimentToMelodies:
         Sentiment.ANGER: [
             # instrument.Bagpipes(),
             instrument.BrassInstrument(),  # ?
-            instrument.ElectricGuitar(),
+            instrument.ElectricGuitar(),  # nu e foarte angry
             # instrument.Organ(),  # asta mai mult cauzeaza fear
             instrument.Piano(),
             # instrument.PipeOrgan(),  # si asta tot e mai mult fear
@@ -68,12 +68,12 @@ class SentimentToMelodies:
         Sentiment.SADNESS: [
             instrument.Celesta(),
             instrument.Contrabass(),
-            instrument.EnglishHorn(),
+            # instrument.EnglishHorn(),  # nu e foarte sad
             instrument.Flute(),
             instrument.Glockenspiel(),
             instrument.Harp(),
             instrument.Piano(),
-            instrument.StringInstrument(),
+            instrument.StringInstrument(),  # asta e mai mult fear / anticipation
             instrument.Violin(),
             instrument.Violoncello(),  # e un pic cam agresiv
         ],
@@ -138,7 +138,7 @@ class SentimentToMelodies:
             # instrument.Saxophone(),  # uneori suna prea rau chiar si pt asta
             instrument.Shehnai(),
             instrument.SopranoSaxophone(),
-            instrument.TenorSaxophone(),
+            # instrument.TenorSaxophone(),  # prea sus strica filmu
             instrument.Trombone(),
         ],
         Sentiment.ANTICIPATION: [
@@ -151,7 +151,7 @@ class SentimentToMelodies:
             instrument.Horn(),
             instrument.Mandolin(),
             instrument.MezzoSoprano(),
-            instrument.Organ(),
+            # instrument.Organ(),  # sounds bad
             instrument.Piano(),
             instrument.Sitar(),
             instrument.StringInstrument(),
@@ -204,7 +204,7 @@ class SentimentToMelodies:
             instrument.Lute(),
             instrument.Marimba(),
             instrument.Vibraphone(),
-            instrument.Vocalist(),
+            # instrument.Vocalist(),  # un pic prea ascutit
             instrument.Xylophone(),
         ],
     }
@@ -230,7 +230,7 @@ class SentimentToMelodies:
         Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [1, 1.25, 1.5, 2],
         Sentiment.SURPRISE: [0.25, 0.5],
-        Sentiment.TRUST: [0.75, 1, 1.5, 2],
+        Sentiment.TRUST: [0.75, 1, 1.5, 1.75],
     }
 
     OCTAVE_OFFSETS = {
@@ -264,7 +264,7 @@ class SentimentToMelodies:
         Sentiment.JOY: [0.25],
         Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
         Sentiment.ANGER: [0, 0.25, 0.5],
-        Sentiment.SADNESS: [1.25, 1.5, 2],
+        Sentiment.SADNESS: [1.25, 1.5, 1.75],
         Sentiment.NEUTRAL: [0.25, 0.5],
         Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [0.25, 0.5],
