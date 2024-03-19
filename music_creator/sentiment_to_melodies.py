@@ -27,7 +27,7 @@ class SentimentToMelodies:
             instrument.Marimba(),
             # instrument.Ocarina(),  # mai strica filmu uneori
             instrument.Piano(),
-            instrument.Recorder(),
+            instrument.Recorder(),  # mai strica filmu
             instrument.Soprano(),
             instrument.SteelDrum(),
             # instrument.Tenor(),  # daca e prea sus strica filmu
@@ -258,7 +258,7 @@ class SentimentToMelodies:
     }
 
     # TODO - disjointed pauses
-    # TODO - durata + durata pauzelor sa fie egale, eventual doar un mic offset?
+    # TODO - make pauses/durations consistent for a single bar?
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25],
@@ -301,7 +301,7 @@ class SentimentToMelodies:
         measure_lengths: list[int] = self._sample_properties(
             self.MEASURE_LENGTHS[sentiment], n_melodies
         )
-        durations: list[float] = self._sample_properties(self.DURATIONS[sentiment], n_melodies)
+        durations: list[float] = self._sample_properties(self.DURATIONS[sentiment], n_melodies, identical=True)
         octave_offsets: list[float] = self._sample_properties(
             self.OCTAVE_OFFSETS[sentiment], n_melodies
         )
@@ -309,7 +309,7 @@ class SentimentToMelodies:
             self.KEYS[sentiment], n_melodies, identical=True
         )
         pause_durations: list[float] = self._sample_properties(
-            self.PAUSE_DURATIONS[sentiment], n_melodies
+            self.PAUSE_DURATIONS[sentiment], n_melodies, identical=True
         )
         articulations: list[articulations.Articulation] = self._sample_properties(
             self.ARTICULATIONS[sentiment], n_melodies
@@ -326,7 +326,7 @@ class SentimentToMelodies:
                 instruments[i],
                 measure_lengths[i],
                 durations[i],
-                0,
+                durations[i] // n_melodies * i,
                 octave_offsets[i],
                 song_keys[i],
                 0.5,
