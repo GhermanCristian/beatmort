@@ -66,9 +66,8 @@ class MusicCreator:
 
     def _measure_generator(self, measure_length: int = 8):
         seed = self._x_seed[np.random.randint(0, len(self._x_seed) - 1)][:]
-        notes = []
-        # TODO - ensure a measure has at least 2 different notes / chords
-        for _ in range(measure_length):
+        measure = []
+        while len(measure) < measure_length:
             seed = seed.reshape(1, self._feature_length, 1)
             prediction = self._model.predict(seed, verbose=0)[0]
             prediction = np.log(prediction) / 0.25
@@ -76,10 +75,12 @@ class MusicCreator:
             prediction = exp_preds / np.sum(exp_preds)
             pos = np.argmax(prediction)
             pos_n = pos / float(self._vocab_size)
-            notes.append(pos)
+            bar = self._reverse_index[pos]
+            if len(set(bar.split("/"))) > 1:
+                measure.append(bar)
             seed = np.insert(seed[0], len(seed[0]), pos_n)
             seed = seed[1:]
-        measure = [self._reverse_index[char] for char in notes]
+
         return measure
 
     def _melody_generator(self, song_length: int, dur: float, measure_length: int = 8):
@@ -136,6 +137,7 @@ class MusicCreator:
         output_name = f"Outputs/{output_name}"
         main_score.write("midi", f"{output_name}.mid")
         # TODO - separate module for these outputs, maybe for the midi write part as well
+        # TODO - make these less verbose
         if musescore_exe:
             try:
                 xml_path = main_score.write("musicxml", f"{output_name}.xml")
