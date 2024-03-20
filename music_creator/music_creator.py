@@ -93,25 +93,30 @@ class MusicCreator:
         # TODO - think of cases when song_length % (dur * measure_length) != 0
         return music
 
-    def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
-        notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
-        # TODO - generate melody until the correct key mode is found ?
-        print(notes)
-        melody = self._chords_n_notes(notes, melody_info)
-        melody_midi = stream.Part(melody)
+    def _compose_melody_correct_mode(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
+        major_target_key = any(c.isupper() for c in melody_info.key)
+        attempts = 5
+        while attempts:
+            notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
+            melody = self._chords_n_notes(notes, melody_info)
+            melody_midi = stream.Part(melody)
+            k: key.Key = melody_midi.analyze("key")
+            if k.mode == "major" and major_target_key or k.mode == "minor" and not major_target_key:
+                return melody_midi
+            attempts -= 1
+        return melody_midi
 
-        k: key.Key = melody_midi.analyze("key")
-        print(f"Initial key = {k}; target = {melody_info.key}")
+    def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
+        melody_midi = self._compose_melody_correct_mode(song_length, melody_info)
         melody_midi.insert(0, melody_info.instr)
 
-        # attempts to transpose melody to another key only if their modes are equal
         # TODO - scris la partea teoretica despre toate astea
         # TODO - scris la partea teoretica despre articulations
-        major_target_key = any(c.isupper() for c in melody_info.key)
-        if k.mode == "major" and major_target_key or k.mode == "minor" and not major_target_key:
-            i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
-            melody_midi.transpose(i, inPlace=True)
-            print(f"Transposed to {melody_midi.analyze('key')}")
+        k: key.Key = melody_midi.analyze("key")
+        print(f"Initial key = {k}; target = {melody_info.key}")
+        i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
+        melody_midi.transpose(i, inPlace=True)
+        print(f"Transposed to {melody_midi.analyze('key')}")
         melody_midi.transpose(12 * melody_info.octave_offset, inPlace=True)
         return melody_midi
 
@@ -155,6 +160,7 @@ class MusicCreator:
                         f"{output_name}.wav",
                         "-r",
                         "44100",
+                        "-q",
                     ]
                 )
             except:
