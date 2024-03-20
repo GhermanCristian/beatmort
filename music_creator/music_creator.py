@@ -142,7 +142,6 @@ class MusicCreator:
         output_name = f"Outputs/{output_name}"
         main_score.write("midi", f"{output_name}.mid")
         # TODO - separate module for these outputs, maybe for the midi write part as well
-        # TODO - make these less verbose
         if musescore_exe:
             try:
                 xml_path = main_score.write("musicxml", f"{output_name}.xml")
