@@ -23,7 +23,7 @@ class SentimentToMelodies:
     INSTRUMENTS = {
         Sentiment.JOY: [
             instrument.UnpitchedPercussion(),
-            instrument.Alto(),
+            instrument.Alto(),  # mai strica filmu
             instrument.Marimba(),
             instrument.Piano(),
             instrument.Recorder(),  # mai strica filmu
@@ -198,9 +198,9 @@ class SentimentToMelodies:
     MEASURE_LENGTHS = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
-        Sentiment.ANGER: [1],
-        Sentiment.SADNESS: [1],
-        Sentiment.NEUTRAL: [1],
+        Sentiment.ANGER: [1, 2],
+        Sentiment.SADNESS: [1, 2],
+        Sentiment.NEUTRAL: [1, 2],
         Sentiment.DISGUST: [1, 2, 4],
         Sentiment.ANTICIPATION: [1, 2],
         Sentiment.SURPRISE: [1],
@@ -314,14 +314,15 @@ class SentimentToMelodies:
                 instruments[i],
                 measure_lengths[i],
                 durations[i],
-                durations[i] // n_melodies * i,
+                0.0625 * i,
                 octave_offsets[i],
                 song_keys[i],
-                0.5,
+                0.75,
                 pause_durations[i],
                 articulations[i],
             )
             for i in range(n_melodies)
         ]
+        print("offsets", [m.offset for m in melodies])
         melodies[0].vol = 1.0
         return melodies
