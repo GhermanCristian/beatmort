@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from music21 import instrument, articulations
 import random
 from sentiment_detector.sentiment import Sentiment
@@ -15,7 +16,7 @@ class MelodyInfo:
     key: str
     vol: float
     pause_duration: float
-    articulation: articulations.Articulation  # TODO - maybe make it optional ?
+    articulation: Optional[articulations.Articulation]
 
 
 class SentimentToMelodies:
@@ -23,20 +24,16 @@ class SentimentToMelodies:
         Sentiment.JOY: [
             instrument.UnpitchedPercussion(),
             instrument.Alto(),
-            # instrument.Clarinet(),  # mai strica filmu uneori
             instrument.Marimba(),
-            # instrument.Ocarina(),  # mai strica filmu uneori
             instrument.Piano(),
             instrument.Recorder(),  # mai strica filmu
             instrument.Soprano(),
             instrument.SteelDrum(),
-            # instrument.Tenor(),  # daca e prea sus strica filmu
             instrument.Vibraphone(),
             instrument.Xylophone(),
         ],
         Sentiment.FEAR: [
             instrument.AcousticGuitar(),
-            # instrument.Bagpipes(),  # daca e sus strica filmu
             instrument.BrassInstrument(),
             instrument.Choir(),
             instrument.ChurchBells(),
@@ -51,24 +48,19 @@ class SentimentToMelodies:
             instrument.Sitar(),
             instrument.StringInstrument(),
             instrument.Timpani(),
-            # instrument.Tuba(),  # nu prea
             instrument.TubularBells(),
             instrument.Ukulele(),
         ],
         Sentiment.ANGER: [
-            # instrument.Bagpipes(),
             instrument.BrassInstrument(),  # ?
             instrument.ElectricGuitar(),  # nu e foarte angry
-            # instrument.Organ(),  # asta mai mult cauzeaza fear
             instrument.Piano(),
-            # instrument.PipeOrgan(),  # si asta tot e mai mult fear
             instrument.Sampler(),
             instrument.Timpani(),
         ],
         Sentiment.SADNESS: [
             instrument.Celesta(),
             instrument.Contrabass(),
-            # instrument.EnglishHorn(),  # nu e foarte sad
             instrument.Flute(),
             instrument.Glockenspiel(),
             instrument.Harp(),
@@ -87,7 +79,6 @@ class SentimentToMelodies:
             instrument.Bass(),
             instrument.BassClarinet(),
             instrument.Bassoon(),
-            # instrument.BassTrombone(),  # suna cam rau
             instrument.Celesta(),
             instrument.ChurchBells(),
             instrument.Clarinet(),
@@ -135,14 +126,11 @@ class SentimentToMelodies:
             instrument.Harmonica(),
             instrument.Koto(),
             instrument.Oboe(),
-            # instrument.Saxophone(),  # uneori suna prea rau chiar si pt asta
             instrument.Shehnai(),
             instrument.SopranoSaxophone(),
-            # instrument.TenorSaxophone(),  # prea sus strica filmu
             instrument.Trombone(),
         ],
         Sentiment.ANTICIPATION: [
-            # instrument.Bagpipes(),  # cam omoara meciu
             instrument.Baritone(),
             instrument.BrassInstrument(),
             instrument.Choir(),
@@ -151,7 +139,6 @@ class SentimentToMelodies:
             instrument.Horn(),
             instrument.Mandolin(),
             instrument.MezzoSoprano(),
-            # instrument.Organ(),  # sounds bad
             instrument.Piano(),
             instrument.Sitar(),
             instrument.StringInstrument(),
@@ -204,7 +191,6 @@ class SentimentToMelodies:
             instrument.Lute(),
             instrument.Marimba(),
             instrument.Vibraphone(),
-            # instrument.Vocalist(),  # un pic prea ascutit
             instrument.Xylophone(),
         ],
     }
@@ -277,7 +263,7 @@ class SentimentToMelodies:
         Sentiment.FEAR: [articulations.DetachedLegato()],
         Sentiment.ANGER: [articulations.Accent(), articulations.StrongAccent()],
         Sentiment.SADNESS: [articulations.BreathMark(), articulations.Tenuto()],
-        Sentiment.NEUTRAL: [articulations.Spiccato()],
+        Sentiment.NEUTRAL: [None],
         Sentiment.DISGUST: [articulations.Tenuto()],
         Sentiment.ANTICIPATION: [articulations.Staccato()],
         Sentiment.SURPRISE: [articulations.Stress()],
@@ -301,7 +287,9 @@ class SentimentToMelodies:
         measure_lengths: list[int] = self._sample_properties(
             self.MEASURE_LENGTHS[sentiment], n_melodies
         )
-        durations: list[float] = self._sample_properties(self.DURATIONS[sentiment], n_melodies, identical=True)
+        durations: list[float] = self._sample_properties(
+            self.DURATIONS[sentiment], n_melodies, identical=True
+        )
         octave_offsets: list[float] = self._sample_properties(
             self.OCTAVE_OFFSETS[sentiment], n_melodies
         )

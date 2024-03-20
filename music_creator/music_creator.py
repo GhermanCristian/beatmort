@@ -38,7 +38,8 @@ class MusicCreator:
                         inst_note = int(j)
                         note_snip = note.Note(inst_note)
                         note_snip.volume.velocity = 127.0 * melody_info.vol
-                        note_snip.articulations.append(melody_info.articulation)
+                        if melody_info.articulation:
+                            note_snip.articulations.append(melody_info.articulation)
                         notes.append(note_snip)
                     chord_snip = chord.Chord(notes, duration=dur)
                     chord_snip.offset = offset
@@ -46,7 +47,8 @@ class MusicCreator:
                 else:
                     note_snip = note.Note(s)
                     note_snip.volume.velocity = 127.0 * melody_info.vol
-                    note_snip.articulations.append(melody_info.articulation)
+                    if melody_info.articulation:
+                        note_snip.articulations.append(melody_info.articulation)
                     note_snip.offset = offset
                     melody.append(note_snip)
                 if melody_info.pause_duration:
@@ -93,7 +95,9 @@ class MusicCreator:
         # TODO - think of cases when song_length % (dur * measure_length) != 0
         return music
 
-    def _compose_melody_correct_mode(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
+    def _compose_melody_correct_mode(
+        self, song_length: int, melody_info: MelodyInfo
+    ) -> stream.Part:
         major_target_key = any(c.isupper() for c in melody_info.key)
         attempts = 5
         while attempts:
