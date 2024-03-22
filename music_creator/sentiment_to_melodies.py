@@ -314,15 +314,14 @@ class SentimentToMelodies:
                 instruments[i],
                 measure_lengths[i],
                 durations[i],
-                0.0625 * i,
+                (0.0625 + 8 * (durations[0] + pause_durations[0])) * i,
                 octave_offsets[i],
                 song_keys[i],
-                0.75,
+                1 - i * 0.25,
                 pause_durations[i],
                 articulations[i],
             )
             for i in range(n_melodies)
         ]
         print("offsets", [m.offset for m in melodies])
-        melodies[0].vol = 1.0
         return melodies
