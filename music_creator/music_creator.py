@@ -24,12 +24,12 @@ class MusicCreator:
         self._vocab_size = vocab_size
         self._reverse_index = reverse_index
 
-    def _chords_n_notes(self, measures: list[str], melody_info: MelodyInfo):
+    def _chords_n_notes(self, measure: list[str], melody_info: MelodyInfo):
         melody = []
         offset: float = melody_info.offset
         dur = duration.Duration(melody_info.dur)
-        for b in measures:
-            sounds = b.split("/")
+        for bar in measure:
+            sounds = bar.split("/")
             for s in sounds:
                 if "." in s or s.isdigit():
                     chord_notes = s.split(".")
@@ -56,6 +56,7 @@ class MusicCreator:
                     p.offset = offset
                     melody.append(p)
                 offset += melody_info.dur + melody_info.pause_duration
+
         final_note_index = -1
         while isinstance(melody[final_note_index], note.Rest):
             final_note_index -= 1
@@ -64,9 +65,10 @@ class MusicCreator:
         final_note.offset = offset
         final_note.volume.velocity = 127.0
         melody.append(final_note)
+
         return melody
 
-    def _measure_generator(self, measure_length: int = 8):
+    def _measure_generator(self, measure_length: int):
         seed = self._x_seed[np.random.randint(0, len(self._x_seed) - 1)][:]
         measure = []
         while len(measure) < measure_length:
@@ -85,7 +87,7 @@ class MusicCreator:
 
         return measure
 
-    def _melody_generator(self, song_length: int, dur: float, measure_length: int = 8):
+    def _melody_generator(self, song_length: int, dur: float, measure_length: int):
         assert (
             song_length >= dur * measure_length * 8
         ), "Song is too short for the given note durations and measure lengths"
