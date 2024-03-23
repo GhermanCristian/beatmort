@@ -243,18 +243,17 @@ class SentimentToMelodies:
         Sentiment.TRUST: ["D", "A"],
     }
 
-    # TODO - disjointed pauses
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
-        Sentiment.JOY: [0.25],
+        Sentiment.JOY: [0, 0.25],
         Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
         Sentiment.ANGER: [0, 0.25, 0.5],
         Sentiment.SADNESS: [1.25, 1.5, 1.75],
         Sentiment.NEUTRAL: [0.25, 0.5],
         Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1],
-        Sentiment.ANTICIPATION: [0.25, 0.5],
-        Sentiment.SURPRISE: [0.25, 0.5, 1, 2],
-        Sentiment.TRUST: [0.25, 0.5],
+        Sentiment.ANTICIPATION: [0, 0.25, 0.5],
+        Sentiment.SURPRISE: [0, 0.25, 0.5, 1, 1.25],
+        Sentiment.TRUST: [0.125, 0.25, 0.5],
     }
 
     ARTICULATIONS = {
@@ -272,7 +271,7 @@ class SentimentToMelodies:
     N_MELODIES = {
         Sentiment.JOY: [1, 2],
         Sentiment.FEAR: [1, 2],
-        Sentiment.ANGER: [1, 2, 3],
+        Sentiment.ANGER: [2, 3],
         Sentiment.SADNESS: [1, 2],
         Sentiment.NEUTRAL: [1, 2],
         Sentiment.DISGUST: [2, 3],
