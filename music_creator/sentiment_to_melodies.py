@@ -288,9 +288,10 @@ class SentimentToMelodies:
         measure_lengths: list[int] = self._sample_properties(
             self.MEASURE_LENGTHS[sentiment], n_melodies
         )
-        durations: list[float] = self._sample_properties(
-            self.DURATIONS[sentiment], n_melodies, identical=True
-        )
+        durations_single_melody: list[float] = self._sample_properties(self.DURATIONS[sentiment], 8)
+        durations: list[list[float]] = []
+        for _ in range(n_melodies):
+            durations.append(durations_single_melody)
         octave_offsets: list[float] = self._sample_properties(
             self.OCTAVE_OFFSETS[sentiment], n_melodies
         )
