@@ -269,6 +269,18 @@ class SentimentToMelodies:
         Sentiment.TRUST: [articulations.Unstress()],
     }
 
+    N_MELODIES = {
+        Sentiment.JOY: [1, 2],
+        Sentiment.FEAR: [1, 2],
+        Sentiment.ANGER: [1, 2, 3],
+        Sentiment.SADNESS: [1, 2],
+        Sentiment.NEUTRAL: [1, 2],
+        Sentiment.DISGUST: [2, 3],
+        Sentiment.ANTICIPATION: [2],
+        Sentiment.SURPRISE: [2, 3],
+        Sentiment.TRUST: [1, 2],
+    }
+
     def _sample_properties(
         self, property_list: list, n_items: int, identical: bool = False
     ) -> list:
@@ -281,7 +293,7 @@ class SentimentToMelodies:
         return samples
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
-        n_melodies = 2  # TODO - n_melodies for every sentiment
+        n_melodies: int = random.choice(self.N_MELODIES[sentiment])
         instruments: list[instrument.Instrument] = self._sample_properties(
             self.INSTRUMENTS[sentiment], n_melodies
         )
