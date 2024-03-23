@@ -10,12 +10,12 @@ from sentiment_detector.sentiment import Sentiment
 class MelodyInfo:
     instr: instrument.Instrument
     measure_length: int
-    dur: float
+    dur: list[float]
     offset: float
     octave_offset: int
     key: str
     vol: float
-    pause_duration: float
+    pause_duration: list[float]
     articulation: Optional[articulations.Articulation]
 
 
@@ -244,7 +244,6 @@ class SentimentToMelodies:
     }
 
     # TODO - disjointed pauses
-    # TODO - make pauses/durations consistent for a single bar?
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
         Sentiment.JOY: [0.25],
@@ -271,13 +270,15 @@ class SentimentToMelodies:
     }
 
     def _sample_properties(
-        self, property_list: list, n_melodies: int, identical: bool = False
+        self, property_list: list, n_items: int, identical: bool = False
     ) -> list:
-        n_samples = min(n_melodies, len(property_list))
+        n_properties = len(property_list)
         if identical:
-            return [random.choice(property_list)] * n_melodies
-        samples = random.sample(property_list, n_samples) * (n_melodies // n_samples + 1)
-        return samples[:n_melodies]
+            return [random.choice(property_list)] * n_items
+        samples = random.sample(property_list * (n_items // n_properties + 1), n_items)
+        if n_items == 8:  # TODO - take care of the durations case
+            return sorted(samples, reverse=True)
+        return samples
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
         n_melodies = 2  # TODO - n_melodies for every sentiment
@@ -296,9 +297,12 @@ class SentimentToMelodies:
         song_keys: list[str] = self._sample_properties(
             self.KEYS[sentiment], n_melodies, identical=True
         )
-        pause_durations: list[float] = self._sample_properties(
-            self.PAUSE_DURATIONS[sentiment], n_melodies, identical=True
+        pause_durations_single_melody: list[float] = self._sample_properties(
+            self.PAUSE_DURATIONS[sentiment], 8
         )
+        pause_durations: list[list[float]] = []
+        for _ in range(n_melodies):
+            pause_durations.append(pause_durations_single_melody)
         articulations: list[articulations.Articulation] = self._sample_properties(
             self.ARTICULATIONS[sentiment], n_melodies
         )
@@ -314,7 +318,7 @@ class SentimentToMelodies:
                 instruments[i],
                 measure_lengths[i],
                 durations[i],
-                (0.0625 + 8 * (durations[0] + pause_durations[0])) * i,
+                (0.0625 + (sum(durations[0]) + sum(pause_durations[0]))) * i,
                 octave_offsets[i],
                 song_keys[i],
                 1 - i * 0.25,
