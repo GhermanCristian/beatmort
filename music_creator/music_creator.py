@@ -27,10 +27,14 @@ class MusicCreator:
     def _chords_n_notes(self, measure: list[str], melody_info: MelodyInfo):
         melody = []
         offset: float = melody_info.offset
-        dur = duration.Duration(melody_info.dur)
+        durations: list[duration.Duration] = [duration.Duration(dur) for dur in melody_info.dur]
+        pause_durations: list[duration.Duration] = [
+            duration.Duration(pause_duration) for pause_duration in melody_info.pause_duration
+        ]
+
         for bar in measure:
             sounds = bar.split("/")
-            for s in sounds:
+            for s_index, s in enumerate(sounds):
                 if "." in s or s.isdigit():
                     chord_notes = s.split(".")
                     notes = []
@@ -41,7 +45,7 @@ class MusicCreator:
                         if melody_info.articulation:
                             note_snip.articulations.append(melody_info.articulation)
                         notes.append(note_snip)
-                    chord_snip = chord.Chord(notes, duration=dur)
+                    chord_snip = chord.Chord(notes, duration=durations[s_index])
                     chord_snip.offset = offset
                     melody.append(chord_snip)
                 else:
@@ -51,11 +55,11 @@ class MusicCreator:
                         note_snip.articulations.append(melody_info.articulation)
                     note_snip.offset = offset
                     melody.append(note_snip)
-                if melody_info.pause_duration:
-                    p = note.Rest(duration=duration.Duration(melody_info.pause_duration))
+                if melody_info.pause_duration[s_index]:
+                    p = note.Rest(duration=pause_durations[s_index])
                     p.offset = offset
                     melody.append(p)
-                offset += melody_info.dur + melody_info.pause_duration
+                offset += melody_info.dur[s_index] + melody_info.pause_duration[s_index]
 
         final_note_index = -1
         while isinstance(melody[final_note_index], note.Rest):
@@ -87,14 +91,14 @@ class MusicCreator:
 
         return measure
 
-    def _melody_generator(self, song_length: int, dur: float, measure_length: int):
+    def _melody_generator(self, song_length: int, melody_info: MelodyInfo):
+        bar_duration: float = sum(melody_info.dur) + sum(melody_info.pause_duration)
         assert (
-            song_length >= dur * measure_length * 8
+            song_length >= bar_duration * melody_info.measure_length
         ), "Song is too short for the given note durations and measure lengths"
-        measure = self._measure_generator(measure_length)
-        n_measures_in_song = int(song_length // dur // measure_length // 8)
+        measure = self._measure_generator(melody_info.measure_length)
+        n_measures_in_song = int(song_length // bar_duration // melody_info.measure_length)
         music = measure * n_measures_in_song
-        # TODO - think of cases when song_length % (dur * measure_length) != 0
         return music
 
     def _compose_melody_correct_mode(
@@ -103,7 +107,7 @@ class MusicCreator:
         major_target_key = any(c.isupper() for c in melody_info.key)
         attempts = 5
         while attempts:
-            notes = self._melody_generator(song_length, melody_info.dur, melody_info.measure_length)
+            notes = self._melody_generator(song_length, melody_info)
             melody = self._chords_n_notes(notes, melody_info)
             melody_midi = stream.Part(melody)
             k: key.Key = melody_midi.analyze("key")
@@ -118,6 +122,7 @@ class MusicCreator:
 
         # TODO - scris la partea teoretica despre toate astea
         # TODO - scris la partea teoretica despre articulations
+        # TODO - mentionat in partea teoretica despre incercarea de a avea durate diferite in fiecare bar
         k: key.Key = melody_midi.analyze("key")
         print(f"Initial key = {k}; target = {melody_info.key}")
         i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
