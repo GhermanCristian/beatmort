@@ -168,7 +168,6 @@ class SentimentToMelodies:
             instrument.Harmonica(),
             instrument.Harpsichord(),
             instrument.Koto(),
-            instrument.Oboe(),
             instrument.Shamisen(),
             instrument.Soprano(),
             instrument.SopranoSaxophone(),
@@ -183,7 +182,6 @@ class SentimentToMelodies:
             instrument.Alto(),
             instrument.Baritone(),
             instrument.Celesta(),
-            instrument.Flute(),  # un pic prea ascutit uneori
             instrument.Glockenspiel(),
             instrument.Guitar(),
             instrument.Harp(),
@@ -208,14 +206,14 @@ class SentimentToMelodies:
     }
 
     DURATIONS = {
-        Sentiment.JOY: [0.25, 0.5],
+        Sentiment.JOY: [0.125, 0.25, 0.5],
         Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
-        Sentiment.ANGER: [0.25],
+        Sentiment.ANGER: [0.125, 0.25],
         Sentiment.SADNESS: [1.25, 1.5, 2],
         Sentiment.NEUTRAL: [0.75, 1],
-        Sentiment.DISGUST: [0.25, 0.33, 0.5, 0.66, 1],
+        Sentiment.DISGUST: [0.125, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [1, 1.25, 1.5, 2],
-        Sentiment.SURPRISE: [0.25, 0.5],
+        Sentiment.SURPRISE: [0.125, 0.25, 0.5],
         Sentiment.TRUST: [0.75, 1, 1.5, 1.75],
     }
 
@@ -245,14 +243,14 @@ class SentimentToMelodies:
 
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS = {
-        Sentiment.JOY: [0, 0.25],
+        Sentiment.JOY: [0, 0.125, 0.25],
         Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
-        Sentiment.ANGER: [0, 0.25, 0.5],
+        Sentiment.ANGER: [0, 0.125, 0.25, 0.5],
         Sentiment.SADNESS: [1.25, 1.5, 1.75],
         Sentiment.NEUTRAL: [0.25, 0.5],
-        Sentiment.DISGUST: [0, 0.25, 0.33, 0.5, 0.66, 1],
-        Sentiment.ANTICIPATION: [0, 0.25, 0.5],
-        Sentiment.SURPRISE: [0, 0.25, 0.5, 1, 1.25],
+        Sentiment.DISGUST: [0, 0.125, 0.25, 0.33, 0.5, 0.66, 1],
+        Sentiment.ANTICIPATION: [0, 0.125, 0.25, 0.5],
+        Sentiment.SURPRISE: [0, 0.125, 0.25, 0.5, 1, 1.25],
         Sentiment.TRUST: [0.125, 0.25, 0.5],
     }
 
@@ -270,7 +268,7 @@ class SentimentToMelodies:
 
     N_MELODIES = {
         Sentiment.JOY: [1, 2],
-        Sentiment.FEAR: [1, 2],
+        Sentiment.FEAR: [2],
         Sentiment.ANGER: [2, 3],
         Sentiment.SADNESS: [1, 2],
         Sentiment.NEUTRAL: [1, 2],
@@ -306,6 +304,7 @@ class SentimentToMelodies:
         durations_single_melody: list[float] = self._sample_properties(
             self.DURATIONS[sentiment], 8, durations=True
         )
+        durations_single_melody.reverse()
         durations: list[list[float]] = []
         for _ in range(n_melodies):
             durations.append(durations_single_melody)
