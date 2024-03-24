@@ -320,7 +320,7 @@ class SentimentToMelodies:
         pause_durations: list[list[float]] = []
         for _ in range(n_melodies):
             pause_durations.append(pause_durations_single_melody)
-        articulations: list[articulations.Articulation] = self._sample_properties(
+        articulations: list[Optional[articulations.Articulation]] = self._sample_properties(
             self.ARTICULATIONS[sentiment], n_melodies
         )
         print("instruments", instruments)
