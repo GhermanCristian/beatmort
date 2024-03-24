@@ -176,7 +176,6 @@ class SentimentToMelodies:
         ],
         Sentiment.TRUST: [
             instrument.AcousticBass,
-            instrument.Alto,
             instrument.Baritone,
             instrument.Celesta,
             instrument.Glockenspiel,
