@@ -7,6 +7,8 @@ from music_creator.sentiment_to_melodies import MelodyInfo
 
 
 class MusicCreator:
+    Sound = note.Note | chord.Chord
+
     def __init__(
         self,
         model: Model,
@@ -21,9 +23,7 @@ class MusicCreator:
         self._vocab_size = vocab_size
         self._reverse_index = reverse_index
 
-    def _create_final_note(
-        self, melody: list[note.Note | chord.Chord], offset: float
-    ) -> note.Note | chord.Chord:
+    def _create_final_note(self, melody: list[Sound], offset: float) -> Sound:
         final_note_index = -1
         while isinstance(melody[final_note_index], note.Rest):
             final_note_index -= 1
@@ -33,7 +33,7 @@ class MusicCreator:
         final_note.volume.velocity = 127.0
         return final_note
 
-    def _create_notes_and_chords(self, measure: list[str], melody_info: MelodyInfo):
+    def _create_notes_and_chords(self, measure: list[str], melody_info: MelodyInfo) -> list[Sound]:
         melody = []
         offset: float = melody_info.offset
         durations: list[duration.Duration] = [
@@ -74,9 +74,9 @@ class MusicCreator:
         melody.append(self._create_final_note(melody, offset))
         return melody
 
-    def _measure_generator(self, n_bars: int):
+    def _measure_generator(self, n_bars: int) -> list[str]:
         seed = self._x_seed[np.random.randint(0, len(self._x_seed) - 1)][:]
-        measure = []
+        measure: list[str] = []
         while len(measure) < n_bars:
             seed = seed.reshape(1, self._feature_length, 1)
             prediction = self._model.predict(seed, verbose=0)[0]
@@ -93,7 +93,7 @@ class MusicCreator:
 
         return measure
 
-    def _melody_generator(self, song_length: int, melody_info: MelodyInfo):
+    def _melody_generator(self, song_length: int, melody_info: MelodyInfo) -> list[str]:
         bar_duration: float = sum(melody_info.note_durations) + sum(melody_info.pause_durations)
         assert (
             song_length >= bar_duration * melody_info.n_bars

@@ -10,16 +10,16 @@ class MelodyInfo:
     instrument: instrument.Instrument
     n_bars: int  # measure = multiple bars; bar = 8 notes/chords
     note_durations: list[float]
+    pause_durations: list[float]
     offset: float
     octave_offset: int
     key: str
     vol: float
-    pause_durations: list[float]
     articulation: Optional[articulations.Articulation]
 
 
 class SentimentToMelodies:
-    INSTRUMENTS = {
+    INSTRUMENTS: dict[Sentiment, list[Type[instrument.Instrument]]] = {
         Sentiment.JOY: [
             instrument.UnpitchedPercussion,
             instrument.Alto,  # mai strica filmu
@@ -189,7 +189,7 @@ class SentimentToMelodies:
         ],
     }
 
-    N_BARS = {
+    N_BARS: dict[Sentiment, list[int]] = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
         Sentiment.ANGER: [1, 2],
@@ -201,7 +201,7 @@ class SentimentToMelodies:
         Sentiment.TRUST: [1, 2, 4],
     }
 
-    DURATIONS = {
+    DURATIONS: dict[Sentiment, list[float]] = {
         Sentiment.JOY: [0.125, 0.25, 0.5],
         Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
         Sentiment.ANGER: [0.125, 0.25],
@@ -213,7 +213,7 @@ class SentimentToMelodies:
         Sentiment.TRUST: [0.75, 1, 1.5, 1.75],
     }
 
-    OCTAVE_OFFSETS = {
+    OCTAVE_OFFSETS: dict[Sentiment, list[int]] = {
         Sentiment.JOY: [1, 2],
         Sentiment.FEAR: [-3, -2],
         Sentiment.ANGER: [-2, -1, -2],
@@ -225,7 +225,7 @@ class SentimentToMelodies:
         Sentiment.TRUST: [1, 2],
     }
 
-    KEYS = {
+    KEYS: dict[Sentiment, list[str]] = {
         Sentiment.JOY: ["C", "G"],
         Sentiment.FEAR: ["f", "b-"],
         Sentiment.ANGER: ["d", "e", "e"],
@@ -238,7 +238,7 @@ class SentimentToMelodies:
     }
 
     # TODO - look into tremolo vs vibrato
-    PAUSE_DURATIONS = {
+    PAUSE_DURATIONS: dict[Sentiment, list[float]] = {
         Sentiment.JOY: [0, 0.125, 0.25],
         Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
         Sentiment.ANGER: [0, 0.125, 0.25, 0.5],
@@ -250,7 +250,7 @@ class SentimentToMelodies:
         Sentiment.TRUST: [0.125, 0.25, 0.5],
     }
 
-    ARTICULATIONS = {
+    ARTICULATIONS: dict[Sentiment, list[Optional[Type[articulations.Articulation]]]] = {
         Sentiment.JOY: [articulations.Staccatissimo],
         Sentiment.FEAR: [articulations.DetachedLegato],
         Sentiment.ANGER: [articulations.Accent, articulations.StrongAccent],
@@ -262,7 +262,7 @@ class SentimentToMelodies:
         Sentiment.TRUST: [articulations.Unstress],
     }
 
-    N_MELODIES = {
+    N_MELODIES: dict[Sentiment, list[int]] = {
         Sentiment.JOY: [1, 2],
         Sentiment.FEAR: [2],
         Sentiment.ANGER: [2, 3],
@@ -295,6 +295,7 @@ class SentimentToMelodies:
             self.INSTRUMENTS[sentiment], n_melodies
         )
         n_bars: list[int] = self._sample_properties(self.N_BARS[sentiment], n_melodies)
+
         durations_single_melody: list[float] = self._sample_properties(
             self.DURATIONS[sentiment], 8, durations=True
         )
@@ -302,27 +303,29 @@ class SentimentToMelodies:
         durations: list[list[float]] = []
         for _ in range(n_melodies):
             durations.append(durations_single_melody)
-        octave_offsets: list[float] = self._sample_properties(
-            self.OCTAVE_OFFSETS[sentiment], n_melodies
-        )
-        song_keys: list[str] = self._sample_properties(
-            self.KEYS[sentiment], n_melodies, identical=True
-        )
+
         pause_durations_single_melody: list[float] = self._sample_properties(
             self.PAUSE_DURATIONS[sentiment], 8, durations=True
         )
         pause_durations: list[list[float]] = []
         for _ in range(n_melodies):
             pause_durations.append(pause_durations_single_melody)
+
+        octave_offsets: list[float] = self._sample_properties(
+            self.OCTAVE_OFFSETS[sentiment], n_melodies
+        )
+        song_keys: list[str] = self._sample_properties(
+            self.KEYS[sentiment], n_melodies, identical=True
+        )
         articulation_types: list[Optional[Type[articulations.Articulation]]] = (
             self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
         )
         print("instrument_types", instrument_types)
         print("n bars", n_bars)
         print("durations", durations)
+        print("pause_durations", pause_durations)
         print("octave_offsets", octave_offsets)
         print("song_keys", song_keys)
-        print("pause_durations", pause_durations)
         print("articulations", articulation_types)
         melodies = [
             MelodyInfo(
