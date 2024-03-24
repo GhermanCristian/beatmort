@@ -21,7 +21,19 @@ class MusicCreator:
         self._vocab_size = vocab_size
         self._reverse_index = reverse_index
 
-    def _chords_n_notes(self, measure: list[str], melody_info: MelodyInfo):
+    def _create_final_note(
+        self, melody: list[note.Note | chord.Chord], offset: float
+    ) -> note.Note | chord.Chord:
+        final_note_index = -1
+        while isinstance(melody[final_note_index], note.Rest):
+            final_note_index -= 1
+        final_note = copy.deepcopy(melody[final_note_index])
+        final_note.duration = duration.Duration(4)
+        final_note.offset = offset
+        final_note.volume.velocity = 127.0
+        return final_note
+
+    def _create_notes_and_chords(self, measure: list[str], melody_info: MelodyInfo):
         melody = []
         offset: float = melody_info.offset
         durations: list[duration.Duration] = [
@@ -59,16 +71,7 @@ class MusicCreator:
                     p.offset = offset
                     melody.append(p)
                 offset += melody_info.note_durations[s_index] + melody_info.pause_durations[s_index]
-
-        final_note_index = -1
-        while isinstance(melody[final_note_index], note.Rest):
-            final_note_index -= 1
-        final_note = copy.deepcopy(melody[final_note_index])
-        final_note.duration = duration.Duration(4)
-        final_note.offset = offset
-        final_note.volume.velocity = 127.0
-        melody.append(final_note)
-
+        melody.append(self._create_final_note(melody, offset))
         return melody
 
     def _measure_generator(self, n_bars: int):
@@ -107,7 +110,7 @@ class MusicCreator:
         attempts = 5
         while attempts:
             notes = self._melody_generator(song_length, melody_info)
-            melody = self._chords_n_notes(notes, melody_info)
+            melody = self._create_notes_and_chords(notes, melody_info)
             melody_midi = stream.Part(melody)
             k: key.Key = melody_midi.analyze("key")
             if k.mode == "major" and major_target_key or k.mode == "minor" and not major_target_key:
@@ -115,20 +118,25 @@ class MusicCreator:
             attempts -= 1
         return melody_midi
 
-    def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
-        melody_midi = self._compose_melody_correct_mode(song_length, melody_info)
-        melody_midi.insert(0, melody_info.instrument)
-
+    def _transpose_melody(self, melody_midi: stream.Part, melody_info: MelodyInfo) -> stream.Part:
         # TODO - scris la partea teoretica despre toate astea
-        # TODO - scris la partea teoretica despre articulations
-        # TODO - mentionat in partea teoretica despre incercarea de a avea durate diferite in fiecare bar
-        # TODO - scris la teoretic despre faptul ca e greu de scos corelatii bune cu sentimentele, pt ca seedul e neutru
         k: key.Key = melody_midi.analyze("key")
         print(f"Initial key = {k}; target = {melody_info.key}")
         i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
         melody_midi.transpose(i, inPlace=True)
         print(f"Transposed to {melody_midi.analyze('key')}")
         melody_midi.transpose(12 * melody_info.octave_offset, inPlace=True)
+
+        return melody_midi
+
+    def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
+        melody_midi = self._compose_melody_correct_mode(song_length, melody_info)
+        melody_midi.insert(0, melody_info.instrument)
+
+        # TODO - scris la partea teoretica despre articulations
+        # TODO - mentionat in partea teoretica despre incercarea de a avea durate diferite in fiecare bar
+        # TODO - scris la teoretic despre faptul ca e greu de scos corelatii bune cu sentimentele, pt ca seedul e neutru
+        melody_midi = self._transpose_melody(melody_midi, melody_info)
         return melody_midi
 
     def run(self, song_length: int, melodies: list[MelodyInfo]) -> stream.Score:
