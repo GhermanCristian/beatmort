@@ -281,13 +281,17 @@ class SentimentToMelodies:
     }
 
     def _sample_properties(
-        self, property_list: list, n_items: int, identical: bool = False
+        self,
+        property_list: list,
+        n_items: int,
+        identical: bool = False,
+        durations: bool = False,
     ) -> list:
         n_properties = len(property_list)
         if identical:
             return [random.choice(property_list)] * n_items
         samples = random.sample(property_list * (n_items // n_properties + 1), n_items)
-        if n_items == 8:  # TODO - take care of the durations case
+        if durations:
             return sorted(samples, reverse=True)
         return samples
 
@@ -299,7 +303,9 @@ class SentimentToMelodies:
         measure_lengths: list[int] = self._sample_properties(
             self.MEASURE_LENGTHS[sentiment], n_melodies
         )
-        durations_single_melody: list[float] = self._sample_properties(self.DURATIONS[sentiment], 8)
+        durations_single_melody: list[float] = self._sample_properties(
+            self.DURATIONS[sentiment], 8, durations=True
+        )
         durations: list[list[float]] = []
         for _ in range(n_melodies):
             durations.append(durations_single_melody)
@@ -310,7 +316,7 @@ class SentimentToMelodies:
             self.KEYS[sentiment], n_melodies, identical=True
         )
         pause_durations_single_melody: list[float] = self._sample_properties(
-            self.PAUSE_DURATIONS[sentiment], 8
+            self.PAUSE_DURATIONS[sentiment], 8, durations=True
         )
         pause_durations: list[list[float]] = []
         for _ in range(n_melodies):
