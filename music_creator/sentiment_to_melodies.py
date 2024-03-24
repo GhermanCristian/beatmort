@@ -8,7 +8,7 @@ from sentiment_detector.sentiment import Sentiment
 @dataclass
 class MelodyInfo:
     instrument: instrument.Instrument
-    n_bars: int
+    n_bars: int  # measure = multiple bars; bar = 8 notes/chords
     note_durations: list[float]
     offset: float
     octave_offset: int

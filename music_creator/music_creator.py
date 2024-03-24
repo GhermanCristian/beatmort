@@ -1,10 +1,7 @@
 import copy
-from pathlib import Path
-from typing import Optional
 from music21 import chord, note, stream, duration, pitch, interval, key
 import numpy as np
 from tensorflow.keras.models import Model
-import subprocess
 
 from music_creator.sentiment_to_melodies import MelodyInfo
 
@@ -134,47 +131,9 @@ class MusicCreator:
         melody_midi.transpose(12 * melody_info.octave_offset, inPlace=True)
         return melody_midi
 
-    def _compose_entire_song(self, song_length: int, melodies: list[MelodyInfo]) -> stream.Score:
+    def run(self, song_length: int, melodies: list[MelodyInfo]) -> stream.Score:
         main_score = stream.Score()
         for melody_info in melodies:
             melody_midi = self._compose_melody(song_length, melody_info)
             main_score.insert(0, melody_midi)
         return main_score
-
-    def run(
-        self,
-        melodies: list[MelodyInfo],
-        song_length: int,
-        output_name: str,
-        musescore_exe: Optional[Path],
-        fluidsynth_exe: Optional[Path],
-        soundfont: Optional[Path],
-    ) -> None:
-        # measure = multiple bars; bar = 8 notes/chords
-        # TODO - pauzele afecteaza durata totala a piesei
-        main_score = self._compose_entire_song(song_length, melodies)
-        output_name = f"Outputs/{output_name}"
-        main_score.write("midi", f"{output_name}.mid")
-        # TODO - separate module for these outputs, maybe for the midi write part as well
-        if musescore_exe:
-            try:
-                xml_path = main_score.write("musicxml", f"{output_name}.xml")
-                subprocess.run([str(musescore_exe), str(xml_path), "-o", f"{output_name}.png"])
-            except:
-                print("Could not write score")
-        if fluidsynth_exe and soundfont:
-            try:
-                subprocess.run(
-                    [
-                        str(fluidsynth_exe),
-                        str(soundfont),
-                        f"{output_name}.mid",
-                        "-F",
-                        f"{output_name}.wav",
-                        "-r",
-                        "44100",
-                        "-q",
-                    ]
-                )
-            except:
-                print("Could not convert to audio")
