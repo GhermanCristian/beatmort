@@ -1,197 +1,196 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Type
 from music21 import instrument, articulations
 import random
 from sentiment_detector.sentiment import Sentiment
 
 
-# TODO - think about lazy instantiation: don't instantiate the elements in the list, but rather when creating melodyinfo
 @dataclass
 class MelodyInfo:
-    instr: instrument.Instrument
-    measure_length: int
-    dur: list[float]
+    instrument: instrument.Instrument
+    n_bars: int
+    note_durations: list[float]
     offset: float
     octave_offset: int
     key: str
     vol: float
-    pause_duration: list[float]
+    pause_durations: list[float]
     articulation: Optional[articulations.Articulation]
 
 
 class SentimentToMelodies:
     INSTRUMENTS = {
         Sentiment.JOY: [
-            instrument.UnpitchedPercussion(),
-            instrument.Alto(),  # mai strica filmu
-            instrument.Marimba(),
-            instrument.Piano(),
-            instrument.Recorder(),  # mai strica filmu
-            instrument.Soprano(),
-            instrument.SteelDrum(),
-            instrument.Vibraphone(),
-            instrument.Xylophone(),
+            instrument.UnpitchedPercussion,
+            instrument.Alto,  # mai strica filmu
+            instrument.Marimba,
+            instrument.Piano,
+            instrument.Recorder,  # mai strica filmu
+            instrument.Soprano,
+            instrument.SteelDrum,
+            instrument.Vibraphone,
+            instrument.Xylophone,
         ],
         Sentiment.FEAR: [
-            instrument.AcousticGuitar(),
-            instrument.BrassInstrument(),
-            instrument.Choir(),
-            instrument.ChurchBells(),
-            instrument.Dulcimer(),
-            instrument.ElectricBass(),
-            instrument.MezzoSoprano(),  # ?
-            instrument.Organ(),
-            instrument.Piano(),
-            instrument.PipeOrgan(),
-            instrument.Sampler(),
-            instrument.Shakuhachi(),  # nu e foarte fear
-            instrument.Sitar(),
-            instrument.StringInstrument(),
-            instrument.Timpani(),
-            instrument.TubularBells(),
-            instrument.Ukulele(),
+            instrument.AcousticGuitar,
+            instrument.BrassInstrument,
+            instrument.Choir,
+            instrument.ChurchBells,
+            instrument.Dulcimer,
+            instrument.ElectricBass,
+            instrument.MezzoSoprano,  # ?
+            instrument.Organ,
+            instrument.Piano,
+            instrument.PipeOrgan,
+            instrument.Sampler,
+            instrument.Shakuhachi,  # nu e foarte fear
+            instrument.Sitar,
+            instrument.StringInstrument,
+            instrument.Timpani,
+            instrument.TubularBells,
+            instrument.Ukulele,
         ],
         Sentiment.ANGER: [
-            instrument.BrassInstrument(),  # ?
-            instrument.ElectricGuitar(),  # nu e foarte angry
-            instrument.Piano(),
-            instrument.Sampler(),
-            instrument.Timpani(),
+            instrument.BrassInstrument,  # ?
+            instrument.ElectricGuitar,  # nu e foarte angry
+            instrument.Piano,
+            instrument.Sampler,
+            instrument.Timpani,
         ],
         Sentiment.SADNESS: [
-            instrument.Celesta(),
-            instrument.Contrabass(),
-            instrument.Flute(),
-            instrument.Glockenspiel(),
-            instrument.Harp(),
-            instrument.Piano(),
-            instrument.StringInstrument(),  # asta e mai mult fear / anticipation
-            instrument.Violin(),
-            instrument.Violoncello(),  # e un pic cam agresiv
+            instrument.Celesta,
+            instrument.Contrabass,
+            instrument.Flute,
+            instrument.Glockenspiel,
+            instrument.Harp,
+            instrument.Piano,
+            instrument.StringInstrument,  # asta e mai mult fear / anticipation
+            instrument.Violin,
+            instrument.Violoncello,  # e un pic cam agresiv
         ],
         Sentiment.NEUTRAL: [
-            instrument.AcousticBass(),
-            instrument.AcousticGuitar(),
-            instrument.UnpitchedPercussion(),
-            instrument.Alto(),
-            instrument.Banjo(),
-            instrument.Baritone(),
-            instrument.Bass(),
-            instrument.BassClarinet(),
-            instrument.Bassoon(),
-            instrument.Celesta(),
-            instrument.ChurchBells(),
-            instrument.Clarinet(),
-            instrument.Clavichord(),
-            instrument.Contrabass(),
-            instrument.ElectricBass(),
-            instrument.ElectricGuitar(),
-            instrument.ElectricPiano(),
-            instrument.EnglishHorn(),
-            instrument.Flute(),
-            instrument.FretlessBass(),
-            instrument.Glockenspiel(),
-            instrument.Guitar(),
-            instrument.Harp(),
-            instrument.Horn(),
-            instrument.Kalimba(),
-            instrument.Lute(),
-            instrument.Marimba(),
-            instrument.Ocarina(),
-            instrument.PanFlute(),
-            instrument.Piano(),
-            instrument.Piccolo(),
-            instrument.Recorder(),
-            instrument.ReedOrgan(),
-            instrument.Shamisen(),
-            instrument.SteelDrum(),
-            instrument.Tenor(),
-            instrument.Vibraphone(),
-            instrument.Vocalist(),
-            instrument.Whistle(),
-            instrument.Xylophone(),
+            instrument.AcousticBass,
+            instrument.AcousticGuitar,
+            instrument.UnpitchedPercussion,
+            instrument.Alto,
+            instrument.Banjo,
+            instrument.Baritone,
+            instrument.Bass,
+            instrument.BassClarinet,
+            instrument.Bassoon,
+            instrument.Celesta,
+            instrument.ChurchBells,
+            instrument.Clarinet,
+            instrument.Clavichord,
+            instrument.Contrabass,
+            instrument.ElectricBass,
+            instrument.ElectricGuitar,
+            instrument.ElectricPiano,
+            instrument.EnglishHorn,
+            instrument.Flute,
+            instrument.FretlessBass,
+            instrument.Glockenspiel,
+            instrument.Guitar,
+            instrument.Harp,
+            instrument.Horn,
+            instrument.Kalimba,
+            instrument.Lute,
+            instrument.Marimba,
+            instrument.Ocarina,
+            instrument.PanFlute,
+            instrument.Piano,
+            instrument.Piccolo,
+            instrument.Recorder,
+            instrument.ReedOrgan,
+            instrument.Shamisen,
+            instrument.SteelDrum,
+            instrument.Tenor,
+            instrument.Vibraphone,
+            instrument.Vocalist,
+            instrument.Whistle,
+            instrument.Xylophone,
         ],
         Sentiment.DISGUST: [
-            instrument.Accordion(),
-            instrument.UnpitchedPercussion(),
-            instrument.AltoSaxophone(),
-            instrument.Bagpipes(),
-            instrument.Banjo(),
-            instrument.BaritoneSaxophone(),
-            instrument.BassClarinet(),
-            instrument.Bassoon(),
-            instrument.Contrabassoon(),
-            instrument.ElectricOrgan(),
-            instrument.Harmonica(),
-            instrument.Koto(),
-            instrument.Oboe(),
-            instrument.Shehnai(),
-            instrument.SopranoSaxophone(),
-            instrument.Trombone(),
+            instrument.Accordion,
+            instrument.UnpitchedPercussion,
+            instrument.AltoSaxophone,
+            instrument.Bagpipes,
+            instrument.Banjo,
+            instrument.BaritoneSaxophone,
+            instrument.BassClarinet,
+            instrument.Bassoon,
+            instrument.Contrabassoon,
+            instrument.ElectricOrgan,
+            instrument.Harmonica,
+            instrument.Koto,
+            instrument.Oboe,
+            instrument.Shehnai,
+            instrument.SopranoSaxophone,
+            instrument.Trombone,
         ],
         Sentiment.ANTICIPATION: [
-            instrument.Baritone(),
-            instrument.BrassInstrument(),
-            instrument.Choir(),
-            instrument.Dulcimer(),
-            instrument.ElectricBass(),
-            instrument.Horn(),
-            instrument.Mandolin(),
-            instrument.MezzoSoprano(),
-            instrument.Piano(),
-            instrument.Sitar(),
-            instrument.StringInstrument(),
-            instrument.Tenor(),
-            instrument.Timpani(),
-            instrument.TubularBells(),
-            instrument.Ukulele(),
-            instrument.Xylophone(),
+            instrument.Baritone,
+            instrument.BrassInstrument,
+            instrument.Choir,
+            instrument.Dulcimer,
+            instrument.ElectricBass,
+            instrument.Horn,
+            instrument.Mandolin,
+            instrument.MezzoSoprano,
+            instrument.Piano,
+            instrument.Sitar,
+            instrument.StringInstrument,
+            instrument.Tenor,
+            instrument.Timpani,
+            instrument.TubularBells,
+            instrument.Ukulele,
+            instrument.Xylophone,
         ],
         Sentiment.SURPRISE: [
-            instrument.Accordion(),
-            instrument.UnpitchedPercussion(),
-            instrument.AltoSaxophone(),
-            instrument.Banjo(),
-            instrument.BaritoneSaxophone(),
-            instrument.BassClarinet(),
-            instrument.Bassoon(),
-            instrument.BassTrombone(),
-            instrument.BrassInstrument(),
-            instrument.Choir(),
-            instrument.ChurchBells(),
-            instrument.Clarinet(),
-            instrument.Clavichord(),
-            instrument.Dulcimer(),
-            instrument.FretlessBass(),
-            instrument.Harmonica(),
-            instrument.Harpsichord(),
-            instrument.Koto(),
-            instrument.Shamisen(),
-            instrument.Soprano(),
-            instrument.SopranoSaxophone(),
-            instrument.Trombone(),  # un pic prea jos
-            instrument.Trumpet(),
-            instrument.Viola(),
-            instrument.Violin(),
-            instrument.Violoncello(),
+            instrument.Accordion,
+            instrument.UnpitchedPercussion,
+            instrument.AltoSaxophone,
+            instrument.Banjo,
+            instrument.BaritoneSaxophone,
+            instrument.BassClarinet,
+            instrument.Bassoon,
+            instrument.BassTrombone,
+            instrument.BrassInstrument,
+            instrument.Choir,
+            instrument.ChurchBells,
+            instrument.Clarinet,
+            instrument.Clavichord,
+            instrument.Dulcimer,
+            instrument.FretlessBass,
+            instrument.Harmonica,
+            instrument.Harpsichord,
+            instrument.Koto,
+            instrument.Shamisen,
+            instrument.Soprano,
+            instrument.SopranoSaxophone,
+            instrument.Trombone,  # un pic prea jos
+            instrument.Trumpet,
+            instrument.Viola,
+            instrument.Violin,
+            instrument.Violoncello,
         ],
         Sentiment.TRUST: [
-            instrument.AcousticBass(),
-            instrument.Alto(),
-            instrument.Baritone(),
-            instrument.Celesta(),
-            instrument.Glockenspiel(),
-            instrument.Guitar(),
-            instrument.Harp(),
-            instrument.Kalimba(),
-            instrument.Lute(),
-            instrument.Marimba(),
-            instrument.Vibraphone(),
-            instrument.Xylophone(),
+            instrument.AcousticBass,
+            instrument.Alto,
+            instrument.Baritone,
+            instrument.Celesta,
+            instrument.Glockenspiel,
+            instrument.Guitar,
+            instrument.Harp,
+            instrument.Kalimba,
+            instrument.Lute,
+            instrument.Marimba,
+            instrument.Vibraphone,
+            instrument.Xylophone,
         ],
     }
 
-    MEASURE_LENGTHS = {
+    N_BARS = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
         Sentiment.ANGER: [1, 2],
@@ -253,15 +252,15 @@ class SentimentToMelodies:
     }
 
     ARTICULATIONS = {
-        Sentiment.JOY: [articulations.Staccatissimo()],
-        Sentiment.FEAR: [articulations.DetachedLegato()],
-        Sentiment.ANGER: [articulations.Accent(), articulations.StrongAccent()],
-        Sentiment.SADNESS: [articulations.BreathMark(), articulations.Tenuto()],
+        Sentiment.JOY: [articulations.Staccatissimo],
+        Sentiment.FEAR: [articulations.DetachedLegato],
+        Sentiment.ANGER: [articulations.Accent, articulations.StrongAccent],
+        Sentiment.SADNESS: [articulations.BreathMark, articulations.Tenuto],
         Sentiment.NEUTRAL: [None],
-        Sentiment.DISGUST: [articulations.Tenuto()],
-        Sentiment.ANTICIPATION: [articulations.Staccato()],
-        Sentiment.SURPRISE: [articulations.Stress()],
-        Sentiment.TRUST: [articulations.Unstress()],
+        Sentiment.DISGUST: [articulations.Tenuto],
+        Sentiment.ANTICIPATION: [articulations.Staccato],
+        Sentiment.SURPRISE: [articulations.Stress],
+        Sentiment.TRUST: [articulations.Unstress],
     }
 
     N_MELODIES = {
@@ -293,12 +292,10 @@ class SentimentToMelodies:
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
         n_melodies: int = random.choice(self.N_MELODIES[sentiment])
-        instruments: list[instrument.Instrument] = self._sample_properties(
+        instrument_types: list[Type[instrument.Instrument]] = self._sample_properties(
             self.INSTRUMENTS[sentiment], n_melodies
         )
-        measure_lengths: list[int] = self._sample_properties(
-            self.MEASURE_LENGTHS[sentiment], n_melodies
-        )
+        n_bars: list[int] = self._sample_properties(self.N_BARS[sentiment], n_melodies)
         durations_single_melody: list[float] = self._sample_properties(
             self.DURATIONS[sentiment], 8, durations=True
         )
@@ -318,27 +315,27 @@ class SentimentToMelodies:
         pause_durations: list[list[float]] = []
         for _ in range(n_melodies):
             pause_durations.append(pause_durations_single_melody)
-        articulations: list[Optional[articulations.Articulation]] = self._sample_properties(
-            self.ARTICULATIONS[sentiment], n_melodies
+        articulation_types: list[Optional[Type[articulations.Articulation]]] = (
+            self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
         )
-        print("instruments", instruments)
-        print("measure_lengths", measure_lengths)
+        print("instrument_types", instrument_types)
+        print("n bars", n_bars)
         print("durations", durations)
         print("octave_offsets", octave_offsets)
         print("song_keys", song_keys)
         print("pause_durations", pause_durations)
-        print("articulations", articulations)
+        print("articulations", articulation_types)
         melodies = [
             MelodyInfo(
-                instruments[i],
-                measure_lengths[i],
+                instrument_types[i](),
+                n_bars[i],
                 durations[i],
                 (0.0625 + (sum(durations[0]) + sum(pause_durations[0]))) * i,
                 octave_offsets[i],
                 song_keys[i],
                 1 - i * 0.25,
                 pause_durations[i],
-                articulations[i],
+                articulation_types[i]() if articulation_types[i] else None,
             )
             for i in range(n_melodies)
         ]

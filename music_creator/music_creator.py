@@ -27,9 +27,11 @@ class MusicCreator:
     def _chords_n_notes(self, measure: list[str], melody_info: MelodyInfo):
         melody = []
         offset: float = melody_info.offset
-        durations: list[duration.Duration] = [duration.Duration(dur) for dur in melody_info.dur]
+        durations: list[duration.Duration] = [
+            duration.Duration(dur) for dur in melody_info.note_durations
+        ]
         pause_durations: list[duration.Duration] = [
-            duration.Duration(pause_duration) for pause_duration in melody_info.pause_duration
+            duration.Duration(pause_duration) for pause_duration in melody_info.pause_durations
         ]
 
         for bar in measure:
@@ -55,11 +57,11 @@ class MusicCreator:
                         note_snip.articulations.append(melody_info.articulation)
                     note_snip.offset = offset
                     melody.append(note_snip)
-                if melody_info.pause_duration[s_index]:
+                if melody_info.pause_durations[s_index]:
                     p = note.Rest(duration=pause_durations[s_index])
                     p.offset = offset
                     melody.append(p)
-                offset += melody_info.dur[s_index] + melody_info.pause_duration[s_index]
+                offset += melody_info.note_durations[s_index] + melody_info.pause_durations[s_index]
 
         final_note_index = -1
         while isinstance(melody[final_note_index], note.Rest):
@@ -72,10 +74,10 @@ class MusicCreator:
 
         return melody
 
-    def _measure_generator(self, measure_length: int):
+    def _measure_generator(self, n_bars: int):
         seed = self._x_seed[np.random.randint(0, len(self._x_seed) - 1)][:]
         measure = []
-        while len(measure) < measure_length:
+        while len(measure) < n_bars:
             seed = seed.reshape(1, self._feature_length, 1)
             prediction = self._model.predict(seed, verbose=0)[0]
             prediction = np.log(prediction) / 0.25
@@ -92,12 +94,12 @@ class MusicCreator:
         return measure
 
     def _melody_generator(self, song_length: int, melody_info: MelodyInfo):
-        bar_duration: float = sum(melody_info.dur) + sum(melody_info.pause_duration)
+        bar_duration: float = sum(melody_info.note_durations) + sum(melody_info.pause_durations)
         assert (
-            song_length >= bar_duration * melody_info.measure_length
+            song_length >= bar_duration * melody_info.n_bars
         ), "Song is too short for the given note durations and measure lengths"
-        measure = self._measure_generator(melody_info.measure_length)
-        n_measures_in_song = int(song_length // bar_duration // melody_info.measure_length)
+        measure = self._measure_generator(melody_info.n_bars)
+        n_measures_in_song = int(song_length // bar_duration // melody_info.n_bars)
         music = measure * n_measures_in_song
         return music
 
@@ -118,11 +120,12 @@ class MusicCreator:
 
     def _compose_melody(self, song_length: int, melody_info: MelodyInfo) -> stream.Part:
         melody_midi = self._compose_melody_correct_mode(song_length, melody_info)
-        melody_midi.insert(0, melody_info.instr)
+        melody_midi.insert(0, melody_info.instrument)
 
         # TODO - scris la partea teoretica despre toate astea
         # TODO - scris la partea teoretica despre articulations
         # TODO - mentionat in partea teoretica despre incercarea de a avea durate diferite in fiecare bar
+        # TODO - scris la teoretic despre faptul ca e greu de scos corelatii bune cu sentimentele, pt ca seedul e neutru
         k: key.Key = melody_midi.analyze("key")
         print(f"Initial key = {k}; target = {melody_info.key}")
         i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
