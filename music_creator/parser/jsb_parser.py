@@ -4,7 +4,7 @@ from pathlib import Path
 from parser.dataset_parser import DatasetParser
 
 
-class JLBParser(DatasetParser):
+class JSBParser(DatasetParser):
     def _piano_key_to_midi(self, piano_key: int) -> int:
         return piano_key + 20
 
@@ -34,5 +34,5 @@ class JLBParser(DatasetParser):
     def run(self) -> None:
         for purpose in ["train", "test", "valid"]:
             self._convert_piano_key_folder_to_chords(
-                Path(f"Datasets\\JLB\\{purpose}"), f"jlb_{purpose}"
+                Path(f"Datasets\\JSB\\{purpose}"), f"jsb_{purpose}"
             )
