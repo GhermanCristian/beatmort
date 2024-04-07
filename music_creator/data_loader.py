@@ -25,11 +25,11 @@ class DataLoader:
             lines = f.readlines()
             for line in lines:
                 all_notes.extend(line.split())
-        bars = []
-        bar_size = 8
-        for i in range(0, len(all_notes), bar_size):
-            bars.append("/".join(all_notes[i : i + bar_size]))
-        return bars
+        groups = []
+        group_size = 8
+        for i in range(0, len(all_notes), group_size):
+            groups.append("/".join(all_notes[i : i + group_size]))
+        return groups
 
     def filter_notes(self, all_notes: list[str]) -> list[str]:
         count = {}

@@ -8,7 +8,7 @@ from sentiment_detector.sentiment import Sentiment
 @dataclass
 class MelodyInfo:
     instrument: instrument.Instrument
-    n_bars: int  # measure = multiple bars; bar = 8 notes/chords
+    n_groups: int
     note_durations: list[float]
     pause_durations: list[float]
     offset: float
@@ -189,7 +189,7 @@ class SentimentToMelodies:
         ],
     }
 
-    N_BARS: dict[Sentiment, list[int]] = {
+    N_GROUPS: dict[Sentiment, list[int]] = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
         Sentiment.ANGER: [1, 2],
@@ -294,7 +294,7 @@ class SentimentToMelodies:
         instrument_types: list[Type[instrument.Instrument]] = self._sample_properties(
             self.INSTRUMENTS[sentiment], n_melodies
         )
-        n_bars: list[int] = self._sample_properties(self.N_BARS[sentiment], n_melodies)
+        n_groups: list[int] = self._sample_properties(self.N_GROUPS[sentiment], n_melodies)
 
         durations_single_melody: list[float] = self._sample_properties(
             self.DURATIONS[sentiment], 8, durations=True
@@ -321,7 +321,7 @@ class SentimentToMelodies:
             self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
         )
         print("instrument_types", instrument_types)
-        print("n bars", n_bars)
+        print("n groups", n_groups)
         print("durations", durations)
         print("pause_durations", pause_durations)
         print("octave_offsets", octave_offsets)
@@ -330,13 +330,13 @@ class SentimentToMelodies:
         melodies = [
             MelodyInfo(
                 instrument_types[i](),
-                n_bars[i],
+                n_groups[i],
                 durations[i],
+                pause_durations[i],
                 (0.0625 + (sum(durations[0]) + sum(pause_durations[0]))) * i,
                 octave_offsets[i],
                 song_keys[i],
                 1 - i * 0.25,
-                pause_durations[i],
                 articulation_types[i]() if articulation_types[i] else None,
             )
             for i in range(n_melodies)

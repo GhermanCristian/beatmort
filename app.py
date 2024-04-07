@@ -4,6 +4,7 @@ from music_creator.model_creator import ModelCreator
 from music_creator.music_creator import MusicCreator
 from music_creator.sentiment_to_melodies import SentimentToMelodies
 from sentiment_detector.sentiment import Sentiment
+from music_creator.song_saver import SongSaver
 
 
 def detect_sentiment() -> Sentiment:
