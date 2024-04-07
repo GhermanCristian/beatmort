@@ -38,7 +38,6 @@ class SentimentToMelodies:
             instrument.ChurchBells,
             instrument.Dulcimer,
             instrument.ElectricBass,
-            instrument.MezzoSoprano,  # ?
             instrument.Organ,
             instrument.Piano,
             instrument.PipeOrgan,
@@ -129,7 +128,6 @@ class SentimentToMelodies:
             instrument.Trombone,
         ],
         Sentiment.ANTICIPATION: [
-            instrument.Baritone,
             instrument.BrassInstrument,
             instrument.Choir,
             instrument.Dulcimer,
@@ -138,13 +136,13 @@ class SentimentToMelodies:
             instrument.Mandolin,
             instrument.MezzoSoprano,
             instrument.Piano,
-            instrument.Sitar,
+            instrument.Sitar, # ?
             instrument.StringInstrument,
             instrument.Tenor,
             instrument.Timpani,
             instrument.TubularBells,
             instrument.Ukulele,
-            instrument.Xylophone,
+            instrument.Xylophone, # ?
         ],
         Sentiment.SURPRISE: [
             instrument.Accordion,
@@ -227,22 +225,22 @@ class SentimentToMelodies:
 
     KEYS: dict[Sentiment, list[str]] = {
         Sentiment.JOY: ["C", "G"],
-        Sentiment.FEAR: ["f", "b-"],
-        Sentiment.ANGER: ["d", "e", "e"],
-        Sentiment.SADNESS: ["a", "e-"],
-        Sentiment.NEUTRAL: ["C", "a"],
-        Sentiment.DISGUST: ["f", "b-"],
-        Sentiment.ANTICIPATION: ["E", "D", "f#"],
-        Sentiment.SURPRISE: ["C", "G", "d"],
-        Sentiment.TRUST: ["D", "A"],
+        Sentiment.FEAR: ["f#"],
+        Sentiment.ANGER: ["d", "e"],
+        Sentiment.SADNESS: ["c", "f", "a"],
+        Sentiment.NEUTRAL: ["D", "F"],
+        Sentiment.DISGUST: ["c#", "g#", "b"],
+        Sentiment.ANTICIPATION: ["E"],
+        Sentiment.SURPRISE: ["C#", "F#"],
+        Sentiment.TRUST: ["B"],
     }
 
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS: dict[Sentiment, list[float]] = {
         Sentiment.JOY: [0, 0.125, 0.25],
-        Sentiment.FEAR: [1.25, 1.5, 1.75, 2],
+        Sentiment.FEAR: [1, 1.25, 1.5, 1.75],
         Sentiment.ANGER: [0, 0.125, 0.25, 0.5],
-        Sentiment.SADNESS: [1.25, 1.5, 1.75],
+        Sentiment.SADNESS: [1, 1.25, 1.5],
         Sentiment.NEUTRAL: [0.25, 0.5],
         Sentiment.DISGUST: [0, 0.125, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [0, 0.125, 0.25, 0.5],
