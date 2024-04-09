@@ -8,6 +8,7 @@ from sentiment import Sentiment
 
 class SentimentDetector:
     CORPORA_DIR = "Corpora"
+    NEUTRAL_THRESHOLD = 0.3
 
     def __init__(self) -> None:
         nltk.download("wordnet", download_dir=self.CORPORA_DIR)
@@ -35,13 +36,15 @@ class SentimentDetector:
     def get_closest_sentiment(self, word: str) -> Sentiment:
         word_synset = self._get_synset(word)
         scores = {
-            s: self._similarity_score(word_synset, wn.synset(f"{s.value}.n.01")) for s in Sentiment
+            s: self._similarity_score(word_synset, wn.synset(f"{s.value}.n.01")) for s in Sentiment if s != Sentiment.NEUTRAL
         }
-        # TODO - remove neutral, select it if no value is > threshold || too many values close to the max one
         for k, v in scores.items():
             print(k, v)
+        # TODO - select neutral if values are very close to the max
+        if max(scores.values()) < self.NEUTRAL_THRESHOLD:
+            return Sentiment.NEUTRAL
         return max(scores, key=lambda k: scores[k])
 
 
-w = "football"
+w = "cat"
 print(f"Closest sentiment to '{w}' is {SentimentDetector().get_closest_sentiment(w)}")
