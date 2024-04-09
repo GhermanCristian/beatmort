@@ -33,18 +33,31 @@ class SentimentDetector:
             + s1.lin_similarity(s2, self._brown_ic)
         ) / 3.0
 
-    def get_closest_sentiment(self, word: str) -> Sentiment:
-        word_synset = self._get_synset(word)
-        scores = {
-            s: self._similarity_score(word_synset, wn.synset(f"{s.value}.n.01")) for s in Sentiment if s != Sentiment.NEUTRAL
+    def get_closest_sentiment(self, words: list[str]) -> Sentiment:
+        scores_list: list[dict[Sentiment, float]] = []
+        for word in words:
+            word_synset = self._get_synset(word)
+            scores = {
+                s: self._similarity_score(word_synset, wn.synset(f"{s.value}.n.01"))
+                for s in Sentiment
+                if s != Sentiment.NEUTRAL
+            }
+            scores_list.append(scores)
+            for k, v in scores.items():
+                print(k, v)
+
+        overall_scores = {
+            s: sum(d[s] for d in scores_list) / len(scores_list)
+            for s in Sentiment
+            if s != Sentiment.NEUTRAL
         }
-        for k, v in scores.items():
+        for k, v in overall_scores.items():
             print(k, v)
         # TODO - select neutral if values are very close to the max
-        if max(scores.values()) < self.NEUTRAL_THRESHOLD:
+        if max(overall_scores.values()) < self.NEUTRAL_THRESHOLD:
             return Sentiment.NEUTRAL
-        return max(scores, key=lambda k: scores[k])
+        return max(overall_scores, key=lambda k: overall_scores[k])
 
 
-w = "cat"
-print(f"Closest sentiment to '{w}' is {SentimentDetector().get_closest_sentiment(w)}")
+words = ["happiness", "satisfaction"]
+print(f"Closest sentiment to '{words}' is {SentimentDetector().get_closest_sentiment(words)}")
