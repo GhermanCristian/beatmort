@@ -204,4 +204,7 @@ Models/
 # FluidSynth and SoundFont
 FluidSynth/
 
+# Corpora for sentiment detection and lyric generation
+Corpora/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
