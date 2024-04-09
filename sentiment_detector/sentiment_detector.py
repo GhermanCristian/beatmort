@@ -1,5 +1,6 @@
 from nltk.corpus import wordnet as wn
 from nltk.corpus import wordnet_ic
+from nltk.corpus.reader import Synset
 import nltk
 
 from sentiment import Sentiment
@@ -13,15 +14,15 @@ class SentimentDetector:
         nltk.data.path.append(self.CORPORA_DIR)
         self._brown_ic = wordnet_ic.ic("ic-brown.dat")
 
-    def _get_synset(self, word: str):
+    def _get_synset(self, word: str) -> Synset:
         try:
             synset = wn.synsets(word)[0]
             # TODO - force everything to be noun ? or find adj/verb similar to the sentiments
         except KeyError:
-            synset = wn.morphy(word)
+            synset = wn.synset(f"{wn.morphy(word, wn.NOUN)}.n.01")
         return synset
 
-    def _similarity_score(self, s1, s2) -> float:
+    def _similarity_score(self, s1: Synset, s2: Synset) -> float:
         return (
             s1.path_similarity(s2)
             # + s1.lch_similarity(s2) * 0.1  # TODO - find better coeff for all these
