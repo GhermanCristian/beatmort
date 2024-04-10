@@ -1,7 +1,9 @@
+import re
 from nltk.corpus import wordnet as wn
-from nltk.corpus import wordnet_ic
+from nltk.corpus import wordnet_ic, stopwords
 from nltk.corpus.reader import Synset
 import nltk
+from typing import Optional
 
 from sentiment import Sentiment
 
@@ -14,13 +16,16 @@ class SentimentDetector:
         nltk.download("wordnet", download_dir=self.CORPORA_DIR)
         nltk.data.path.append(self.CORPORA_DIR)
         self._brown_ic = wordnet_ic.ic("ic-brown.dat")
+        self._stopwords = stopwords.words("english")
 
-    def _get_synset(self, word: str) -> Synset:
+    def _get_synset(self, word: str) -> Optional[Synset]:
         try:
-            synset = wn.synsets(word)[0]
+            synset = wn.synsets(word, pos=wn.NOUN)[0]
             # TODO - force everything to be noun ? or find adj/verb similar to the sentiments
         except KeyError:
             synset = wn.synset(f"{wn.morphy(word, wn.NOUN)}.n.01")
+        except IndexError:
+            return None
         return synset
 
     def _similarity_score(self, s1: Synset, s2: Synset) -> float:
@@ -33,18 +38,23 @@ class SentimentDetector:
             + s1.lin_similarity(s2, self._brown_ic)
         ) / 3.0
 
+    def tokenize_prompt(self, prompt: str) -> list[str]:
+        prompt = re.sub(r"[!@#\$%\^&\*-_=\+,\.;\'\[\]\(\)\\|]", "", prompt)
+        words = [w for w in prompt.split() if w.isalpha() and w not in self._stopwords]
+        return words
+
     def get_closest_sentiment(self, words: list[str]) -> Sentiment:
         scores_list: list[dict[Sentiment, float]] = []
         for word in words:
             word_synset = self._get_synset(word)
+            if not word_synset:
+                continue
             scores = {
                 s: self._similarity_score(word_synset, wn.synset(f"{s.value}.n.01"))
                 for s in Sentiment
                 if s != Sentiment.NEUTRAL
             }
             scores_list.append(scores)
-            for k, v in scores.items():
-                print(k, v)
 
         overall_scores = {
             s: sum(d[s] for d in scores_list) / len(scores_list)
@@ -59,5 +69,7 @@ class SentimentDetector:
         return max(overall_scores, key=lambda k: overall_scores[k])
 
 
-words = ["happiness", "satisfaction"]
-print(f"Closest sentiment to '{words}' is {SentimentDetector().get_closest_sentiment(words)}")
+sentiment_detector = SentimentDetector()
+sentence = "happiness and satisfaction should not really give out fear, you know ?"
+words = sentiment_detector.tokenize_prompt(sentence)
+print(f"Closest sentiment to '{words}' is {sentiment_detector.get_closest_sentiment(words)}")
