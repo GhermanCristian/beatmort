@@ -13,7 +13,7 @@ class SentimentDetector:
     NEUTRAL_THRESHOLD = 0.3
 
     def __init__(self) -> None:
-        nltk.download("wordnet", download_dir=self.CORPORA_DIR)
+        nltk.download("wordnet", download_dir=self.CORPORA_DIR, quiet=True)
         nltk.data.path.append(self.CORPORA_DIR)
         self._brown_ic = wordnet_ic.ic("ic-brown.dat")
         self._stopwords = stopwords.words("english")
