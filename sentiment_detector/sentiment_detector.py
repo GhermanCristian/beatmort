@@ -116,15 +116,22 @@ class SentimentDetector:
         if sim >= MAX_VALUE:
             return 1
         return sim * MULTIPLIER
+
     def _similarity_score(self, s1: Synset, s2: Synset) -> float:
-        return (
-            s1.path_similarity(s2)
-            # + s1.lch_similarity(s2) * 0.1  # TODO - find better coeff for all these
-            + s1.wup_similarity(s2)
-            # + s1.res_similarity(s2, brown_ic) * 0.025
-            # + s1.jcn_similarity(s2, brown_ic) * 1.0
-            + s1.lin_similarity(s2, self._brown_ic)
-        ) / 3.0
+        sims = [
+            s1.path_similarity(s2),
+            self._compute_lch_similarity(s1, s2),
+            s1.wup_similarity(s2),
+        ]
+        if s1.pos() in (wn.NOUN, wn.VERB):
+            sims.extend(
+                [
+                    self._compute_res_similarity(s1, s2),
+                    self._compute_jcn_similarity(s1, s2),
+                    s1.lin_similarity(s2, self._brown_ic),
+                ]
+            )
+        return float(sum(sims) / len(sims))
 
     def tokenize_prompt(self, prompt: str) -> list[str]:
         prompt = re.sub(r"[!@#\$%\^&\*-_=\+,\.;\'\[\]\(\)\\|]", "", prompt)
