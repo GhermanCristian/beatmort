@@ -75,12 +75,22 @@ class SentimentDetector:
                 wn.VERB: "trust",
             },
         }
+
+    def _get_synset_for_pos(self, word: str, pos: str) -> Optional[Synset]:
+        try:
+            synset = wn.synsets(word, pos)[0]
         except KeyError:
-            synset = wn.synset(f"{wn.morphy(word, wn.NOUN)}.n.01")
+            synset = wn.synset(f"{wn.morphy(word, pos)}.{pos}.01")
         except IndexError:
             return None
         return synset
 
+    def _get_synset(self, word: str) -> Optional[Synset]:
+        for pos in [wn.ADJ_SAT, wn.ADJ, wn.ADV, wn.NOUN, wn.VERB]:
+            possible_synset = self._get_synset_for_pos(word, pos)
+            if possible_synset:
+                return possible_synset
+        return None
     def _similarity_score(self, s1: Synset, s2: Synset) -> float:
         return (
             s1.path_similarity(s2)
