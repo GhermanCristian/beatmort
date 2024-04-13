@@ -17,11 +17,64 @@ class SentimentDetector:
         nltk.data.path.append(self.CORPORA_DIR)
         self._brown_ic = wordnet_ic.ic("ic-brown.dat")
         self._stopwords = stopwords.words("english")
-
-    def _get_synset(self, word: str) -> Optional[Synset]:
-        try:
-            synset = wn.synsets(word, pos=wn.NOUN)[0]
-            # TODO - force everything to be noun ? or find adj/verb similar to the sentiments
+        self._sentiment_equivalents = {
+            Sentiment.ANGER: {
+                wn.ADJ: "angry",
+                wn.ADJ_SAT: "angered",
+                wn.ADV: "angrily",
+                wn.NOUN: "anger",
+                wn.VERB: "anger",
+            },
+            Sentiment.ANTICIPATION: {
+                wn.ADJ: "expected",
+                wn.ADJ_SAT: "anticipant",
+                wn.ADV: "expectantly",
+                wn.NOUN: "expectation",
+                wn.VERB: "expect",
+            },
+            Sentiment.DISGUST: {
+                wn.ADJ: "unpleasant",
+                wn.ADJ_SAT: "disgusting",
+                wn.ADV: "disgustedly",
+                wn.NOUN: "disgust",
+                wn.VERB: "disgust",
+            },
+            Sentiment.FEAR: {
+                wn.ADJ: "alarming",
+                wn.ADJ_SAT: "fearful",
+                wn.ADV: "fearfully",
+                wn.NOUN: "fear",
+                wn.VERB: "frighten",
+            },
+            Sentiment.JOY: {
+                wn.ADJ: "happy",
+                wn.ADJ_SAT: "delighted",
+                wn.ADV: "happily",
+                wn.NOUN: "happiness",
+                wn.VERB: "rejoice",
+            },
+            Sentiment.SADNESS: {
+                wn.ADJ: "sad",
+                wn.ADJ_SAT: "depressed",
+                wn.ADV: "sadly",
+                wn.NOUN: "sadness",
+                wn.VERB: "sadden",
+            },
+            Sentiment.SURPRISE: {
+                wn.ADJ: "surprised",
+                wn.ADJ_SAT: "startled",
+                wn.ADV: "surprisingly",
+                wn.NOUN: "surprise",
+                wn.VERB: "surprise",
+            },
+            Sentiment.TRUST: {
+                wn.ADJ: "peaceful",
+                wn.ADJ_SAT: "calm",
+                wn.ADV: "peacefully",
+                wn.NOUN: "trust",
+                wn.VERB: "trust",
+            },
+        }
         except KeyError:
             synset = wn.synset(f"{wn.morphy(word, wn.NOUN)}.n.01")
         except IndexError:
