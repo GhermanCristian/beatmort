@@ -107,6 +107,15 @@ class SentimentDetector:
         if sim >= MAX_VALUE:
             return 1
         return sim / MAX_VALUE
+
+    def _compute_jcn_similarity(self, s1: Synset, s2: Synset) -> float:
+        MAX_VALUE = 0.5
+        MULTIPLIER = 2.0
+
+        sim = s1.jcn_similarity(s2, self._brown_ic)
+        if sim >= MAX_VALUE:
+            return 1
+        return sim * MULTIPLIER
     def _similarity_score(self, s1: Synset, s2: Synset) -> float:
         return (
             s1.path_similarity(s2)
