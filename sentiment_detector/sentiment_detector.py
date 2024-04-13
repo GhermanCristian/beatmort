@@ -99,6 +99,14 @@ class SentimentDetector:
         if sim >= MAX_VALUE:
             return 1
         return sim / MAX_VALUE
+
+    def _compute_lch_similarity(self, s1: Synset, s2: Synset) -> float:
+        MAX_VALUE = 3.64
+
+        sim = s1.lch_similarity(s2)
+        if sim >= MAX_VALUE:
+            return 1
+        return sim / MAX_VALUE
     def _similarity_score(self, s1: Synset, s2: Synset) -> float:
         return (
             s1.path_similarity(s2)
