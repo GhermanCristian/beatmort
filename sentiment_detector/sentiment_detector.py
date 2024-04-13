@@ -91,6 +91,14 @@ class SentimentDetector:
             if possible_synset:
                 return possible_synset
         return None
+
+    def _compute_res_similarity(self, s1: Synset, s2: Synset) -> float:
+        MAX_VALUE = 8.0
+
+        sim = s1.res_similarity(s2, self._brown_ic)
+        if sim >= MAX_VALUE:
+            return 1
+        return sim / MAX_VALUE
     def _similarity_score(self, s1: Synset, s2: Synset) -> float:
         return (
             s1.path_similarity(s2)
