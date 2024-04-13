@@ -144,13 +144,20 @@ class SentimentDetector:
             word_synset = self._get_synset(word)
             if not word_synset:
                 continue
-            scores = {
-                s: self._similarity_score(word_synset, wn.synset(f"{s.value}.n.01"))
+
+            pos = word_synset.pos()
+            synsets_to_compare_against = {
+                s: wn.synset(f"{self._sentiment_equivalents[s][pos]}.{pos}.01")
                 for s in Sentiment
                 if s != Sentiment.NEUTRAL
             }
+            scores = {
+                s: self._similarity_score(word_synset, other_synset)
+                for s, other_synset in synsets_to_compare_against.items()
+            }
             scores_list.append(scores)
 
+        # TODO - ignore words if their values are smaller than some (other) threshold
         overall_scores = {
             s: sum(d[s] for d in scores_list) / len(scores_list)
             for s in Sentiment
