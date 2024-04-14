@@ -1,5 +1,6 @@
 from pathlib import Path
-from music_creator.data_loader import DataContainer, DataLoader
+from music_creator.data_loader import DataContainer as DataContainerMusic
+from music_creator.data_loader import DataLoader as DataLoaderMusic
 from music_creator.model_creator import ModelCreator as ModelCreatorMusic
 from music_creator.music_creator import MusicCreator
 from music_creator.sentiment_to_melodies import SentimentToMelodies
@@ -20,12 +21,12 @@ def create_music(sentiment: Sentiment) -> None:
     lim = 2
 
     dataset = Path("Datasets", "D1")
-    data_loader = DataLoader(feature_length, lim)
+    data_loader = DataLoaderMusic(feature_length, lim)
     all_notes = data_loader.get_notes_from_txt(str(dataset / "all_notes.txt"))
     filtered_notes = data_loader.filter_notes(all_notes)
     index, reverse_index = data_loader.create_indices(filtered_notes)
     vocab_size = len(index)
-    data_container: DataContainer = data_loader.run(filtered_notes, seed_size, index)
+    data_container: DataContainerMusic = data_loader.run(filtered_notes, seed_size, index)
     print("After data_container")
 
     n_notes = len(filtered_notes)
