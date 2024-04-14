@@ -16,22 +16,11 @@ def detect_sentiment(prompt: str) -> Sentiment:
     max_seq_len = 500
     batch_size = 256
 
-    class_names = [
-        "joy",
-        "fear",
-        "anger",
-        "sadness",
-        "neutral",
-        "surprise",
-        "disgust",
-        "anticipation",
-        "trust",
-    ]
-    num_classes = len(class_names)
+    num_classes = len(Sentiment)
 
     is_new_model = False  # TODO - this should be a class attr / function param
     if is_new_model:
-        data_loader = DataLoaderSentiment(class_names, max_seq_len)
+        data_loader = DataLoaderSentiment(max_seq_len)
         data_container, tokenizer = data_loader.run()
         model_creator = ModelCreatorSentiment(
             n_dims_embedding,
@@ -51,7 +40,7 @@ def detect_sentiment(prompt: str) -> Sentiment:
         tokenizer = DataLoaderSentiment.load_tokenizer()
         model = ModelCreatorSentiment.load_model(batch_size)
 
-    sentiment_detector = SentimentDetector(tokenizer, model, max_seq_len, class_names)
+    sentiment_detector = SentimentDetector(tokenizer, model, max_seq_len)
     sentiment: Sentiment = sentiment_detector.run(prompt)
     return sentiment
 
