@@ -1,6 +1,6 @@
 from pathlib import Path
 from music_creator.data_loader import DataContainer, DataLoader
-from music_creator.model_creator import ModelCreator
+from music_creator.model_creator import ModelCreator as ModelCreatorMusic
 from music_creator.music_creator import MusicCreator
 from music_creator.sentiment_to_melodies import SentimentToMelodies
 from sentiment_detector.sentiment import Sentiment
@@ -29,7 +29,7 @@ def create_music(sentiment: Sentiment) -> None:
     print("After data_container")
 
     n_notes = len(filtered_notes)
-    model_creator = ModelCreator(
+    model_creator = ModelCreatorMusic(
         n_notes,
         feature_length,
         validation_size,
