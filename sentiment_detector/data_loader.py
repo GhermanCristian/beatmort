@@ -8,6 +8,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.utils import to_categorical
 from dataclasses import dataclass
 
+from sentiment_detector.sentiment import Sentiment
+
 
 @dataclass
 class DataContainer:
@@ -20,8 +22,7 @@ class DataContainer:
 class DataLoader:
     TOKENIZER_PATH = "Tokenizers/tokenizer_sentiment.pkl"
 
-    def __init__(self, class_names: list[str], max_seq_len: int) -> None:
-        self._class_names = class_names
+    def __init__(self, max_seq_len: int) -> None:
         self._max_seq_len = max_seq_len
 
     def _load_csv_files(self) -> pd.DataFrame:
@@ -89,7 +90,7 @@ class DataLoader:
         x_train_pad = pad_sequences(sequence_train, maxlen=self._max_seq_len)
         x_test_pad = pad_sequences(sequence_test, maxlen=self._max_seq_len)
 
-        encoding = {sentiment: idx for idx, sentiment in enumerate(self._class_names)}
+        encoding = {sentiment: idx for idx, sentiment in enumerate(Sentiment.class_names())}
         y_train = to_categorical([encoding[x] for x in y_train])
         y_test = to_categorical([encoding[x] for x in y_test])
 
