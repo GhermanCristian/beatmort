@@ -4,12 +4,56 @@ from music_creator.data_loader import DataLoader as DataLoaderMusic
 from music_creator.model_creator import ModelCreator as ModelCreatorMusic
 from music_creator.music_creator import MusicCreator
 from music_creator.sentiment_to_melodies import SentimentToMelodies
+from sentiment_detector.data_loader import DataLoader as DataLoaderSentiment
+from sentiment_detector.model_creator import ModelCreator as ModelCreatorSentiment
 from sentiment_detector.sentiment import Sentiment
 from music_creator.song_saver import SongSaver
+from sentiment_detector.sentiment_detector import SentimentDetector
 
 
-def detect_sentiment() -> Sentiment:
-    return Sentiment.JOY
+def detect_sentiment(prompt: str) -> Sentiment:
+    n_dims_embedding = 300
+    max_seq_len = 500
+    batch_size = 256
+
+    class_names = [
+        "joy",
+        "fear",
+        "anger",
+        "sadness",
+        "neutral",
+        "surprise",
+        "disgust",
+        "anticipation",
+        "trust",
+    ]
+    num_classes = len(class_names)
+
+    is_new_model = False  # TODO - this should be a class attr / function param
+    if is_new_model:
+        data_loader = DataLoaderSentiment(class_names, max_seq_len)
+        data_container, tokenizer = data_loader.run()
+        model_creator = ModelCreatorSentiment(
+            n_dims_embedding,
+            max_seq_len,
+            num_classes,
+            tokenizer.word_index,
+            batch_size,
+            data_container,
+        )
+        model = model_creator.get_new_model()
+        train_history = model_creator.train_model(model, 50)
+        print(train_history.history)
+        model = model_creator.get_model(new_model=False)
+        eval_history = model_creator.evaluate_model(model)
+        print(eval_history)
+    else:
+        tokenizer = DataLoaderSentiment.load_tokenizer()
+        model = ModelCreatorSentiment.load_model(batch_size)
+
+    sentiment_detector = SentimentDetector(tokenizer, model, max_seq_len, class_names)
+    sentiment: Sentiment = sentiment_detector.run(prompt)
+    return sentiment
 
 
 def create_music(sentiment: Sentiment) -> None:
