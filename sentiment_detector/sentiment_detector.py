@@ -12,11 +12,11 @@ class SentimentDetector:
         self._max_seq_len = max_seq_len
 
     def run(self, prompt: str) -> Sentiment:
-        seq = self._tokenizer.texts_to_sequences(prompt)
+        seq = self._tokenizer.texts_to_sequences([prompt])
         padded = pad_sequences(seq, maxlen=self._max_seq_len)
 
         prediction = self._model.predict(padded)
 
         sentiment = Sentiment.class_names()[np.argmax(prediction)]
         print(f"Prompt = {prompt}; sentiment = {sentiment}")
-        return Sentiment[sentiment]
+        return Sentiment[sentiment.upper()]
