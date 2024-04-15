@@ -37,9 +37,9 @@ class ModelCreator:
     def _download_embedding_matrix(self) -> None:
         urllib.request.urlretrieve(
             f"https://dl.fbaipublicfiles.com/fasttext/vectors-english/{self.EMBEDDING_MATRIX_NAME}.zip",
-            f"{self.EMBEDDING_MATRIX_NAME}.zip",
+            f"{self.EMBEDDING_MATRIX_PATH}.zip",
         )
-        with zipfile.ZipFile(f"{self.EMBEDDING_MATRIX_NAME}.zip", "r") as zip_ref:
+        with zipfile.ZipFile(f"{self.EMBEDDING_MATRIX_PATH}.zip", "r") as zip_ref:
             zip_ref.extractall(self.EMBEDDINGS_DIR)
 
         Path(f"{self.EMBEDDING_MATRIX_PATH}.zip").unlink()
