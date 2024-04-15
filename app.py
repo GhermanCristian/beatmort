@@ -87,10 +87,10 @@ def create_music(sentiment: Sentiment) -> None:
         model, data_container.x_seed, feature_length, vocab_size, reverse_index
     )
     melodies = SentimentToMelodies().run(sentiment)
-    music_creator.run(
-        melodies,
-        64,
-        "test",
+    main_score = music_creator.run(128, melodies)
+    SongSaver.save_song_to_disk(
+        main_score,
+        "Outputs/test",
         Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe"),
         Path("FluidSynth\\fluidsynth.exe"),
         Path("FluidSynth\\GeneralUser GS v1.471.sf2"),
