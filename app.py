@@ -98,7 +98,8 @@ def create_music(sentiment: Sentiment) -> None:
 
 
 def run_app() -> None:
-    sentiment = detect_sentiment()
+    prompt = "i am really anxious about this"
+    sentiment = detect_sentiment(prompt)
     create_music(sentiment)
 
 
