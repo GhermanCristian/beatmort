@@ -207,4 +207,7 @@ FluidSynth/
 # Embeddings for sentiment detection
 embeddings/
 
+# Tokenizers for sentiment detection
+Tokenizers/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
