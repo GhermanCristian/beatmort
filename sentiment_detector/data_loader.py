@@ -56,8 +56,10 @@ class DataLoader:
         return data
 
     @staticmethod
-    def _clean_text(data):
-        data = re.sub(r"(#[\d\w\.]+)", "", data)
+    def _clean_text(data: str) -> list[str]:
+        data = re.sub(r"(#[\d\w\.]+)", '', data)
+        data = re.sub(r"(@[\d\w\.]+)", '', data)
+
         return data.split()
 
     def _get_new_tokenizer(self, all_sentences: list[str]) -> Tokenizer:
@@ -79,9 +81,9 @@ class DataLoader:
             data.Text, data.Emotion, test_size=0.25, random_state=42
         )
 
-        all_sentences, sentences_train, sentences_test = (
-            " ".join(self._clean_text(text)) for text in (data.Text, x_train, x_test)
-        )
+        all_sentences = [" ".join(self._clean_text(text)) for text in data.Text]
+        sentences_train = [" ".join(self._clean_text(text)) for text in x_train]
+        sentences_test = [" ".join(self._clean_text(text)) for text in x_test]
 
         tokenizer = self._get_new_tokenizer(all_sentences)
         sequence_train = tokenizer.texts_to_sequences(sentences_train)
