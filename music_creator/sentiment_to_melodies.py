@@ -33,7 +33,6 @@ class SentimentToMelodies:
         ],
         Sentiment.FEAR: [
             instrument.AcousticGuitar,
-            instrument.BrassInstrument,
             instrument.Choir,
             instrument.ChurchBells,
             instrument.Dulcimer,
@@ -238,9 +237,9 @@ class SentimentToMelodies:
     # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS: dict[Sentiment, list[float]] = {
         Sentiment.JOY: [0, 0.125, 0.25],
-        Sentiment.FEAR: [1, 1.25, 1.5, 1.75],
+        Sentiment.FEAR: [0.75, 1, 1.25, 1.5],
         Sentiment.ANGER: [0, 0.125, 0.25, 0.5],
-        Sentiment.SADNESS: [1, 1.25, 1.5],
+        Sentiment.SADNESS: [0.75, 1, 1.25],
         Sentiment.NEUTRAL: [0.25, 0.5],
         Sentiment.DISGUST: [0, 0.125, 0.25, 0.33, 0.5, 0.66, 1],
         Sentiment.ANTICIPATION: [0, 0.125, 0.25, 0.5],
