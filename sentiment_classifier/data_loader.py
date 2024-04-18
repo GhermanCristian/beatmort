@@ -8,7 +8,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.utils import to_categorical
 from dataclasses import dataclass
 
-from sentiment_detector.sentiment import Sentiment
+from sentiment_classifier.sentiment import Sentiment
 
 
 @dataclass
@@ -57,8 +57,8 @@ class DataLoader:
 
     @staticmethod
     def _clean_text(data: str) -> list[str]:
-        data = re.sub(r"(#[\d\w\.]+)", '', data)
-        data = re.sub(r"(@[\d\w\.]+)", '', data)
+        data = re.sub(r"(#[\d\w\.]+)", "", data)
+        data = re.sub(r"(@[\d\w\.]+)", "", data)
 
         return data.split()
 

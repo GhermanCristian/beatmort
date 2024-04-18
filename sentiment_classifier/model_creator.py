@@ -9,7 +9,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 import urllib.request
 import zipfile
 
-from sentiment_detector.data_loader import DataContainer
+from sentiment_classifier.data_loader import DataContainer
 
 
 class ModelCreator:

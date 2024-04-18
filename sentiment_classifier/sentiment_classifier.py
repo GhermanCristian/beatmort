@@ -1,11 +1,11 @@
 import numpy as np
-from sentiment_detector.sentiment import Sentiment
+from sentiment_classifier.sentiment import Sentiment
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.models import Model
 
 
-class SentimentDetector:
+class SentimentClassifier:
     CONFIDENCE_THRESHOLD = 0.4
 
     def __init__(self, tokenizer: Tokenizer, model: Model, max_seq_len: int) -> None:

@@ -4,14 +4,14 @@ from music_creator.data_loader import DataLoader as DataLoaderMusic
 from music_creator.model_creator import ModelCreator as ModelCreatorMusic
 from music_creator.music_creator import MusicCreator
 from music_creator.sentiment_to_melodies import SentimentToMelodies
-from sentiment_detector.data_loader import DataLoader as DataLoaderSentiment
-from sentiment_detector.model_creator import ModelCreator as ModelCreatorSentiment
-from sentiment_detector.sentiment import Sentiment
+from sentiment_classifier.data_loader import DataLoader as DataLoaderSentiment
+from sentiment_classifier.model_creator import ModelCreator as ModelCreatorSentiment
+from sentiment_classifier.sentiment import Sentiment
 from music_creator.song_saver import SongSaver
-from sentiment_detector.sentiment_detector import SentimentDetector
+from sentiment_classifier.sentiment_classifier import SentimentClassifier
 
 
-def detect_sentiment(prompt: str) -> Sentiment:
+def classify_sentiment(prompt: str) -> Sentiment:
     n_dims_embedding = 300
     max_seq_len = 500
     batch_size = 256
@@ -40,8 +40,8 @@ def detect_sentiment(prompt: str) -> Sentiment:
         tokenizer = DataLoaderSentiment.load_tokenizer()
         model = ModelCreatorSentiment.load_model(batch_size)
 
-    sentiment_detector = SentimentDetector(tokenizer, model, max_seq_len)
-    sentiment: Sentiment = sentiment_detector.run(prompt)
+    sentiment_classifier = SentimentClassifier(tokenizer, model, max_seq_len)
+    sentiment: Sentiment = sentiment_classifier.run(prompt)
     return sentiment
 
 
@@ -99,7 +99,7 @@ def create_music(sentiment: Sentiment) -> None:
 
 def run_app() -> None:
     prompt = "i am really anxious about this"
-    sentiment = detect_sentiment(prompt)
+    sentiment = classify_sentiment(prompt)
     create_music(sentiment)
 
 
