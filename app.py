@@ -1,14 +1,48 @@
 from pathlib import Path
-from music_creator.data_loader import DataContainer, DataLoader
-from music_creator.model_creator import ModelCreator
+from music_creator.data_loader import DataContainer as DataContainerMusic
+from music_creator.data_loader import DataLoader as DataLoaderMusic
+from music_creator.model_creator import ModelCreator as ModelCreatorMusic
 from music_creator.music_creator import MusicCreator
 from music_creator.sentiment_to_melodies import SentimentToMelodies
-from sentiment_detector.sentiment import Sentiment
+from sentiment_classifier.data_loader import DataLoader as DataLoaderSentiment
+from sentiment_classifier.model_creator import ModelCreator as ModelCreatorSentiment
+from sentiment_classifier.sentiment import Sentiment
 from music_creator.song_saver import SongSaver
+from sentiment_classifier.sentiment_classifier import SentimentClassifier
 
 
-def detect_sentiment() -> Sentiment:
-    return Sentiment.JOY
+def classify_sentiment(prompt: str) -> Sentiment:
+    n_dims_embedding = 300
+    max_seq_len = 500
+    batch_size = 256
+
+    num_classes = len(Sentiment)
+
+    is_new_model = False  # TODO - this should be a class attr / function param
+    if is_new_model:
+        data_loader = DataLoaderSentiment(max_seq_len)
+        data_container, tokenizer = data_loader.run()
+        model_creator = ModelCreatorSentiment(
+            n_dims_embedding,
+            max_seq_len,
+            num_classes,
+            tokenizer.word_index,
+            batch_size,
+            data_container,
+        )
+        model = model_creator.get_new_model()
+        train_history = model_creator.train_model(model, 50)
+        print(train_history.history)
+        model = model_creator.get_model(new_model=False)
+        eval_history = model_creator.evaluate_model(model)
+        print(eval_history)
+    else:
+        tokenizer = DataLoaderSentiment.load_tokenizer()
+        model = ModelCreatorSentiment.load_model(batch_size)
+
+    sentiment_classifier = SentimentClassifier(tokenizer, model, max_seq_len)
+    sentiment: Sentiment = sentiment_classifier.run(prompt)
+    return sentiment
 
 
 def create_music(sentiment: Sentiment) -> None:
@@ -20,16 +54,16 @@ def create_music(sentiment: Sentiment) -> None:
     lim = 2
 
     dataset = Path("Datasets", "D1")
-    data_loader = DataLoader(feature_length, lim)
+    data_loader = DataLoaderMusic(feature_length, lim)
     all_notes = data_loader.get_notes_from_txt(str(dataset / "all_notes.txt"))
     filtered_notes = data_loader.filter_notes(all_notes)
     index, reverse_index = data_loader.create_indices(filtered_notes)
     vocab_size = len(index)
-    data_container: DataContainer = data_loader.run(filtered_notes, seed_size, index)
+    data_container: DataContainerMusic = data_loader.run(filtered_notes, seed_size, index)
     print("After data_container")
 
     n_notes = len(filtered_notes)
-    model_creator = ModelCreator(
+    model_creator = ModelCreatorMusic(
         n_notes,
         feature_length,
         validation_size,
@@ -64,7 +98,8 @@ def create_music(sentiment: Sentiment) -> None:
 
 
 def run_app() -> None:
-    sentiment = detect_sentiment()
+    prompt = "i am really anxious about this"
+    sentiment = classify_sentiment(prompt)
     create_music(sentiment)
 
 

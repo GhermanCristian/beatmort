@@ -204,4 +204,10 @@ Models/
 # FluidSynth and SoundFont
 FluidSynth/
 
+# Embeddings for sentiment classification
+embeddings/
+
+# Tokenizers for sentiment classification
+Tokenizers/
+
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode

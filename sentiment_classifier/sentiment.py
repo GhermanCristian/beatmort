@@ -11,3 +11,7 @@ class Sentiment(str, Enum):
     SADNESS = "sadness"
     SURPRISE = "surprise"
     TRUST = "trust"
+
+    @staticmethod
+    def class_names() -> list[str]:
+        return [s.value for s in Sentiment]
