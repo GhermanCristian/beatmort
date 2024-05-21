@@ -1,4 +1,7 @@
 from pathlib import Path
+from lyric_generation.data_loader import DataLoader as DataLoaderLyrics
+from lyric_generation.lyric_generator import LyricGenerator
+from lyric_generation.model_creator import ModelCreator as ModelCreatorLyrics
 from music_creator.data_loader import DataContainer as DataContainerMusic
 from music_creator.data_loader import DataLoader as DataLoaderMusic
 from music_creator.model_creator import ModelCreator as ModelCreatorMusic
@@ -97,11 +100,24 @@ def create_music(sentiment: Sentiment) -> None:
     )
 
 
-def run_app() -> None:
-    prompt = "i am really anxious about this"
-    sentiment = classify_sentiment(prompt)
-    create_music(sentiment)
+def generate_lyrics(sentiment: Sentiment) -> list[str]:
+    tokenizer = DataLoaderLyrics.load_tokenizer()
+    model = ModelCreatorLyrics.load_model()
+    max_sequence_length = 55
 
+    lyric_generator = LyricGenerator(max_sequence_length, tokenizer, model)
+    lyrics = lyric_generator.run(16, sentiment.value)
+    return lyrics
+
+
+def run_app() -> None:
+    prompt = "i am really proud of this paper"
+    sentiment = classify_sentiment(prompt)
+    #create_music(sentiment)
+    lyrics = generate_lyrics(sentiment)
+    for l in lyrics:
+        print(l)
+    # TODO - investigate why '’' and 'don't' appear in the output
 
 if __name__ == "__main__":
     run_app()
