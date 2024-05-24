@@ -6,7 +6,7 @@ import zipfile
 
 class Utils:
     EMBEDDING_MATRIX_NAME = "wiki-news-300d-1M.vec"
-    EMBEDDINGS_DIR = "embeddings"
+    EMBEDDINGS_DIR = "../data/embeddings"
     EMBEDDING_MATRIX_PATH = Path(f"{EMBEDDINGS_DIR}/{EMBEDDING_MATRIX_NAME}")
 
     @staticmethod

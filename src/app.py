@@ -56,7 +56,7 @@ def create_music(sentiment: Sentiment) -> None:
     feature_length = 8
     lim = 2
 
-    dataset = Path("Datasets", "D1")
+    dataset = Path("..", "data", "Datasets", "D1")
     data_loader = DataLoaderMusic(feature_length, lim)
     all_notes = data_loader.get_notes_from_txt(str(dataset / "all_notes.txt"))
     filtered_notes = data_loader.filter_notes(all_notes)
@@ -93,10 +93,10 @@ def create_music(sentiment: Sentiment) -> None:
     main_score = music_creator.run(128, melodies)
     SongSaver.save_song_to_disk(
         main_score,
-        "Outputs/test",
+        "..\\Outputs/test",
         Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe"),
-        Path("FluidSynth\\fluidsynth.exe"),
-        Path("FluidSynth\\GeneralUser GS v1.471.sf2"),
+        Path("..\\FluidSynth\\fluidsynth.exe"),
+        Path("..\\FluidSynth\\GeneralUser GS v1.471.sf2"),
     )
 
 
@@ -113,7 +113,7 @@ def generate_lyrics(sentiment: Sentiment) -> list[str]:
 def run_app() -> None:
     prompt = "i am really proud of this paper"
     sentiment = classify_sentiment(prompt)
-    #create_music(sentiment)
+    create_music(sentiment)
     lyrics = generate_lyrics(sentiment)
     for l in lyrics:
         print(l)

@@ -51,7 +51,7 @@ class ModelCreator:
 
     @staticmethod
     def _model_name(batch_size: int) -> str:
-        return f"Models/1_bs{batch_size}.keras"
+        return f"../data/Models/1_bs{batch_size}.keras"
 
     @staticmethod
     def load_model(batch_size: int) -> Model:

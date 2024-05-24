@@ -61,7 +61,7 @@ class ModelCreator:
 
     @staticmethod
     def _model_name() -> str:
-        return f"Models/model_lyrics.keras"
+        return f"../data/Models/model_lyrics.keras"
 
     @staticmethod
     def load_model() -> Model:

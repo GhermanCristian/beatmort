@@ -36,7 +36,7 @@ class LyricGenerator:
         return ""
 
     def _get_seeds_for_sentiment(self, sentiment: Sentiment) -> list[str]:
-        seeds = pd.read_csv(f"Datasets/lyrics/seeds.csv", encoding="utf-8")
+        seeds = pd.read_csv(f"../data/Datasets/lyrics/seeds.csv", encoding="utf-8")
         filtered_seeds = seeds[seeds["Emotion"] == sentiment.value]
         seed_lines = []
         for line in filtered_seeds["Text"]:

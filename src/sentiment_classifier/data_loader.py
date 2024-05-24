@@ -20,7 +20,7 @@ class DataContainer:
 
 
 class DataLoader:
-    TOKENIZER_PATH = "Tokenizers/tokenizer_sentiment.pkl"
+    TOKENIZER_PATH = "../data/Tokenizers/tokenizer_sentiment.pkl"
 
     def __init__(self, max_seq_len: int) -> None:
         self._max_seq_len = max_seq_len
@@ -28,7 +28,7 @@ class DataLoader:
     def _load_csv_files(self) -> pd.DataFrame:
         return pd.concat(
             [
-                pd.read_csv(f"Datasets/sentiment/{csv_name}", encoding="utf-8")
+                pd.read_csv(f"../data/Datasets/sentiment/{csv_name}", encoding="utf-8")
                 for csv_name in [
                     "isear.csv",
                     "emotion-stimulus.csv",
