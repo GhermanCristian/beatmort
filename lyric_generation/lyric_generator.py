@@ -1,7 +1,10 @@
+import re
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import random
+import pandas as pd
+from sentiment_classifier.sentiment import Sentiment
 
 
 class LyricGenerator:
@@ -29,12 +32,22 @@ class LyricGenerator:
 
         for word, index in self._tokenizer.word_index.items():
             if index == pos:
-                print(word, index)
                 return word
         return ""
 
-    def run(self, n_verses: int, initial_seed: str) -> list[str]:
-        current_seed = initial_seed
+    def _get_seeds_for_sentiment(self, sentiment: Sentiment) -> list[str]:
+        seeds = pd.read_csv(f"Datasets/lyrics/seeds.csv", encoding="utf-8")
+        filtered_seeds = seeds[seeds["Emotion"] == sentiment.value]
+        seed_lines = []
+        for line in filtered_seeds["Text"]:
+            line = re.sub(r"\(.*\)", "", line)
+            line = re.sub(r"[^ a-zA-Z]", "", line)
+            seed_lines.append(line)
+        return seed_lines
+
+    def run(self, n_verses: int, sentiment: Sentiment) -> list[str]:
+        seeds = self._get_seeds_for_sentiment(sentiment)
+        current_seed = random.choice(seeds)
         verse_length = 8
         lyrics = []
 
@@ -47,7 +60,7 @@ class LyricGenerator:
             if len(set(current_seed.split()[-verse_length:])) == 1 or (
                 i > 1 and current_seed == lyrics[i - 1]
             ):
-                current_seed = initial_seed  # TODO - random
+                current_seed = random.choice(seeds)
             else:
                 new_seed = " ".join(current_seed.split()[-verse_length:])
                 lyrics.append(new_seed)
