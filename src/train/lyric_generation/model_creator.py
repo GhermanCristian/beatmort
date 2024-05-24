@@ -13,7 +13,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.optimizers import RMSprop
 
 from lyric_generation.data_loader import DataContainer
-from utils import Utils
+from src.train.utils import Utils
 
 
 class ModelCreator:

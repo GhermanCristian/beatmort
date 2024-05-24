@@ -7,7 +7,7 @@ from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
 from sentiment_classifier.data_loader import DataContainer
-from utils import Utils
+from src.train.utils import Utils
 
 
 class ModelCreator:
