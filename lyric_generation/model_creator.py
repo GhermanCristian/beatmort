@@ -1,4 +1,3 @@
-from pathlib import Path
 import numpy as np
 
 from tensorflow.keras.models import Sequential, load_model, Model
@@ -6,7 +5,14 @@ from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
 from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
-from sentiment_classifier.data_loader import DataContainer
+import numpy as np
+from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout, Bidirectional
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.metrics import CategoricalAccuracy
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow.keras.optimizers import RMSprop
+
+from lyric_generation.data_loader import DataContainer
 from utils import Utils
 
 
@@ -16,7 +22,7 @@ class ModelCreator:
         n_dims_embedding: int,
         max_seq_len: int,
         num_classes: int,
-        word_index,
+        word_index: dict[str, int],
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
@@ -41,23 +47,27 @@ class ModelCreator:
                 trainable=False,
             )
         )
-        model.add(LSTM(n_units))
+        model.add(Bidirectional(LSTM(n_units, return_sequences=True)))
         model.add(Dropout(dropout_rate))
-        model.add(Dense(self._num_classes, activation="softmax"))
+        model.add(LSTM(n_units // 2))
+        model.add(Dense(self._vocabulary_size, activation="softmax"))
+        optimizer = RMSprop(learning_rate=0.005)
         model.compile(
-            loss="categorical_crossentropy", optimizer="adam", metrics=[CategoricalAccuracy()]
+            loss="categorical_crossentropy",
+            optimizer=optimizer,
+            metrics=["accuracy", CategoricalAccuracy()],
         )
         return model
 
     @staticmethod
-    def _model_name(batch_size: int) -> str:
-        return f"Models/1_bs{batch_size}.keras"
+    def _model_name() -> str:
+        return f"Models/model_lyrics.keras"
 
     @staticmethod
-    def load_model(batch_size: int) -> Model:
-        return load_model(ModelCreator._model_name(batch_size))
+    def load_model() -> Model:
+        return load_model(ModelCreator._model_name())
 
-    def get_new_model(self, n_units: int = 256, dropout_rate: float = 0.2) -> Model:
+    def get_new_model(self, n_units: int = 128, dropout_rate: float = 0.35) -> Model:
         if not Utils.EMBEDDING_MATRIX_PATH.exists():
             Utils.download_embedding_matrix()
         embedding_matrix = Utils.load_embedding_matrix(
@@ -67,14 +77,14 @@ class ModelCreator:
 
     def train_model(self, model: Model, n_epochs: int) -> History:
         checkpoint = ModelCheckpoint(
-            self._model_name(self._batch_size),
+            self._model_name(),
             monitor="val_categorical_accuracy",
             save_best_only=True,
             save_freq="epoch",
             verbose=2,
             initial_value_threshold=0,
         )
-        stop_early = EarlyStopping(monitor="val_categorical_accuracy", patience=n_epochs // 2)
+        stop_early = EarlyStopping(monitor="val_categorical_accuracy", patience=100)
 
         history = model.fit(
             self._data_container.x_train_pad,
@@ -82,14 +92,14 @@ class ModelCreator:
             batch_size=self._batch_size,
             epochs=n_epochs,
             callbacks=[checkpoint, stop_early],
-            validation_data=(self._data_container.x_test_pad, self._data_container.y_test),
+            validation_data=(self._data_container.x_test, self._data_container.y_test),
         )
 
         return history
 
     def evaluate_model(self, model: Model) -> list[str]:
         result = model.evaluate(
-            self._data_container.x_test_pad,
+            self._data_container.x_test,
             self._data_container.y_test,
             batch_size=self._batch_size,
         )
