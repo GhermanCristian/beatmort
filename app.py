@@ -117,7 +117,7 @@ def run_app() -> None:
     lyrics = generate_lyrics(sentiment)
     for l in lyrics:
         print(l)
-    # TODO - investigate why '’' and 'don't' appear in the output
+
 
 if __name__ == "__main__":
     run_app()
