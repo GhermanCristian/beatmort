@@ -6,17 +6,11 @@ from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
 from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
-import urllib.request
-import zipfile
-
 from sentiment_classifier.data_loader import DataContainer
+from utils import Utils
 
 
 class ModelCreator:
-    EMBEDDING_MATRIX_NAME = "wiki-news-300d-1M.vec"
-    EMBEDDINGS_DIR = "embeddings"
-    EMBEDDING_MATRIX_PATH = Path(f"{EMBEDDINGS_DIR}/{EMBEDDING_MATRIX_NAME}")
-
     def __init__(
         self,
         n_dims_embedding: int,
@@ -33,30 +27,6 @@ class ModelCreator:
         self._vocabulary_size = len(word_index) + 1
         self._batch_size = batch_size
         self._data_container = data_container
-
-    def _download_embedding_matrix(self) -> None:
-        urllib.request.urlretrieve(
-            f"https://dl.fbaipublicfiles.com/fasttext/vectors-english/{self.EMBEDDING_MATRIX_NAME}.zip",
-            f"{self.EMBEDDING_MATRIX_PATH}.zip",
-        )
-        with zipfile.ZipFile(f"{self.EMBEDDING_MATRIX_PATH}.zip", "r") as zip_ref:
-            zip_ref.extractall(self.EMBEDDINGS_DIR)
-
-        Path(f"{self.EMBEDDING_MATRIX_PATH}.zip").unlink()
-
-    def _load_embedding_matrix(self) -> list[np.ndarray]:
-        embedding_matrix = np.zeros((self._vocabulary_size, self._n_dims_embedding))
-        with open(
-            self.EMBEDDING_MATRIX_PATH, "r", encoding="utf-8", newline="\n", errors="ignore"
-        ) as f:
-            for line in f:
-                word, *vector = line.split()
-                if word in self._word_index:
-                    idx = self._word_index[word]
-                    embedding_matrix[idx] = np.array(vector, dtype=np.float32)[
-                        : self._n_dims_embedding
-                    ]
-        return embedding_matrix
 
     def _create_model(
         self, embedding_matrix: list[np.ndarray], n_units: int, dropout_rate: float
@@ -88,9 +58,11 @@ class ModelCreator:
         return load_model(ModelCreator._model_name(batch_size))
 
     def get_new_model(self, n_units: int = 256, dropout_rate: float = 0.2) -> Model:
-        if not self.EMBEDDING_MATRIX_PATH.exists():
-            self._download_embedding_matrix()
-        embedding_matrix = self._load_embedding_matrix()
+        if not Utils.EMBEDDING_MATRIX_PATH.exists():
+            Utils.download_embedding_matrix()
+        embedding_matrix = Utils.load_embedding_matrix(
+            self._vocabulary_size, self._n_dims_embedding, self._word_index
+        )
         return self._create_model(embedding_matrix, n_units, dropout_rate)
 
     def train_model(self, model: Model, n_epochs: int) -> History:
