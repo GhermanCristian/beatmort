@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import random
 import pandas as pd
-from sentiment_classifier.sentiment import Sentiment
+from src.sentiment import Sentiment
 
 
 class LyricGenerator:
