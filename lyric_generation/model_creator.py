@@ -66,7 +66,7 @@ class ModelCreator:
                 trainable=False,
             )
         )
-        model.add(Bidirectional(LSTM(n_units)))
+        model.add(Bidirectional(LSTM(n_units, return_sequences=True)))
         model.add(Dropout(dropout_rate))
         model.add(LSTM(n_units // 2))
         model.add(Dense(self._vocabulary_size, activation="softmax"))
@@ -86,7 +86,7 @@ class ModelCreator:
     def load_model() -> Model:
         return load_model(ModelCreator._model_name())
 
-    def get_new_model(self, n_units: int = 256, dropout_rate: float = 0.35) -> Model:
+    def get_new_model(self, n_units: int = 128, dropout_rate: float = 0.35) -> Model:
         if not self.EMBEDDING_MATRIX_PATH.exists():
             self._download_embedding_matrix()
         embedding_matrix = self._load_embedding_matrix()
