@@ -16,7 +16,7 @@ class DataContainer:
 
 
 class DataLoader:
-    TOKENIZER_PATH = "Tokenizers/tokenizer_sentiment.pkl"
+    TOKENIZER_PATH = "Tokenizers/tokenizer_lyrics.pkl"
 
     def __init__(self) -> None:
         pass
