@@ -70,7 +70,9 @@ class ModelCreator:
     def get_new_model(self, n_units: int = 128, dropout_rate: float = 0.35) -> Model:
         if not Utils.EMBEDDING_MATRIX_PATH.exists():
             Utils.download_embedding_matrix()
-        embedding_matrix = Utils.load_embedding_matrix()
+        embedding_matrix = Utils.load_embedding_matrix(
+            self._vocabulary_size, self._n_dims_embedding, self._word_index
+        )
         return self._create_model(embedding_matrix, n_units, dropout_rate)
 
     def train_model(self, model: Model, n_epochs: int) -> History:
