@@ -27,7 +27,6 @@ class DataLoader:
             lines = f.readlines()
             all_lines.update(lines)
 
-        print(len(all_lines))
         count = {}
         for line in all_lines:
             for word in line.split():
@@ -36,8 +35,6 @@ class DataLoader:
                 count[word] += 1
         filtered_lines = [l for l in all_lines if all(count[w] >= 50 for w in l.split())]
         filtered_lines = [l for l in filtered_lines if len(l.split()) > 2]
-        print(len(filtered_lines))
-        print(filtered_lines[:5])
         return filtered_lines
 
     def _get_new_tokenizer(self, filtered_lines: list[str]) -> Tokenizer:

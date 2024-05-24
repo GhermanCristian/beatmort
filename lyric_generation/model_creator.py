@@ -22,7 +22,7 @@ class ModelCreator:
         n_dims_embedding: int,
         max_seq_len: int,
         num_classes: int,
-        word_index,
+        word_index: dict[str, int],
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
@@ -84,7 +84,7 @@ class ModelCreator:
             verbose=2,
             initial_value_threshold=0,
         )
-        stop_early = EarlyStopping(monitor="val_categorical_accuracy", patience=90)
+        stop_early = EarlyStopping(monitor="val_categorical_accuracy", patience=100)
 
         history = model.fit(
             self._data_container.x_train_pad,

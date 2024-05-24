@@ -57,6 +57,8 @@ class LyricGenerator:
                 output_word = self._get_next_word(current_seed)
                 current_seed += " " + output_word
 
+            # verse is only compose of one repeated word,
+            # or previous verse identical to current one
             if len(set(current_seed.split()[-verse_length:])) == 1 or (
                 i > 1 and current_seed == lyrics[i - 1]
             ):
