@@ -103,10 +103,10 @@ def create_music(sentiment: Sentiment) -> None:
 def generate_lyrics(sentiment: Sentiment) -> list[str]:
     tokenizer = DataLoaderLyrics.load_tokenizer()
     model = ModelCreatorLyrics.load_model()
-    max_sequence_length = 55
+    max_sequence_length = 34
 
     lyric_generator = LyricGenerator(max_sequence_length, tokenizer, model)
-    lyrics = lyric_generator.run(16, sentiment.value)
+    lyrics = lyric_generator.run(16, sentiment)
     return lyrics
 
 
