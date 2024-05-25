@@ -61,8 +61,8 @@ class Predictor:
         lyrics = lyric_generator.run(n_verses, sentiment)
         return lyrics
 
-    def run(self, prompt: str) -> None:
+    def run(self, prompt: str, n_verses: int) -> None:
         sentiment = self._classify_sentiment(prompt)
         # TODO - generate music and lyrics in parallel
         self._generate_music(sentiment)
-        self._lyrics = self._generate_lyrics(sentiment, 16)
+        self._lyrics = self._generate_lyrics(sentiment, n_verses)
