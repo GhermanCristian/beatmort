@@ -13,6 +13,13 @@ from tensorflow.keras.models import load_model
 
 
 class Predictor:
+    def __init__(self) -> None:
+        self._lyrics: list[str] = []
+
+    @property
+    def lyrics(self) -> list[str]:
+        return self._lyrics
+
     def load_artifacts(self) -> None:
         with open(Constants.SENTIMENT_TOKENIZER_PATH, "rb") as tokenizer_path:
             self._sentiment_tokenizer = pickle.load(tokenizer_path)
@@ -54,8 +61,8 @@ class Predictor:
         lyrics = lyric_generator.run(n_verses, sentiment)
         return lyrics
 
-    def run(self, prompt: str) -> list[str]:
+    def run(self, prompt: str) -> None:
         sentiment = self._classify_sentiment(prompt)
+        # TODO - generate music and lyrics in parallel
         self._generate_music(sentiment)
-        lyrics = self._generate_lyrics(sentiment, 16)
-        return lyrics
+        self._lyrics = self._generate_lyrics(sentiment, 16)
