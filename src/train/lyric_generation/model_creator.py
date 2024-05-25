@@ -17,14 +17,12 @@ class ModelCreator:
     def __init__(
         self,
         n_dims_embedding: int,
-        max_seq_len: int,
         num_classes: int,
         word_index: dict[str, int],
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
         self._n_dims_embedding = n_dims_embedding
-        self._max_seq_len = max_seq_len
         self._num_classes = num_classes
         self._word_index = word_index
         self._vocabulary_size = len(word_index) + 1
@@ -39,7 +37,7 @@ class ModelCreator:
             Embedding(
                 self._vocabulary_size,
                 self._n_dims_embedding,
-                input_length=self._max_seq_len,
+                input_length=Constants.LYRICS_MAX_SEQ_LEN,
                 weights=[embedding_matrix],
                 trainable=False,
             )
