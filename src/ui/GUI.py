@@ -9,6 +9,14 @@ from predict.predict import Predictor
 class GUI:
     def __init__(self) -> None:
         self._predictor = Predictor()
+        self._main_window: Tk = self.__create_main_window()
+        self._user_input: tk.Entry = self._create_user_input_section()
+        submit_button = tk.Button(
+            self._main_window, text="Submit", command=lambda: self._on_submit_action()
+        )
+        submit_button.pack()
+        self._lyrics_label: tk.Label = tk.Label(self._main_window, text="Lyrics will end up here")
+        self._lyrics_label.pack()
 
     def __create_main_window(self) -> Tk:
         WINDOW_TITLE: Final[str] = "apptitle"
@@ -21,23 +29,22 @@ class GUI:
 
         return main_window
 
-    def _on_submit_action(self, user_input: tk.Entry) -> None:
-        prompt = user_input.get()
-        lyrics = self._predictor.run(prompt)
-        for l in lyrics:
-            print(l)
+    def _refresh_view(self) -> None:
+        self._lyrics_label.config(text="\n".join(self._predictor.lyrics))
 
-    def _create_user_input_section(self, main_window: Tk) -> None:
-        tk.Label(main_window, text="What's on your mind ?").grid(row=0)
-        user_input = tk.Entry(main_window)
-        user_input.grid(row=0, column=1)
-        tk.Button(
-            main_window, text="Submit", command=lambda: self._on_submit_action(user_input)
-        ).grid(row=3, column=1, sticky=tk.W, pady=4)
+    def _on_submit_action(self) -> None:
+        prompt = self._user_input.get()
+        self._predictor.run(prompt)
+        self._refresh_view()
+
+    def _create_user_input_section(self) -> None:
+        label = tk.Label(self._main_window, text="What's on your mind ?")
+        label.pack()
+        user_input = tk.Entry(self._main_window)
+        user_input.pack()
+        return user_input
 
     def run(self) -> None:
         thread = threading.Thread(target=self._predictor.load_artifacts)
         thread.start()
-        main_window: Tk = self.__create_main_window()
-        self._create_user_input_section(main_window)
-        main_window.mainloop()
+        self._main_window.mainloop()
