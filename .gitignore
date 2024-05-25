@@ -193,21 +193,12 @@ pyrightconfig.json
 .ionide
 
 # Datasets
-Datasets/
+data/
 
 # Outputs
 Outputs/
 
-# Models
-Models/
-
 # FluidSynth and SoundFont
 FluidSynth/
-
-# Embeddings for sentiment classification
-embeddings/
-
-# Tokenizers for sentiment classification
-Tokenizers/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
