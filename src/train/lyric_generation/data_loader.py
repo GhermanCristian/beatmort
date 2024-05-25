@@ -18,7 +18,7 @@ class DataContainer:
 
 
 class DataLoader:
-    def filter_lines(self) -> list[str]:
+    def _filter_lines(self) -> list[str]:
         all_lines = set()
         with open("all_lyrics.txt", "r") as f:
             lines = f.readlines()
@@ -43,7 +43,7 @@ class DataLoader:
 
     def run(self) -> tuple[DataContainer, Tokenizer]:
         features, targets = [], []
-        filtered_lines = self.filter_lines()
+        filtered_lines = self._filter_lines()
 
         for line in filtered_lines:
             token_list = line.split()
