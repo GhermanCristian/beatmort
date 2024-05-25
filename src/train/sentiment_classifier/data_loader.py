@@ -21,9 +21,6 @@ class DataContainer:
 
 
 class DataLoader:
-    def __init__(self, max_seq_len: int) -> None:
-        self._max_seq_len = max_seq_len
-
     def _load_csv_files(self) -> pd.DataFrame:
         return pd.concat(
             [
@@ -83,8 +80,8 @@ class DataLoader:
         sequence_train = tokenizer.texts_to_sequences(sentences_train)
         sequence_test = tokenizer.texts_to_sequences(sentences_test)
 
-        x_train_pad = pad_sequences(sequence_train, maxlen=self._max_seq_len)
-        x_test_pad = pad_sequences(sequence_test, maxlen=self._max_seq_len)
+        x_train_pad = pad_sequences(sequence_train, maxlen=Constants.SENTIMENT_MAX_SEQ_LEN)
+        x_test_pad = pad_sequences(sequence_test, maxlen=Constants.SENTIMENT_MAX_SEQ_LEN)
 
         encoding = {sentiment: idx for idx, sentiment in enumerate(Sentiment.class_names())}
         y_train = to_categorical([encoding[x] for x in y_train])

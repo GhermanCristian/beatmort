@@ -16,13 +16,11 @@ from train.utils import Utils
 class ModelCreator:
     def __init__(
         self,
-        n_dims_embedding: int,
         num_classes: int,
         word_index: dict[str, int],
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
-        self._n_dims_embedding = n_dims_embedding
         self._num_classes = num_classes
         self._word_index = word_index
         self._vocabulary_size = len(word_index) + 1
@@ -36,7 +34,7 @@ class ModelCreator:
         model.add(
             Embedding(
                 self._vocabulary_size,
-                self._n_dims_embedding,
+                Utils.N_DIMS_EMBEDDING,
                 input_length=Constants.LYRICS_MAX_SEQ_LEN,
                 weights=[embedding_matrix],
                 trainable=False,
@@ -57,9 +55,7 @@ class ModelCreator:
     def get_new_model(self, n_units: int = 128, dropout_rate: float = 0.35) -> Model:
         if not Utils.EMBEDDING_MATRIX_PATH.exists():
             Utils.download_embedding_matrix()
-        embedding_matrix = Utils.load_embedding_matrix(
-            self._vocabulary_size, self._n_dims_embedding, self._word_index
-        )
+        embedding_matrix = Utils.load_embedding_matrix(self._vocabulary_size, self._word_index)
         return self._create_model(embedding_matrix, n_units, dropout_rate)
 
     def train_model(self, model: Model, n_epochs: int) -> History:
