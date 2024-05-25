@@ -1,5 +1,5 @@
 import threading
-from tkinter import Tk
+from tkinter import Tk, Scale
 import tkinter as tk
 from typing import Final
 
@@ -15,7 +15,13 @@ class GUI:
             self._main_window, text="Submit", command=lambda: self._on_submit_action()
         )
         submit_button.pack()
-        self._lyrics_label: tk.Label = tk.Label(self._main_window, text="Lyrics will end up here")
+        self._n_verses_scale: tk.Scale = Scale(
+            self._main_window, from_=2, to=32, length=200, width=25
+        )
+        self._n_verses_scale.pack()
+        self._lyrics_label: tk.Label = tk.Label(
+            self._main_window, text="Lyrics will end up here", anchor="w", justify="left"
+        )
         self._lyrics_label.pack()
 
     def __create_main_window(self) -> Tk:
@@ -34,7 +40,8 @@ class GUI:
 
     def _on_submit_action(self) -> None:
         prompt = self._user_input.get()
-        self._predictor.run(prompt)
+        n_verses = int(self._n_verses_scale.get())
+        self._predictor.run(prompt, n_verses)
         self._refresh_view()
 
     def _create_user_input_section(self) -> None:
