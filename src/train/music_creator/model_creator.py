@@ -1,35 +1,28 @@
 from tensorflow.keras.models import Model
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 from tensorflow.keras.optimizers import Adamax
 from tensorflow.keras.metrics import CategoricalAccuracy
 
+from constants import Constants
 from music_creator.data_loader import DataContainer
 
 
 class ModelCreator:
     def __init__(
         self,
-        n_notes: int,
-        feature_length: int,
         validation_size: float,
-        seed_size: float,
         batch_size: int,
-        lim: int,
         learning_rate: float,
         data_container: DataContainer,
     ) -> None:
-        self._n_notes = n_notes
-        self._feature_length = feature_length
         self._validation_size = validation_size
-        self._seed_size = seed_size
         self._batch_size = batch_size
-        self._lim = lim
         self._learning_rate = learning_rate
         self._data_container = data_container
 
-    def _create_model(self, first_layer_units: int, dropout_rate: float) -> Model:
+    def create_model(self, first_layer_units: int = 512, dropout_rate: float = 0.25) -> Model:
         model = Sequential()
         model.add(
             LSTM(
@@ -50,20 +43,9 @@ class ModelCreator:
 
         return model
 
-    @property
-    def model_name(self) -> str:
-        return f"../data/Models/d1_1_n{self._n_notes}_fl{self._feature_length}_vs{self._validation_size}_ss{self._seed_size}_bs{self._batch_size}_lim{self._lim}_lr{self._learning_rate}.keras"
-
-    def get_model(
-        self, new_model: bool = False, first_layer_units: int = 512, dropout_rate: float = 0.25
-    ) -> Model:
-        if new_model:
-            return self._create_model(first_layer_units, dropout_rate)
-        return load_model(self.model_name)
-
     def train_model(self, model: Model, n_epochs: int) -> History:
         checkpoint = ModelCheckpoint(
-            self.model_name,
+            Constants.MUSIC_MODEL_PATH,
             monitor="val_categorical_accuracy",
             save_best_only=True,
             save_freq="epoch",

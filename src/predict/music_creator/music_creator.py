@@ -3,6 +3,7 @@ from music21 import chord, note, stream, duration, pitch, interval, key
 import numpy as np
 from tensorflow.keras.models import Model
 
+from constants import Constants
 from predict.music_creator.sentiment_to_melodies import MelodyInfo
 
 
@@ -13,14 +14,11 @@ class MusicCreator:
         self,
         model: Model,
         x_seed: np.array,
-        feature_length: int,
-        vocab_size: int,
         reverse_index: dict[int, str],
     ) -> None:
         self._model = model
         self._x_seed = x_seed
-        self._feature_length = feature_length
-        self._vocab_size = vocab_size
+        self._vocab_size = len(reverse_index)
         self._reverse_index = reverse_index
 
     def _create_final_note(self, melody: list[Sound], offset: float) -> Sound:
@@ -78,7 +76,7 @@ class MusicCreator:
         seed = self._x_seed[np.random.randint(0, len(self._x_seed) - 1)][:]
         measure: list[str] = []
         while len(measure) < n_groups:
-            seed = seed.reshape(1, self._feature_length, 1)
+            seed = seed.reshape(1, Constants.MUSIC_FEATURE_LENGTH, 1)
             prediction = self._model.predict(seed, verbose=0)[0]
             prediction = np.log(prediction) / 0.25
             exp_preds = np.exp(prediction)
