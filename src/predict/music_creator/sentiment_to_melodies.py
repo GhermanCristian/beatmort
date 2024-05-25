@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Type
 from music21 import instrument, articulations
 import random
-from src.sentiment import Sentiment
+from sentiment import Sentiment
 
 
 @dataclass

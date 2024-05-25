@@ -3,7 +3,7 @@ from music21 import chord, note, stream, duration, pitch, interval, key
 import numpy as np
 from tensorflow.keras.models import Model
 
-from music_creator.sentiment_to_melodies import MelodyInfo
+from predict.music_creator.sentiment_to_melodies import MelodyInfo
 
 
 class MusicCreator:
