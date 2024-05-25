@@ -9,7 +9,7 @@ from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.optimizers import RMSprop
 
 from constants import Constants
-from lyric_generation.data_loader import DataContainer
+from train.lyric_generation.data_loader import DataContainer
 from train.utils import Utils
 
 
