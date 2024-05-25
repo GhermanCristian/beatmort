@@ -4,7 +4,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import random
 import pandas as pd
-from sentiment_classifier.sentiment import Sentiment
+from sentiment import Sentiment
 
 
 class LyricGenerator:
@@ -36,7 +36,7 @@ class LyricGenerator:
         return ""
 
     def _get_seeds_for_sentiment(self, sentiment: Sentiment) -> list[str]:
-        seeds = pd.read_csv(f"Datasets/lyrics/seeds.csv", encoding="utf-8")
+        seeds = pd.read_csv(f"../data/Datasets/lyrics/seeds.csv", encoding="utf-8")
         filtered_seeds = seeds[seeds["Emotion"] == sentiment.value]
         seed_lines = []
         for line in filtered_seeds["Text"]:

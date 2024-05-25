@@ -8,7 +8,8 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.utils import to_categorical
 from dataclasses import dataclass
 
-from sentiment_classifier.sentiment import Sentiment
+from constants import Constants
+from sentiment import Sentiment
 
 
 @dataclass
@@ -20,15 +21,10 @@ class DataContainer:
 
 
 class DataLoader:
-    TOKENIZER_PATH = "Tokenizers/tokenizer_sentiment.pkl"
-
-    def __init__(self, max_seq_len: int) -> None:
-        self._max_seq_len = max_seq_len
-
     def _load_csv_files(self) -> pd.DataFrame:
         return pd.concat(
             [
-                pd.read_csv(f"Datasets/sentiment/{csv_name}", encoding="utf-8")
+                pd.read_csv(f"../data/Datasets/sentiment/{csv_name}", encoding="utf-8")
                 for csv_name in [
                     "isear.csv",
                     "emotion-stimulus.csv",
@@ -65,14 +61,9 @@ class DataLoader:
     def _get_new_tokenizer(self, all_sentences: list[str]) -> Tokenizer:
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(all_sentences)
-        with open(self.TOKENIZER_PATH, "wb") as tokenizer_path:
+        with open(Constants.SENTIMENT_TOKENIZER_PATH, "wb") as tokenizer_path:
             pickle.dump(tokenizer, tokenizer_path)
         return tokenizer
-
-    @staticmethod
-    def load_tokenizer() -> Tokenizer:
-        with open(DataLoader.TOKENIZER_PATH, "rb") as tokenizer_path:
-            return pickle.load(tokenizer_path)
 
     def run(self) -> tuple[DataContainer, Tokenizer]:
         data = self._remove_unused_sentiments(self._normalize_neutral(self._load_csv_files()))
@@ -89,8 +80,8 @@ class DataLoader:
         sequence_train = tokenizer.texts_to_sequences(sentences_train)
         sequence_test = tokenizer.texts_to_sequences(sentences_test)
 
-        x_train_pad = pad_sequences(sequence_train, maxlen=self._max_seq_len)
-        x_test_pad = pad_sequences(sequence_test, maxlen=self._max_seq_len)
+        x_train_pad = pad_sequences(sequence_train, maxlen=Constants.SENTIMENT_MAX_SEQ_LEN)
+        x_test_pad = pad_sequences(sequence_test, maxlen=Constants.SENTIMENT_MAX_SEQ_LEN)
 
         encoding = {sentiment: idx for idx, sentiment in enumerate(Sentiment.class_names())}
         y_train = to_categorical([encoding[x] for x in y_train])

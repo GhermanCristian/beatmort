@@ -1,33 +1,26 @@
 import numpy as np
 
-from tensorflow.keras.models import Sequential, load_model, Model
-from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
-from tensorflow.keras.metrics import CategoricalAccuracy
+from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
 import numpy as np
 from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout, Bidirectional
-from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.metrics import CategoricalAccuracy
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.optimizers import RMSprop
 
-from lyric_generation.data_loader import DataContainer
-from utils import Utils
+from constants import Constants
+from train.lyric_generation.data_loader import DataContainer
+from train.utils import Utils
 
 
 class ModelCreator:
     def __init__(
         self,
-        n_dims_embedding: int,
-        max_seq_len: int,
         num_classes: int,
         word_index: dict[str, int],
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
-        self._n_dims_embedding = n_dims_embedding
-        self._max_seq_len = max_seq_len
         self._num_classes = num_classes
         self._word_index = word_index
         self._vocabulary_size = len(word_index) + 1
@@ -41,8 +34,8 @@ class ModelCreator:
         model.add(
             Embedding(
                 self._vocabulary_size,
-                self._n_dims_embedding,
-                input_length=self._max_seq_len,
+                Utils.N_DIMS_EMBEDDING,
+                input_length=Constants.LYRICS_MAX_SEQ_LEN,
                 weights=[embedding_matrix],
                 trainable=False,
             )
@@ -59,25 +52,15 @@ class ModelCreator:
         )
         return model
 
-    @staticmethod
-    def _model_name() -> str:
-        return f"Models/model_lyrics.keras"
-
-    @staticmethod
-    def load_model() -> Model:
-        return load_model(ModelCreator._model_name())
-
     def get_new_model(self, n_units: int = 128, dropout_rate: float = 0.35) -> Model:
         if not Utils.EMBEDDING_MATRIX_PATH.exists():
             Utils.download_embedding_matrix()
-        embedding_matrix = Utils.load_embedding_matrix(
-            self._vocabulary_size, self._n_dims_embedding, self._word_index
-        )
+        embedding_matrix = Utils.load_embedding_matrix(self._vocabulary_size, self._word_index)
         return self._create_model(embedding_matrix, n_units, dropout_rate)
 
     def train_model(self, model: Model, n_epochs: int) -> History:
         checkpoint = ModelCheckpoint(
-            self._model_name(),
+            Constants.LYRICS_MODEL_PATH,
             monitor="val_categorical_accuracy",
             save_best_only=True,
             save_freq="epoch",

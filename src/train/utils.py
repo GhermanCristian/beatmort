@@ -6,8 +6,9 @@ import zipfile
 
 class Utils:
     EMBEDDING_MATRIX_NAME = "wiki-news-300d-1M.vec"
-    EMBEDDINGS_DIR = "embeddings"
+    EMBEDDINGS_DIR = "../data/embeddings"
     EMBEDDING_MATRIX_PATH = Path(f"{EMBEDDINGS_DIR}/{EMBEDDING_MATRIX_NAME}")
+    N_DIMS_EMBEDDING = 300
 
     @staticmethod
     def download_embedding_matrix() -> None:
@@ -21,10 +22,8 @@ class Utils:
         Path(f"{Utils.EMBEDDING_MATRIX_PATH}.zip").unlink()
 
     @staticmethod
-    def load_embedding_matrix(
-        vocabulary_size: int, n_dims_embedding: int, word_index: dict[str, int]
-    ) -> list[np.ndarray]:
-        embedding_matrix = np.zeros((vocabulary_size, n_dims_embedding))
+    def load_embedding_matrix(vocabulary_size: int, word_index: dict[str, int]) -> list[np.ndarray]:
+        embedding_matrix = np.zeros((vocabulary_size, Utils.N_DIMS_EMBEDDING))
         with open(
             Utils.EMBEDDING_MATRIX_PATH, "r", encoding="utf-8", newline="\n", errors="ignore"
         ) as f:
@@ -32,5 +31,7 @@ class Utils:
                 word, *vector = line.split()
                 if word in word_index:
                     idx = word_index[word]
-                    embedding_matrix[idx] = np.array(vector, dtype=np.float32)[:n_dims_embedding]
+                    embedding_matrix[idx] = np.array(vector, dtype=np.float32)[
+                        : Utils.N_DIMS_EMBEDDING
+                    ]
         return embedding_matrix
