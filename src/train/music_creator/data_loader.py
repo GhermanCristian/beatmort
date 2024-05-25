@@ -52,6 +52,11 @@ class DataLoader:
             pickle.dump(reverse_index, reverse_index_path)
         return index, reverse_index
 
+    @staticmethod
+    def save_seed_to_disk(data_container: DataContainer) -> None:
+        with open(Constants.MUSIC_SEED_PATH, "wb") as music_seed_path:
+            np.save(music_seed_path, data_container.x_seed)
+
     def run(
         self, filtered_notes: list[str], seed_size: float, index: dict[int, str]
     ) -> DataContainer:
