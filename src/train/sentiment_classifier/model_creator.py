@@ -1,12 +1,11 @@
-from pathlib import Path
 import numpy as np
 
-from tensorflow.keras.models import Sequential, load_model, Model
+from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
 from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
-from sentiment_classifier.data_loader import DataContainer
+from train.sentiment_classifier.data_loader import DataContainer
 from train.utils import Utils
 
 

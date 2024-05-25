@@ -9,7 +9,7 @@ from tensorflow.keras.utils import to_categorical
 from dataclasses import dataclass
 
 from constants import Constants
-from sentiment_classifier.sentiment import Sentiment
+from sentiment import Sentiment
 
 
 @dataclass

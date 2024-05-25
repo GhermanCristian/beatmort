@@ -6,7 +6,7 @@ from tensorflow.keras.optimizers import Adamax
 from tensorflow.keras.metrics import CategoricalAccuracy
 
 from constants import Constants
-from music_creator.data_loader import DataContainer
+from train.music_creator.data_loader import DataContainer
 
 
 class ModelCreator:
