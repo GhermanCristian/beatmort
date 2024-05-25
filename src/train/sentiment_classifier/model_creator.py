@@ -7,7 +7,7 @@ from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
 from sentiment_classifier.data_loader import DataContainer
-from src.train.utils import Utils
+from train.utils import Utils
 
 
 class ModelCreator:
@@ -49,14 +49,6 @@ class ModelCreator:
         )
         return model
 
-    @staticmethod
-    def _model_name(batch_size: int) -> str:
-        return f"../data/Models/1_bs{batch_size}.keras"
-
-    @staticmethod
-    def load_model(batch_size: int) -> Model:
-        return load_model(ModelCreator._model_name(batch_size))
-
     def get_new_model(self, n_units: int = 256, dropout_rate: float = 0.2) -> Model:
         if not Utils.EMBEDDING_MATRIX_PATH.exists():
             Utils.download_embedding_matrix()
@@ -67,7 +59,7 @@ class ModelCreator:
 
     def train_model(self, model: Model, n_epochs: int) -> History:
         checkpoint = ModelCheckpoint(
-            self._model_name(self._batch_size),
+            self.MODEL_NAME,
             monitor="val_categorical_accuracy",
             save_best_only=True,
             save_freq="epoch",

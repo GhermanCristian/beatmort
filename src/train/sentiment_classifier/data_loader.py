@@ -8,6 +8,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.utils import to_categorical
 from dataclasses import dataclass
 
+from constants import Constants
 from sentiment_classifier.sentiment import Sentiment
 
 
@@ -20,8 +21,6 @@ class DataContainer:
 
 
 class DataLoader:
-    TOKENIZER_PATH = "../data/Tokenizers/tokenizer_sentiment.pkl"
-
     def __init__(self, max_seq_len: int) -> None:
         self._max_seq_len = max_seq_len
 
@@ -65,14 +64,9 @@ class DataLoader:
     def _get_new_tokenizer(self, all_sentences: list[str]) -> Tokenizer:
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(all_sentences)
-        with open(self.TOKENIZER_PATH, "wb") as tokenizer_path:
+        with open(Constants.SENTIMENT_TOKENIZER_PATH, "wb") as tokenizer_path:
             pickle.dump(tokenizer, tokenizer_path)
         return tokenizer
-
-    @staticmethod
-    def load_tokenizer() -> Tokenizer:
-        with open(DataLoader.TOKENIZER_PATH, "rb") as tokenizer_path:
-            return pickle.load(tokenizer_path)
 
     def run(self) -> tuple[DataContainer, Tokenizer]:
         data = self._remove_unused_sentiments(self._normalize_neutral(self._load_csv_files()))

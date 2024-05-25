@@ -6,6 +6,8 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 from sklearn.model_selection import train_test_split
 
+from constants import Constants
+
 
 @dataclass
 class DataContainer:
@@ -16,11 +18,6 @@ class DataContainer:
 
 
 class DataLoader:
-    TOKENIZER_PATH = "../data/Tokenizers/tokenizer_lyrics.pkl"
-
-    def __init__(self) -> None:
-        pass
-
     def filter_lines(self) -> list[str]:
         all_lines = set()
         with open("all_lyrics.txt", "r") as f:
@@ -40,14 +37,9 @@ class DataLoader:
     def _get_new_tokenizer(self, filtered_lines: list[str]) -> Tokenizer:
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(filtered_lines)
-        with open(self.TOKENIZER_PATH, "wb") as tokenizer_path:
+        with open(Constants.LYRICS_TOKENIZER_PATH, "wb") as tokenizer_path:
             pickle.dump(tokenizer, tokenizer_path)
         return tokenizer
-
-    @staticmethod
-    def load_tokenizer() -> Tokenizer:
-        with open(DataLoader.TOKENIZER_PATH, "rb") as tokenizer_path:
-            return pickle.load(tokenizer_path)
 
     def run(self) -> tuple[DataContainer, Tokenizer]:
         features, targets = [], []
