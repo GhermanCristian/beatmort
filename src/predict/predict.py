@@ -12,7 +12,7 @@ from predict.sentiment_classifier.sentiment_classifier import SentimentClassifie
 from tensorflow.keras.models import load_model
 
 
-def classify_sentiment(prompt: str) -> Sentiment:
+def _classify_sentiment(prompt: str) -> Sentiment:
     with open(Constants.SENTIMENT_TOKENIZER_PATH, "rb") as tokenizer_path:
         tokenizer = pickle.load(tokenizer_path)
     model = load_model(Constants.SENTIMENT_MODEL_PATH)
@@ -22,7 +22,7 @@ def classify_sentiment(prompt: str) -> Sentiment:
     return sentiment
 
 
-def generate_music(sentiment: Sentiment) -> None:
+def _generate_music(sentiment: Sentiment) -> None:
     with open(Constants.MUSIC_REVERSE_INDEX_PATH, "rb") as reverse_index_path:
         reverse_index = pickle.load(reverse_index_path)
     with open(Constants.MUSIC_SEED_PATH, "rb") as music_seed_path:
@@ -41,7 +41,7 @@ def generate_music(sentiment: Sentiment) -> None:
     )
 
 
-def generate_lyrics(sentiment: Sentiment, n_verses: int) -> list[str]:
+def _generate_lyrics(sentiment: Sentiment, n_verses: int) -> list[str]:
     with open(Constants.LYRICS_TOKENIZER_PATH, "rb") as tokenizer_path:
         tokenizer = pickle.load(tokenizer_path)
     model = load_model(Constants.LYRICS_MODEL_PATH)
@@ -52,8 +52,8 @@ def generate_lyrics(sentiment: Sentiment, n_verses: int) -> list[str]:
 
 
 def run(prompt: str) -> None:
-    sentiment = classify_sentiment(prompt)
-    generate_music(sentiment)
-    lyrics = generate_lyrics(sentiment, 16)
+    sentiment = _classify_sentiment(prompt)
+    _generate_music(sentiment)
+    lyrics = _generate_lyrics(sentiment, 16)
     for l in lyrics:
         print(l)
