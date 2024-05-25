@@ -7,6 +7,9 @@ from predict.predict import Predictor
 
 
 class GUI:
+    FONT = ("Roman", 18)
+    FONT_INPUT = ("Roman", 16)
+
     def __init__(self) -> None:
         self._predictor = Predictor()
         self._main_window: Tk = self.__create_main_window()
@@ -20,7 +23,11 @@ class GUI:
         )
         self._n_verses_scale.pack()
         self._lyrics_label: tk.Label = tk.Label(
-            self._main_window, text="Lyrics will end up here", anchor="w", justify="left"
+            self._main_window,
+            text="Lyrics will end up here",
+            anchor="w",
+            justify="left",
+            font=self.FONT,
         )
         self._lyrics_label.pack()
 
@@ -45,9 +52,9 @@ class GUI:
         self._refresh_view()
 
     def _create_user_input_section(self) -> None:
-        label = tk.Label(self._main_window, text="What's on your mind ?")
+        label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT)
         label.pack()
-        user_input = tk.Entry(self._main_window)
+        user_input = tk.Entry(self._main_window, width=100, font=self.FONT_INPUT)
         user_input.pack()
         return user_input
 
