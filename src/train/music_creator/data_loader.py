@@ -1,7 +1,10 @@
 from dataclasses import dataclass
+import pickle
 import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow
+
+from constants import Constants
 
 
 @dataclass
@@ -45,6 +48,8 @@ class DataLoader:
 
         index = {note: ind for ind, note in enumerate(unique_notes)}
         reverse_index = dict(enumerate(unique_notes))
+        with open(Constants.MUSIC_REVERSE_INDEX_PATH, "wb") as reverse_index_path:
+            pickle.dump(reverse_index, reverse_index_path)
         return index, reverse_index
 
     def run(
