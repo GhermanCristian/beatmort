@@ -14,9 +14,7 @@ class GUI:
         self._predictor = Predictor()
         self._main_window: Tk = self.__create_main_window()
         self._user_input: tk.Entry = self._create_user_input_section()
-        submit_button = tk.Button(
-            self._main_window, text="Submit", command=lambda: self._on_submit_action()
-        )
+        submit_button = tk.Button(self._main_window, text="Submit", command=self._on_submit_action)
         submit_button.pack()
         self._n_verses_scale: tk.Scale = Scale(
             self._main_window, from_=2, to=32, length=200, width=25
