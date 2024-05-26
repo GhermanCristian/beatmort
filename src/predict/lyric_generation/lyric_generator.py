@@ -59,14 +59,13 @@ class LyricGenerator:
 
             # verse is only compose of one repeated word,
             # or previous verse identical to current one
-            if len(set(current_seed.split()[-verse_length:])) == 1 or (
+            if len(set(current_seed.split()[-verse_length:])) <= 2 or (
                 i > 1 and current_seed == lyrics[i - 1]
             ):
                 current_seed = random.choice(seeds)
             else:
                 new_seed = " ".join(current_seed.split()[-verse_length:])
-                # TODO - make first char in verse uppercase
-                lyrics.append(new_seed)
+                lyrics.append(new_seed.capitalize())
                 current_seed = new_seed
                 i += 1
 

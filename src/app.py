@@ -1,4 +1,5 @@
-from predict.predict import run
+from ui.GUI import GUI
 
 if __name__ == "__main__":
-    run("haide universitatea cluj")
+    user_interface = GUI()
+    user_interface.run()
