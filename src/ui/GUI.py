@@ -21,6 +21,14 @@ class GUI:
         self._n_verses_scale.pack()
         submit_button = tk.Button(self._main_window, text="Submit", command=self._on_submit_action)
         submit_button.pack()
+        self._sentiment_label = tk.Label(
+            self._main_window,
+            text="You seem to be experiencing...",
+            anchor="w",
+            justify="left",
+            font=self.FONT,
+        )
+        self._sentiment_label.pack()
         self._lyrics_label: tk.Label = tk.Label(
             self._main_window,
             text="Lyrics will end up here",
@@ -50,6 +58,7 @@ class GUI:
 
     def _refresh_view(self) -> None:
         self._lyrics_label.config(text="\n".join(self._predictor.lyrics))
+        self._sentiment_label.config(text=f"You seem to be experiencing {self._predictor.sentiment.upper()}")
 
     def _on_submit_action(self) -> None:
         prompt = self._user_input.get()
