@@ -41,7 +41,7 @@ class GUI:
         self._is_playing: bool = False
         self._song: Optional[sa.PlayObject] = None
         self._play_song_button = tk.Button(
-            self._main_window, text="Play", command=self._change_playing_state
+            self._main_window, text="Play", command=self._change_playing_state, state="disabled"
         )
         self._play_song_button.pack()
 
@@ -65,6 +65,7 @@ class GUI:
         n_verses = int(self._n_verses_scale.get())
         self._predictor.run(prompt, n_verses)
         self._refresh_view()
+        self._play_song_button["state"] = "normal"
 
     def _change_playing_state(self) -> None:
         self._is_playing = not self._is_playing
