@@ -65,8 +65,7 @@ class LyricGenerator:
                 current_seed = random.choice(seeds)
             else:
                 new_seed = " ".join(current_seed.split()[-verse_length:])
-                # TODO - make first char in verse uppercase
-                lyrics.append(new_seed)
+                lyrics.append(new_seed.capitalize())
                 current_seed = new_seed
                 i += 1
 

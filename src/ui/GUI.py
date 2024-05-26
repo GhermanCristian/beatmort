@@ -58,6 +58,7 @@ class GUI:
 
     def _refresh_view(self) -> None:
         self._lyrics_label.config(text="\n".join(self._predictor.lyrics))
+        # TODO - treat NEUTRAL case
         self._sentiment_label.config(text=f"You seem to be experiencing {self._predictor.sentiment.upper()}")
 
     def _on_submit_action(self) -> None:
