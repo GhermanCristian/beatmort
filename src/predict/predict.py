@@ -15,10 +15,15 @@ from tensorflow.keras.models import load_model
 class Predictor:
     def __init__(self) -> None:
         self._lyrics: list[str] = []
+        self._sentiment: Sentiment
 
     @property
     def lyrics(self) -> list[str]:
         return self._lyrics
+
+    @property
+    def sentiment(self) -> str:
+        return self._sentiment.value
 
     def load_artifacts(self) -> None:
         with open(Constants.SENTIMENT_TOKENIZER_PATH, "rb") as tokenizer_path:
@@ -42,9 +47,9 @@ class Predictor:
         sentiment: Sentiment = sentiment_classifier.run(prompt)
         return sentiment
 
-    def _generate_music(self, sentiment: Sentiment) -> None:
+    def _generate_music(self) -> None:
         music_creator = MusicCreator(self._music_model, self._music_seed, self._music_reverse_index)
-        melodies = SentimentToMelodies().run(sentiment)
+        melodies = SentimentToMelodies().run(self._sentiment)
         main_score = music_creator.run(128, melodies)
         SongSaver.save_song_to_disk(
             main_score,
@@ -54,15 +59,15 @@ class Predictor:
             Path("..\\FluidSynth\\GeneralUser GS v1.471.sf2"),
         )
 
-    def _generate_lyrics(self, sentiment: Sentiment, n_verses: int) -> list[str]:
+    def _generate_lyrics(self, n_verses: int) -> list[str]:
         lyric_generator = LyricGenerator(
             Constants.LYRICS_MAX_SEQ_LEN, self._lyrics_tokenizer, self._lyrics_model
         )
-        lyrics = lyric_generator.run(n_verses, sentiment)
+        lyrics = lyric_generator.run(n_verses, self._sentiment)
         return lyrics
 
     def run(self, prompt: str, n_verses: int) -> None:
-        sentiment = self._classify_sentiment(prompt)
+        self._sentiment = self._classify_sentiment(prompt)
         # TODO - generate music and lyrics in parallel
-        self._generate_music(sentiment)
-        self._lyrics = self._generate_lyrics(sentiment, n_verses)
+        self._generate_music()
+        self._lyrics = self._generate_lyrics(n_verses)
