@@ -4,6 +4,7 @@ import tkinter as tk
 from typing import Final
 
 from predict.predict import Predictor
+import simpleaudio as sa
 
 
 class GUI:
@@ -29,6 +30,12 @@ class GUI:
         )
         self._lyrics_label.pack()
 
+        self._is_playing: bool = False
+        self._play_song_button = tk.Button(
+            self._main_window, text="Play", command=self._change_playing_state
+        )
+        self._play_song_button.pack()
+
     def __create_main_window(self) -> Tk:
         WINDOW_TITLE: Final[str] = "apptitle"
         MIN_WINDOW_WIDTH_IN_PIXELS: Final[int] = 1100
@@ -48,6 +55,14 @@ class GUI:
         n_verses = int(self._n_verses_scale.get())
         self._predictor.run(prompt, n_verses)
         self._refresh_view()
+
+    def _change_playing_state(self) -> None:
+        self._is_playing = not self._is_playing
+        if self._is_playing:
+            wave_obj = sa.WaveObject.from_wave_file("../Outputs/test.wav")
+            wave_obj.play()
+        else:
+            pass
 
     def _create_user_input_section(self) -> None:
         label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT)
