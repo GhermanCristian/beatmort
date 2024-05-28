@@ -16,12 +16,10 @@ from train.utils import Utils
 class ModelCreator:
     def __init__(
         self,
-        num_classes: int,
         word_index: dict[str, int],
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
-        self._num_classes = num_classes
         self._word_index = word_index
         self._vocabulary_size = len(word_index) + 1
         self._batch_size = batch_size
