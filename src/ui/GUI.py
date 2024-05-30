@@ -25,9 +25,9 @@ class GUI:
             label="Number of verses",
             font=self.FONT,
         )
-        self._n_verses_scale.pack()
+        self._n_verses_scale.grid(row=2, column=0, padx=10, pady=10)
         submit_button = tk.Button(self._main_window, text="Submit", command=self._on_submit_action)
-        submit_button.pack()
+        submit_button.grid(row=2, column=2, padx=10, pady=10)
         self._sentiment_label = tk.Label(
             self._main_window,
             text="You seem to be experiencing...",
@@ -35,26 +35,26 @@ class GUI:
             justify="left",
             font=self.FONT,
         )
-        self._sentiment_label.pack()
-        self._lyrics_label: tk.Label = tk.Label(
-            self._main_window,
-            text="Lyrics will end up here",
-            anchor="w",
-            justify="left",
-            font=self.FONT,
-        )
-        self._lyrics_label.pack()
+        self._sentiment_label.grid(row=4, column=0, padx=10, pady=10, columnspan=3)
 
         self._is_playing: bool = False
         self._song: Optional[sa.PlayObject] = None
         self._play_song_button = tk.Button(
             self._main_window, text="Play", command=self._change_playing_state, state="disabled"
         )
-        self._play_song_button.pack()
+        self._play_song_button.grid(row=5, column=0, padx=10, pady=10, columnspan=3)
+        self._lyrics_label: tk.Label = tk.Label(
+            self._main_window,
+            text="",
+            anchor="w",
+            justify="left",
+            font=self.FONT,
+        )
+        self._lyrics_label.grid(row=6, column=0, padx=10, pady=10, columnspan=3)
 
     def __create_main_window(self) -> Tk:
         WINDOW_TITLE: Final[str] = "apptitle"
-        MIN_WINDOW_WIDTH_IN_PIXELS: Final[int] = 720
+        MIN_WINDOW_WIDTH_IN_PIXELS: Final[int] = 600
         MIN_WINDOW_HEIGHT_IN_PIXELS: Final[int] = 720
 
         main_window: Tk = Tk()
@@ -71,7 +71,7 @@ class GUI:
         )
 
     def _on_submit_action(self) -> None:
-        prompt = self._user_input.get()
+        prompt = self._user_input.get("1.0","end-1c")
         n_verses = int(self._n_verses_scale.get())
         self._predictor.run(prompt, n_verses)
         self._refresh_view()
@@ -89,9 +89,9 @@ class GUI:
 
     def _create_user_input_section(self) -> None:
         label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT)
-        label.pack()
-        user_input = tk.Entry(self._main_window, width=60, font=self.FONT_INPUT)
-        user_input.pack()
+        label.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
+        user_input = tk.Text(self._main_window, height=2, width=60, font=self.FONT_INPUT)
+        user_input.grid(row=1, column=0, padx=10, pady=10, columnspan=3)
         return user_input
 
     def run(self) -> None:
