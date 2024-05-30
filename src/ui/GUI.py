@@ -16,7 +16,14 @@ class GUI:
         self._main_window: Tk = self.__create_main_window()
         self._user_input: tk.Entry = self._create_user_input_section()
         self._n_verses_scale: tk.Scale = Scale(
-            self._main_window, from_=2, to=32, length=200, width=25, orient="horizontal"
+            self._main_window,
+            from_=2,
+            to=32,
+            length=200,
+            width=25,
+            orient="horizontal",
+            label="Number of verses",
+            font=self.FONT,
         )
         self._n_verses_scale.pack()
         submit_button = tk.Button(self._main_window, text="Submit", command=self._on_submit_action)
@@ -59,7 +66,9 @@ class GUI:
     def _refresh_view(self) -> None:
         self._lyrics_label.config(text="\n".join(self._predictor.lyrics))
         # TODO - treat NEUTRAL case
-        self._sentiment_label.config(text=f"You seem to be experiencing {self._predictor.sentiment.upper()}")
+        self._sentiment_label.config(
+            text=f"You seem to be experiencing {self._predictor.sentiment.upper()}"
+        )
 
     def _on_submit_action(self) -> None:
         prompt = self._user_input.get()
