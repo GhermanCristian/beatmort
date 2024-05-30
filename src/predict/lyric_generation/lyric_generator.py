@@ -47,11 +47,14 @@ class LyricGenerator:
 
     def _beautify_verse(self, verse: str) -> str:
         for pair in [
-            ("i", "I"),  # TODO - improve this
+            ("i", "I"),
             ("im", "I'm"),
             ("dont", "don't"),
+            ("cant", "can't"),
             ("dick", "d**k"),
             ("fuck", "f**k"),
+            ("shit", "s**t"),
+            ("bitch", "b***h"),
         ]:
             verse = re.sub(rf"\b{pair[0]}\b", pair[1], verse)
         return verse
@@ -76,7 +79,9 @@ class LyricGenerator:
                 current_seed = random.choice(seeds)
             else:
                 new_seed = " ".join(current_seed.split()[-verse_length:])
-                verse = self._beautify_verse(new_seed).capitalize()
+                verse = self._beautify_verse(new_seed)
+                # capitalize first letter, without modifying the others
+                verse = verse[:1].upper() + verse[1:]
                 lyrics.append(verse)
                 current_seed = new_seed
                 i += 1
