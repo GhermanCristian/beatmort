@@ -1,10 +1,12 @@
 import threading
-from tkinter import Tk, Scale
+from tkinter import Menu, Tk, Scale
 import tkinter as tk
 from typing import Final, Optional
 
 from predict.predict import Predictor
 import simpleaudio as sa
+
+from ui.menu_toolbar import MenuToolbar
 
 
 class GUI:
@@ -73,6 +75,8 @@ class GUI:
         main_window: Tk = Tk()
         main_window.title(WINDOW_TITLE)
         main_window.minsize(MIN_WINDOW_WIDTH_IN_PIXELS, MIN_WINDOW_HEIGHT_IN_PIXELS)
+        menu_bar: Menu = MenuToolbar(main_window).create()
+        main_window.config(menu=menu_bar)
 
         return main_window
 
