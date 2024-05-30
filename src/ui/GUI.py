@@ -8,8 +8,8 @@ import simpleaudio as sa
 
 
 class GUI:
-    FONT = ("Roman", 18)
-    FONT_INPUT = ("Roman", 16)
+    FONT_LARGE = ("Roman", 18)
+    FONT_SMALL = ("Roman", 16)
 
     def __init__(self) -> None:
         self._predictor = Predictor()
@@ -23,7 +23,7 @@ class GUI:
             width=25,
             orient="horizontal",
             label="Number of verses",
-            font=self.FONT,
+            font=self.FONT_LARGE,
         )
         self._n_verses_scale.grid(row=2, column=0, padx=10, pady=10)
         submit_button = tk.Button(
@@ -32,7 +32,7 @@ class GUI:
             command=self._on_submit_action,
             width=10,
             height=1,
-            font=self.FONT_INPUT,
+            font=self.FONT_SMALL,
         )
         submit_button.grid(row=2, column=2, padx=10, pady=10)
         self._sentiment_label = tk.Label(
@@ -40,7 +40,7 @@ class GUI:
             text="You seem to be experiencing...",
             anchor="w",
             justify="left",
-            font=self.FONT,
+            font=self.FONT_LARGE,
         )
         self._sentiment_label.grid(row=4, column=0, padx=10, pady=10, columnspan=3)
 
@@ -48,12 +48,12 @@ class GUI:
         self._song: Optional[sa.PlayObject] = None
         self._play_song_button = tk.Button(
             self._main_window,
-            text="Play",
+            text="Play song",
             command=self._change_playing_state,
             state="disabled",
             width=10,
             height=1,
-            font=self.FONT_INPUT,
+            font=self.FONT_SMALL,
         )
         self._play_song_button.grid(row=5, column=0, padx=10, pady=10, columnspan=3)
         self._lyrics_label: tk.Label = tk.Label(
@@ -61,7 +61,7 @@ class GUI:
             text="",
             anchor="w",
             justify="left",
-            font=self.FONT,
+            font=self.FONT_LARGE,
         )
         self._lyrics_label.grid(row=6, column=0, padx=10, pady=10, columnspan=3)
 
@@ -101,9 +101,9 @@ class GUI:
             self._play_song_button.config(text="Play")
 
     def _create_user_input_section(self) -> None:
-        label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT)
+        label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT_LARGE)
         label.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
-        user_input = tk.Text(self._main_window, height=2, width=60, font=self.FONT_INPUT)
+        user_input = tk.Text(self._main_window, height=2, width=60, font=self.FONT_SMALL)
         user_input.grid(row=1, column=0, padx=10, pady=10, columnspan=3)
         return user_input
 
