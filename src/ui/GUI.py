@@ -18,7 +18,7 @@ class GUI:
         self._n_verses_scale: tk.Scale = Scale(
             self._main_window,
             from_=2,
-            to=32,
+            to=12,  # TODO - add scrolling
             length=200,
             width=25,
             orient="horizontal",
@@ -26,7 +26,14 @@ class GUI:
             font=self.FONT,
         )
         self._n_verses_scale.grid(row=2, column=0, padx=10, pady=10)
-        submit_button = tk.Button(self._main_window, text="Submit", command=self._on_submit_action)
+        submit_button = tk.Button(
+            self._main_window,
+            text="Submit",
+            command=self._on_submit_action,
+            width=10,
+            height=1,
+            font=self.FONT_INPUT,
+        )
         submit_button.grid(row=2, column=2, padx=10, pady=10)
         self._sentiment_label = tk.Label(
             self._main_window,
@@ -40,7 +47,13 @@ class GUI:
         self._is_playing: bool = False
         self._song: Optional[sa.PlayObject] = None
         self._play_song_button = tk.Button(
-            self._main_window, text="Play", command=self._change_playing_state, state="disabled"
+            self._main_window,
+            text="Play",
+            command=self._change_playing_state,
+            state="disabled",
+            width=10,
+            height=1,
+            font=self.FONT_INPUT,
         )
         self._play_song_button.grid(row=5, column=0, padx=10, pady=10, columnspan=3)
         self._lyrics_label: tk.Label = tk.Label(
@@ -71,7 +84,7 @@ class GUI:
         )
 
     def _on_submit_action(self) -> None:
-        prompt = self._user_input.get("1.0","end-1c")
+        prompt = self._user_input.get("1.0", "end-1c")
         n_verses = int(self._n_verses_scale.get())
         self._predictor.run(prompt, n_verses)
         self._refresh_view()
