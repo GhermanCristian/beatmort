@@ -45,6 +45,17 @@ class LyricGenerator:
             seed_lines.append(line)
         return seed_lines
 
+    def _beautify_verse(self, verse: str) -> str:
+        for pair in [
+            ("i", "I"),  # TODO - improve this
+            ("im", "I'm"),
+            ("dont", "don't"),
+            ("dick", "d**k"),
+            ("fuck", "f**k"),
+        ]:
+            verse = re.sub(rf"\b{pair[0]}\b", pair[1], verse)
+        return verse
+
     def run(self, n_verses: int, sentiment: Sentiment) -> list[str]:
         seeds = self._get_seeds_for_sentiment(sentiment)
         current_seed = random.choice(seeds)
@@ -57,7 +68,7 @@ class LyricGenerator:
                 output_word = self._get_next_word(current_seed)
                 current_seed += " " + output_word
 
-            # verse is only compose of one repeated word,
+            # verse has less than 3 unique words,
             # or previous verse identical to current one
             if len(set(current_seed.split()[-verse_length:])) <= 2 or (
                 i > 1 and current_seed == lyrics[i - 1]
@@ -65,7 +76,8 @@ class LyricGenerator:
                 current_seed = random.choice(seeds)
             else:
                 new_seed = " ".join(current_seed.split()[-verse_length:])
-                lyrics.append(new_seed.capitalize())
+                verse = self._beautify_verse(new_seed).capitalize()
+                lyrics.append(verse)
                 current_seed = new_seed
                 i += 1
 
