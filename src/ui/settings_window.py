@@ -2,6 +2,8 @@ from pathlib import Path
 from tkinter import Button, Label, Tk, Toplevel, filedialog
 from typing import Final
 
+from constants import Constants
+
 
 class SettingsWindow:
     X_PADDING: Final[int] = 15
@@ -51,7 +53,7 @@ class SettingsWindow:
 
         downloadLocationField: Label = Label(
             self._settings_window,
-            text=str(Path(".").resolve()),
+            text=str(Path(Constants.OUTPUT_SAVE_DIR).resolve()),
             font=("Roman", self.NORMAL_FONT_SIZE),
         )  # bg=utilsGUI.CREAM_COLOR)
         downloadLocationField.grid(
@@ -83,10 +85,11 @@ class SettingsWindow:
     def _select_base_download_location(self) -> str:
         DOWNLOAD_LOCATION_DIALOG_TITLE: Final[str] = "Select the download location"
         return filedialog.askdirectory(
-            initialdir=str(Path(".").resolve()), title=DOWNLOAD_LOCATION_DIALOG_TITLE
+            initialdir=str(Path(Constants.OUTPUT_SAVE_DIR).resolve()),
+            title=DOWNLOAD_LOCATION_DIALOG_TITLE,
         )
 
     def _set_new_download_location(self) -> None:
         new_download_location: str = self._select_base_download_location()
         self._download_location_field.config(text=new_download_location)
-        settingsProcessor.setDownloadLocation(new_download_location)
+        Constants.OUTPUT_SAVE_DIR = new_download_location

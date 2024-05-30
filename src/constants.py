@@ -13,3 +13,5 @@ class Constants:
     LYRICS_MODEL_PATH = "../data/Models/model_lyrics.keras"
     LYRICS_TOKENIZER_PATH = "../data/Tokenizers/tokenizer_lyrics.pkl"
     LYRICS_MAX_SEQ_LEN = 34
+
+    OUTPUT_SAVE_DIR = "../Outputs"
