@@ -1,22 +1,24 @@
 from tkinter import Menu, Tk
 from typing import Final
 
+from ui.settings_window import SettingsWindow
+
 
 class MenuToolbar:
     def __init__(self, main_window: Tk) -> None:
         self._main_window = main_window
 
     def _settings_command(self) -> None:
-        pass#SettingsWindow(self._main_window)
+        SettingsWindow(self._main_window)
 
     def _help_command(self) -> None:
-        pass#HelpWindow(self._main_window)
+        pass  # HelpWindow(self._main_window)
 
     def _about_command(self) -> None:
-        pass#AboutUBTorrentWindow(self._main_window)
+        pass  # AboutUBTorrentWindow(self._main_window)
 
     def _send_feedback_command(self) -> None:
-        pass#SendFeedbackWindow(self._main_window)
+        pass  # SendFeedbackWindow(self._main_window)
 
     def create(self) -> Menu:
         SETTINGS_COMMAND_LABEL: Final[str] = "Settings"
