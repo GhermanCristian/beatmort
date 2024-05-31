@@ -15,7 +15,7 @@ class GUI:
 
     def __init__(self) -> None:
         self._predictor = Predictor()
-        self._main_window: Tk = self.__create_main_window()
+        self._main_window: Tk = self._create_main_window()
         self._user_input: tk.Entry = self._create_user_input_section()
         self._n_verses_scale: tk.Scale = Scale(
             self._main_window,
@@ -67,7 +67,7 @@ class GUI:
         )
         self._lyrics_label.grid(row=6, column=0, padx=10, pady=10, columnspan=3)
 
-    def __create_main_window(self) -> Tk:
+    def _create_main_window(self) -> Tk:
         WINDOW_TITLE: Final[str] = "apptitle"
         MIN_WINDOW_WIDTH_IN_PIXELS: Final[int] = 600
         MIN_WINDOW_HEIGHT_IN_PIXELS: Final[int] = 720
@@ -97,7 +97,7 @@ class GUI:
     def _change_playing_state(self) -> None:
         self._is_playing = not self._is_playing
         if self._is_playing:
-            wave_obj = sa.WaveObject.from_wave_file("../Outputs/test.wav")
+            wave_obj = sa.WaveObject.from_wave_file("../Outputs/name.wav")
             self._song = wave_obj.play()
             self._play_song_button.config(text="Stop")
         else:
