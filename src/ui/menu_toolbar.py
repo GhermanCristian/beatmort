@@ -1,6 +1,7 @@
 from tkinter import Menu, Tk
 from typing import Final
 
+from ui.help_window import HelpWindow
 from ui.settings_window import SettingsWindow
 
 
@@ -12,7 +13,7 @@ class MenuToolbar:
         SettingsWindow(self._main_window)
 
     def _help_command(self) -> None:
-        pass  # HelpWindow(self._main_window)
+        HelpWindow(self._main_window)
 
     def _about_command(self) -> None:
         pass  # AboutUBTorrentWindow(self._main_window)
