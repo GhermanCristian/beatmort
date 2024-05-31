@@ -20,7 +20,7 @@ class DataContainer:
 class DataLoader:
     def _filter_lines(self) -> list[str]:
         all_lines = set()
-        with open("all_lyrics.txt", "r") as f:
+        with open("../data/Datasets/lyrics/all_lyrics.txt", "r") as f:
             lines = f.readlines()
             all_lines.update(lines)
 
@@ -30,7 +30,7 @@ class DataLoader:
                 if word not in count:
                     count[word] = 0
                 count[word] += 1
-        filtered_lines = [l for l in all_lines if all(count[w] >= 50 for w in l.split())]
+        filtered_lines = [l for l in all_lines if all(count[w] >= 45 for w in l.split())]
         filtered_lines = [l for l in filtered_lines if len(l.split()) > 2]
         return filtered_lines
 
