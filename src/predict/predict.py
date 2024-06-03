@@ -54,7 +54,6 @@ class Predictor:
         SongSaver.save_song_to_disk(
             main_score,
             Constants.OUTPUT_SAVE_DIR + "/name", # TODO - improve this
-            Path("C:\Program Files\MuseScore 4\\bin\MuseScore4.exe"),
             Path("..\\FluidSynth\\fluidsynth.exe"),
             Path("..\\FluidSynth\\GeneralUser GS v1.471.sf2"),
         )
