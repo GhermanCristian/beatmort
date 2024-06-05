@@ -27,6 +27,7 @@ class GUI:
             label="Number of verses",
             font=self.FONT_LARGE,
         )
+        self._n_verses_scale.set(6)
         self._n_verses_scale.grid(row=2, column=0, padx=10, pady=10)
         submit_button = tk.Button(
             self._main_window,
@@ -68,7 +69,7 @@ class GUI:
         self._lyrics_label.grid(row=6, column=0, padx=10, pady=10, columnspan=3)
 
     def _create_main_window(self) -> Tk:
-        WINDOW_TITLE: Final[str] = "apptitle"
+        WINDOW_TITLE: Final[str] = "Moodsic"
         MIN_WINDOW_WIDTH_IN_PIXELS: Final[int] = 600
         MIN_WINDOW_HEIGHT_IN_PIXELS: Final[int] = 720
 
