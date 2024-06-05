@@ -21,7 +21,6 @@ class MelodyInfo:
 class SentimentToMelodies:
     INSTRUMENTS: dict[Sentiment, list[Type[instrument.Instrument]]] = {
         Sentiment.JOY: [
-            instrument.UnpitchedPercussion,
             instrument.Marimba,
             instrument.Piano,
             instrument.Recorder,  # mai strica filmu

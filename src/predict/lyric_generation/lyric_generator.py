@@ -50,6 +50,7 @@ class LyricGenerator:
             ("i", "I"),
             ("im", "I'm"),
             ("id", "I'd"),
+            ("aint", "ain't"),
             ("dont", "don't"),
             ("cant", "can't"),
             ("dick", "d**k"),
