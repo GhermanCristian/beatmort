@@ -49,6 +49,7 @@ class LyricGenerator:
         for pair in [
             ("i", "I"),
             ("im", "I'm"),
+            ("id", "I'd"),
             ("dont", "don't"),
             ("cant", "can't"),
             ("dick", "d**k"),
