@@ -26,6 +26,7 @@ class Predictor:
         return self._sentiment.value
 
     def load_artifacts(self) -> None:
+        """Loads the artifacts necessary for the classification and predictions"""
         with open(Constants.SENTIMENT_TOKENIZER_PATH, "rb") as tokenizer_path:
             self._sentiment_tokenizer = pickle.load(tokenizer_path)
         self._sentiment_model = load_model(Constants.SENTIMENT_MODEL_PATH)
@@ -41,6 +42,14 @@ class Predictor:
         self._lyrics_model = load_model(Constants.LYRICS_MODEL_PATH)
 
     def _classify_sentiment(self, prompt: str) -> Sentiment:
+        """Classifies the sentiment expressed in the prompt
+
+        Args:
+            prompt (str): Prompt that is used for classifying the sentiment
+
+        Returns:
+            Sentiment: Sentiment expressed in the prompt
+        """
         sentiment_classifier = SentimentClassifier(
             self._sentiment_tokenizer, self._sentiment_model, Constants.SENTIMENT_MAX_SEQ_LEN
         )
@@ -48,6 +57,7 @@ class Predictor:
         return sentiment
 
     def _generate_music(self) -> None:
+        """Generates music and saves it to disk"""
         music_creator = MusicCreator(self._music_model, self._music_seed, self._music_reverse_index)
         melodies = SentimentToMelodies().run(self._sentiment)
         main_score = music_creator.run(128, melodies)
@@ -59,6 +69,14 @@ class Predictor:
         )
 
     def _generate_lyrics(self, n_verses: int) -> list[str]:
+        """Generates verses
+
+        Args:
+            n_verses (int): Number of verses
+
+        Returns:
+            list[str]: List of verses
+        """
         lyric_generator = LyricGenerator(
             Constants.LYRICS_MAX_SEQ_LEN, self._lyrics_tokenizer, self._lyrics_model
         )
@@ -66,7 +84,13 @@ class Predictor:
         return lyrics
 
     def run(self, prompt: str, n_verses: int) -> None:
+        """Given a prompt, detects the sentiment expressed in it and creates
+        verses and melodies accordingly
+
+        Args:
+            prompt (str): Prompt that is used for classifying the sentiment
+            n_verses (int): Number of output verses
+        """
         self._sentiment = self._classify_sentiment(prompt)
-        # TODO - generate music and lyrics in parallel
         self._generate_music()
         self._lyrics = self._generate_lyrics(n_verses)

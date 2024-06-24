@@ -256,6 +256,17 @@ class SentimentToMelodies:
         identical: bool = False,
         durations: bool = False,
     ) -> list:
+        """Samples n_items from a list of properties.
+
+        Args:
+            property_list (list): Properties that are sampled
+            n_items (int): Number of items to be retrieved
+            identical (bool, optional): If set, all retrieved items are identical. Defaults to False.
+            durations (bool, optional): If set, the properties are sorted in decreasing order. Defaults to False.
+
+        Returns:
+            list: List of sampled properties
+        """
         n_properties = len(property_list)
         if identical:
             return [random.choice(property_list)] * n_items
@@ -265,6 +276,14 @@ class SentimentToMelodies:
         return samples
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
+        """Randomly selects the properties that will be applied to each of the song melodies
+
+        Args:
+            sentiment (Sentiment): Sentiment which the melodies will follow
+
+        Returns:
+            list[MelodyInfo]: Information about every melody
+        """
         n_melodies: int = random.choice(self.N_MELODIES[sentiment])
         instrument_types: list[Type[instrument.Instrument]] = self._sample_properties(
             self.INSTRUMENTS[sentiment], n_melodies

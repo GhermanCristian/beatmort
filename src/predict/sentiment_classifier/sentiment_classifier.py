@@ -14,6 +14,15 @@ class SentimentClassifier:
         self._max_seq_len = max_seq_len
 
     def run(self, prompt: str) -> Sentiment:
+        """Given a prompt, classifies the sentiment expressed in it. If the prediction
+        confidence is not higher than a given threshold, NEUTRAL is used by default
+
+        Args:
+            prompt (str): Prompt that is analysed
+
+        Returns:
+            Sentiment: Sentiment expressed in the prompt
+        """
         seq = self._tokenizer.texts_to_sequences([prompt])
         padded = pad_sequences(seq, maxlen=self._max_seq_len)
 
