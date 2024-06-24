@@ -14,6 +14,15 @@ class LyricGenerator:
         self._model = model
 
     def _get_next_word(self, current_seed: str) -> str:
+        """Given a seed, determines the next word. Some degree of randomness is used to ensure
+        non-determinism.
+
+        Args:
+            current_seed (str): Current seed word
+
+        Returns:
+            str: Next word to be used
+        """
         token_list = self._tokenizer.texts_to_sequences([current_seed])[0]
         token_list = pad_sequences([token_list], maxlen=self._max_sequence_len, padding="pre")
         prediction = self._model.predict(token_list, verbose=0)[0]
@@ -36,6 +45,14 @@ class LyricGenerator:
         return ""
 
     def _get_seeds_for_sentiment(self, sentiment: Sentiment) -> list[str]:
+        """Reads list of seeds for a given sentiment and parses them
+
+        Args:
+            sentiment (Sentiment): The sentiment whose seeds are retrieved
+
+        Returns:
+            list[str]: List of parsed seeds
+        """
         seeds = pd.read_csv(f"../data/Seeds/lyrics_seeds.csv", encoding="utf-8")
         filtered_seeds = seeds[seeds["Emotion"] == sentiment.value]
         seed_lines = []
@@ -46,6 +63,14 @@ class LyricGenerator:
         return seed_lines
 
     def _beautify_verse(self, verse: str) -> str:
+        """Improves the content of a verse in order to make it more suitable
+
+        Args:
+            verse (str): Verse which may be modified
+
+        Returns:
+            str: Modified verse
+        """
         for pair in [
             ("i", "I"),
             ("im", "I'm"),
@@ -62,6 +87,15 @@ class LyricGenerator:
         return verse
 
     def run(self, n_verses: int, sentiment: Sentiment) -> list[str]:
+        """Creates a number of verses following a particular sentiment
+
+        Args:
+            n_verses (int): Number of output verses
+            sentiment (Sentiment): Sentiment which the verses follow
+
+        Returns:
+            list[str]: List of verses
+        """
         seeds = self._get_seeds_for_sentiment(sentiment)
         current_seed = random.choice(seeds)
         verse_length = 8
