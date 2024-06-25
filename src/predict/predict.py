@@ -1,4 +1,5 @@
 import pickle
+import threading
 
 import numpy as np
 from constants import Constants
@@ -92,5 +93,6 @@ class Predictor:
             n_verses (int): Number of output verses
         """
         self._sentiment = self._classify_sentiment(prompt)
-        self._generate_music()
+        music_thread = threading.Thread(target=self._generate_music)
+        music_thread.start()
         self._lyrics = self._generate_lyrics(n_verses)
