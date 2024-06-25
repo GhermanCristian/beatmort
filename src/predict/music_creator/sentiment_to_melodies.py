@@ -52,7 +52,6 @@ class SentimentToMelodies:
         ],
         Sentiment.SADNESS: [
             instrument.Celesta,
-            instrument.Contrabass, # ?
             instrument.Flute,
             instrument.Glockenspiel,
             instrument.Harp,
@@ -73,7 +72,6 @@ class SentimentToMelodies:
             instrument.ChurchBells,
             instrument.Clarinet,
             instrument.Clavichord,
-            instrument.Contrabass,
             instrument.ElectricBass,
             instrument.ElectricGuitar,
             instrument.ElectricPiano,
