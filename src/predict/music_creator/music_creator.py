@@ -108,9 +108,6 @@ class MusicCreator:
         while len(measure) < n_groups:
             seed = seed.reshape(1, Constants.MUSIC_FEATURE_LENGTH, 1)
             prediction = self._model.predict(seed, verbose=0)[0]
-            prediction = np.log(prediction) / 0.25
-            exp_preds = np.exp(prediction)
-            prediction = exp_preds / np.sum(exp_preds)
             pos = np.argmax(prediction)
             pos_n = pos / float(self._vocab_size)
             group = self._reverse_index[pos]
