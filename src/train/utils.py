@@ -12,6 +12,7 @@ class Utils:
 
     @staticmethod
     def download_embedding_matrix() -> None:
+        """Downloads embedding matrix and extracts the zip archive, which is then deleted"""
         urllib.request.urlretrieve(
             f"https://dl.fbaipublicfiles.com/fasttext/vectors-english/{Utils.EMBEDDING_MATRIX_NAME}.zip",
             f"{Utils.EMBEDDING_MATRIX_PATH}.zip",
@@ -23,6 +24,15 @@ class Utils:
 
     @staticmethod
     def load_embedding_matrix(vocabulary_size: int, word_index: dict[str, int]) -> list[np.ndarray]:
+        """Loads the embeddings of the words available in the index
+
+        Args:
+            vocabulary_size (int): Number of words in the resulting matrix
+            word_index (dict[str, int]): Mapping of words to numerical indices
+
+        Returns:
+            list[np.ndarray]: Word embedding matrix
+        """
         embedding_matrix = np.zeros((vocabulary_size, Utils.N_DIMS_EMBEDDING))
         with open(
             Utils.EMBEDDING_MATRIX_PATH, "r", encoding="utf-8", newline="\n", errors="ignore"

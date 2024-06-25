@@ -23,6 +23,15 @@ class ModelCreator:
         self._data_container = data_container
 
     def create_model(self, first_layer_units: int = 512, dropout_rate: float = 0.25) -> Model:
+        """Creates a new model
+
+        Args:
+            first_layer_units (int, optional): Number of units in the first LSTM layer. Defaults to 512.
+            dropout_rate (float, optional): Dropout rate. Defaults to 0.25.
+
+        Returns:
+            Model: Compiled model (not yet trained)
+        """
         model = Sequential()
         model.add(
             LSTM(
@@ -44,6 +53,17 @@ class ModelCreator:
         return model
 
     def train_model(self, model: Model, n_epochs: int) -> History:
+        """Trains a model for a number of epochs. The best model (defined by its validation
+        accuracy) is saved after every epoch. Moreover, the process stops if no progress is
+        made for half the number of epochs. Training starts in epoch 0.
+
+        Args:
+            model (Model): Model that is trained
+            n_epochs (int): Number of epochs that the model is trained for.
+
+        Returns:
+            History: Contains the progression of the main training metrics (loss, accuracy, ..)
+        """
         checkpoint = ModelCheckpoint(
             Constants.MUSIC_MODEL_PATH,
             monitor="val_categorical_accuracy",
@@ -64,6 +84,14 @@ class ModelCreator:
         return history
 
     def evaluate_model(self, model: Model) -> list[str]:
+        """Evaluates the model on the existing seed dataset split
+
+        Args:
+            model (Model): Model that is evaluated
+
+        Returns:
+            list[str]: Validation loss and accuracy
+        """
         result = model.evaluate(
             self._data_container.x_seed, self._data_container.y_seed, batch_size=self._batch_size
         )
