@@ -70,7 +70,7 @@ class Predictor:
         )
 
     def _generate_lyrics(self, n_verses: int) -> list[str]:
-        """Generates verses
+        """Generates verses and saves output to disk
 
         Args:
             n_verses (int): Number of verses
@@ -82,6 +82,7 @@ class Predictor:
             Constants.LYRICS_MAX_SEQ_LEN, self._lyrics_tokenizer, self._lyrics_model
         )
         lyrics = lyric_generator.run(n_verses, self._sentiment)
+        Path(Constants.OUTPUT_SAVE_DIR + "/lyrics.txt").write_text("\n".join(lyrics))
         return lyrics
 
     def run(self, prompt: str, n_verses: int) -> None:
