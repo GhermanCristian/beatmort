@@ -83,10 +83,11 @@ class GUI:
 
     def _refresh_view(self) -> None:
         self._lyrics_label.config(text="\n".join(self._predictor.lyrics))
-        # TODO - treat NEUTRAL case
-        self._sentiment_label.config(
-            text=f"You seem to be experiencing {self._predictor.sentiment.upper()}"
-        )
+        if "neutral" in self._predictor.sentiment:
+            label_text = "You seem pretty neutral today"
+        else:
+            label_text = f"You seem to be experiencing {self._predictor.sentiment.upper()}"
+        self._sentiment_label.config(text=label_text)
 
     def _on_submit_action(self) -> None:
         prompt = self._user_input.get("1.0", "end-1c")
@@ -106,7 +107,9 @@ class GUI:
             self._play_song_button.config(text="Play")
 
     def _create_user_input_section(self) -> None:
-        label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT_LARGE)
+        label = tk.Label(
+            self._main_window, text="How are you feeling today ?", font=self.FONT_LARGE
+        )
         label.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
         user_input = tk.Text(self._main_window, height=2, width=60, font=self.FONT_SMALL)
         user_input.grid(row=1, column=0, padx=10, pady=10, columnspan=3)
