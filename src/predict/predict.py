@@ -1,3 +1,4 @@
+from datetime import datetime
 import pickle
 import threading
 
@@ -64,7 +65,7 @@ class Predictor:
         main_score = music_creator.run(128, melodies)
         SongSaver.save_song_to_disk(
             main_score,
-            Constants.OUTPUT_SAVE_DIR + "/name", # TODO - improve this
+            f"{Constants.OUTPUT_SAVE_DIR}/{self._output_name}",
             Path("..\\FluidSynth\\fluidsynth.exe"),
             Path("..\\FluidSynth\\GeneralUser GS v1.471.sf2"),
         )
@@ -82,7 +83,7 @@ class Predictor:
             Constants.LYRICS_MAX_SEQ_LEN, self._lyrics_tokenizer, self._lyrics_model
         )
         lyrics = lyric_generator.run(n_verses, self._sentiment)
-        Path(Constants.OUTPUT_SAVE_DIR + "/lyrics.txt").write_text("\n".join(lyrics))
+        Path(f"{Constants.OUTPUT_SAVE_DIR}/{self._output_name}.txt").write_text("\n".join(lyrics))
         return lyrics
 
     def run(self, prompt: str, n_verses: int) -> None:
@@ -94,6 +95,7 @@ class Predictor:
             n_verses (int): Number of output verses
         """
         self._sentiment = self._classify_sentiment(prompt)
+        self._output_name = str(datetime.now()).replace(" ", "___").replace(":", "_")[:-7]
         music_thread = threading.Thread(target=self._generate_music)
         music_thread.start()
         self._lyrics = self._generate_lyrics(n_verses)
