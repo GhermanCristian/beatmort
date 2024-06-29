@@ -175,10 +175,8 @@ class MusicCreator:
             stream.Part: Melody object, converted to the correct key, if necessary
         """
         k: key.Key = melody_midi.analyze("key")
-        print(f"Initial key = {k}; target = {melody_info.key}")
         i = interval.Interval(k.tonic, pitch.Pitch(melody_info.key))
         melody_midi.transpose(i, inPlace=True)
-        print(f"Transposed to {melody_midi.analyze('key')}")
         melody_midi.transpose(12 * melody_info.octave_offset, inPlace=True)
 
         return melody_midi

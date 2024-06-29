@@ -41,7 +41,6 @@ def train_music_creator() -> None:
     index = data_loader.create_indices(filtered_notes)
     data_container: DataContainerMusic = data_loader.run(filtered_notes, seed_size, index)
     DataLoaderMusic.save_seed_to_disk(data_container)
-    print("After data_container")
 
     model_creator = ModelCreatorMusic(
         validation_size=0.2,

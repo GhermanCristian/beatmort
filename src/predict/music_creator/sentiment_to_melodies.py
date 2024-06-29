@@ -23,7 +23,7 @@ class SentimentToMelodies:
         Sentiment.JOY: [
             instrument.Marimba,
             instrument.Piano,
-            instrument.Recorder,  # mai strica filmu
+            instrument.Recorder,
             instrument.SteelDrum,
             instrument.Vibraphone,
             instrument.Xylophone,
@@ -37,7 +37,7 @@ class SentimentToMelodies:
             instrument.Piano,
             instrument.PipeOrgan,
             instrument.Sampler,
-            instrument.Shakuhachi,  # nu e foarte fear
+            instrument.Shakuhachi,
             instrument.Sitar,
             instrument.StringInstrument,
             instrument.Timpani,
@@ -45,7 +45,7 @@ class SentimentToMelodies:
             instrument.Ukulele,
         ],
         Sentiment.ANGER: [
-            instrument.BrassInstrument,  # ??
+            instrument.BrassInstrument,
             instrument.Piano,
             instrument.Sampler,
             instrument.Timpani,
@@ -99,7 +99,7 @@ class SentimentToMelodies:
             instrument.Xylophone,
         ],
         Sentiment.DISGUST: [
-            instrument.Accordion, # ?
+            instrument.Accordion,
             instrument.UnpitchedPercussion,
             instrument.AltoSaxophone,
             instrument.Banjo,
@@ -144,7 +144,7 @@ class SentimentToMelodies:
             instrument.Koto,
             instrument.Shamisen,
             instrument.SopranoSaxophone,
-            instrument.Trumpet, # ?
+            instrument.Trumpet,
             instrument.Viola,
             instrument.Violin,
             instrument.Violoncello,
@@ -312,13 +312,6 @@ class SentimentToMelodies:
         articulation_types: list[Optional[Type[articulations.Articulation]]] = (
             self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
         )
-        print("instrument_types", instrument_types)
-        print("n groups", n_groups)
-        print("durations", durations)
-        print("pause_durations", pause_durations)
-        print("octave_offsets", octave_offsets)
-        print("song_keys", song_keys)
-        print("articulations", articulation_types)
         melodies = [
             MelodyInfo(
                 instrument_types[i](),
@@ -333,5 +326,4 @@ class SentimentToMelodies:
             )
             for i in range(n_melodies)
         ]
-        print("offsets", [m.offset for m in melodies])
         return melodies

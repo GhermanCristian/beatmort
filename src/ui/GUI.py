@@ -20,7 +20,7 @@ class GUI:
         self._n_verses_scale: tk.Scale = Scale(
             self._main_window,
             from_=2,
-            to=12,  # TODO - add scrolling
+            to=12,
             length=200,
             width=25,
             orient="horizontal",
