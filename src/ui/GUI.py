@@ -3,6 +3,7 @@ from tkinter import Menu, Tk, Scale
 import tkinter as tk
 from typing import Final, Optional
 
+from constants import Constants
 from predict.predict import Predictor
 import simpleaudio as sa
 
@@ -99,7 +100,9 @@ class GUI:
     def _change_playing_state(self) -> None:
         self._is_playing = not self._is_playing
         if self._is_playing:
-            wave_obj = sa.WaveObject.from_wave_file("../Outputs/name.wav")
+            wave_obj = sa.WaveObject.from_wave_file(
+                f"{Constants.OUTPUT_SAVE_DIR}/{self._predictor.output_name}.wav"
+            )
             self._song = wave_obj.play()
             self._play_song_button.config(text="Stop")
         else:

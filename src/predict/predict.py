@@ -27,6 +27,10 @@ class Predictor:
     def sentiment(self) -> str:
         return self._sentiment.value
 
+    @property
+    def output_name(self) -> str:
+        return self._output_name
+
     def load_artifacts(self) -> None:
         """Loads the artifacts necessary for the classification and predictions"""
         with open(Constants.SENTIMENT_TOKENIZER_PATH, "rb") as tokenizer_path:
