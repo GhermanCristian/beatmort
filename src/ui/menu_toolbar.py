@@ -1,6 +1,7 @@
 from tkinter import Menu, Tk
 from typing import Final
 
+from ui.about_moodsic_window import AboutMoodsicWindow
 from ui.help_window import HelpWindow
 from ui.settings_window import SettingsWindow
 
@@ -16,7 +17,7 @@ class MenuToolbar:
         HelpWindow(self._main_window)
 
     def _about_command(self) -> None:
-        pass  # AboutUBTorrentWindow(self._main_window)
+        AboutMoodsicWindow(self._main_window)
 
     def create(self) -> Menu:
         SETTINGS_COMMAND_LABEL: Final[str] = "Settings"
