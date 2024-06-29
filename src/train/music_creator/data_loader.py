@@ -1,20 +1,10 @@
-from dataclasses import dataclass
 import pickle
 import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow
 
 from constants import Constants
-
-
-@dataclass
-class DataContainer:
-    x: np.array
-    y: np.array
-    x_train: np.array
-    y_train: np.array
-    x_seed: np.array
-    y_seed: np.array
+from train.utils import DataContainer
 
 
 class DataLoader:
@@ -118,4 +108,4 @@ class DataLoader:
         x_train, x_seed, y_train, y_seed = train_test_split(
             x, y, test_size=seed_size, random_state=42
         )
-        return DataContainer(x, y, x_train, y_train, x_seed, y_seed)
+        return DataContainer(x_train, y_train, x_seed, y_seed)

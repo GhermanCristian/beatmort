@@ -6,7 +6,7 @@ from tensorflow.keras.optimizers import Adamax
 from tensorflow.keras.metrics import CategoricalAccuracy
 
 from constants import Constants
-from train.music_creator.data_loader import DataContainer
+from train.utils import DataContainer
 
 
 class ModelCreator:
@@ -36,7 +36,11 @@ class ModelCreator:
         model.add(
             LSTM(
                 first_layer_units,
-                input_shape=(self._data_container.x.shape[1], self._data_container.x.shape[2]),
+                input_shape=(
+                    self._data_container.x_train_pad.shape[1]
+                    + self._data_container.x_test_pad.shape[1],
+                    self._data_container.x_train_pad.shape[2],
+                ),
                 return_sequences=True,
             )
         )
@@ -44,7 +48,12 @@ class ModelCreator:
         model.add(LSTM(first_layer_units // 2))
         model.add(Dense(first_layer_units // 2))
         model.add(Dropout(dropout_rate))
-        model.add(Dense(self._data_container.y.shape[1], activation="softmax"))
+        model.add(
+            Dense(
+                self._data_container.y_train.shape[1] + self._data_container.y_test.shape[1],
+                activation="softmax",
+            )
+        )
         optimizer = Adamax(learning_rate=self._learning_rate)
         model.compile(
             loss="categorical_crossentropy", optimizer=optimizer, metrics=[CategoricalAccuracy()]

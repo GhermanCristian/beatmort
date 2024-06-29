@@ -1,23 +1,14 @@
 import pickle
 import re
-import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.utils import to_categorical
-from dataclasses import dataclass
 
 from constants import Constants
 from sentiment import Sentiment
-
-
-@dataclass
-class DataContainer:
-    x_train_pad: np.array
-    x_test_pad: np.array
-    y_train: np.array
-    y_test: np.array
+from train.utils import DataContainer
 
 
 class DataLoader:

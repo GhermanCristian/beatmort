@@ -1,7 +1,16 @@
+from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 import urllib.request
 import zipfile
+
+
+@dataclass
+class DataContainer:
+    x_train_pad: np.array
+    x_test_pad: np.array
+    y_train: np.array
+    y_test: np.array
 
 
 class Utils:
