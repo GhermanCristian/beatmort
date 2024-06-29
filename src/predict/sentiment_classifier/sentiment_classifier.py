@@ -34,5 +34,4 @@ class SentimentClassifier:
             sentiment = Sentiment.class_names()[max_index]
         else:
             sentiment = Sentiment.NEUTRAL
-        print(f"Prompt = {prompt}; sentiment = {sentiment}; confidence = {prediction_confidence}")
         return Sentiment[sentiment.upper()]
