@@ -15,7 +15,7 @@ class HelpWindow:
     def _create_help_window(self, main_window: Tk) -> Toplevel:
         HELP_WINDOW_TITLE: Final[str] = "Help"
         HELP_WINDOW_MIN_WIDTH_IN_PIXELS: Final[int] = 720
-        HELP_WINDOW_MIN_HEIGHT_IN_PIXELS: Final[int] = 560
+        HELP_WINDOW_MIN_HEIGHT_IN_PIXELS: Final[int] = 360
 
         help_window: Toplevel = Toplevel()
         help_window.title(HELP_WINDOW_TITLE)
