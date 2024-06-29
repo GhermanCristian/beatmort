@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout
 from tensorflow.keras.metrics import CategoricalAccuracy
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, History
 
+from constants import Constants
 from train.sentiment_classifier.data_loader import DataContainer
 from train.utils import Utils
 
@@ -12,13 +13,11 @@ from train.utils import Utils
 class ModelCreator:
     def __init__(
         self,
-        max_seq_len: int,
         num_classes: int,
         word_index,
         batch_size: int,
         data_container: DataContainer,
     ) -> None:
-        self._max_seq_len = max_seq_len
         self._num_classes = num_classes
         self._word_index = word_index
         self._vocabulary_size = len(word_index) + 1
@@ -43,7 +42,7 @@ class ModelCreator:
             Embedding(
                 self._vocabulary_size,
                 Utils.N_DIMS_EMBEDDING,
-                input_length=self._max_seq_len,
+                input_length=Constants.SENTIMENT_MAX_SEQ_LEN,
                 weights=[embedding_matrix],
                 trainable=False,
             )
@@ -84,7 +83,7 @@ class ModelCreator:
             History: Contains the progression of the main training metrics (loss, accuracy, ..)
         """
         checkpoint = ModelCheckpoint(
-            self.MODEL_NAME,
+            Constants.SENTIMENT_MODEL_PATH,
             monitor="val_categorical_accuracy",
             save_best_only=True,
             save_freq="epoch",
