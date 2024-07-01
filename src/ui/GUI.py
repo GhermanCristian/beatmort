@@ -3,6 +3,7 @@ from tkinter import Menu, Tk, Scale
 import tkinter as tk
 from typing import Final, Optional
 
+from constants import Constants
 from predict.predict import Predictor
 import simpleaudio as sa
 
@@ -20,13 +21,14 @@ class GUI:
         self._n_verses_scale: tk.Scale = Scale(
             self._main_window,
             from_=2,
-            to=12,  # TODO - add scrolling
+            to=12,
             length=200,
             width=25,
             orient="horizontal",
             label="Number of verses",
             font=self.FONT_LARGE,
         )
+        self._n_verses_scale.set(6)
         self._n_verses_scale.grid(row=2, column=0, padx=10, pady=10)
         submit_button = tk.Button(
             self._main_window,
@@ -68,7 +70,7 @@ class GUI:
         self._lyrics_label.grid(row=6, column=0, padx=10, pady=10, columnspan=3)
 
     def _create_main_window(self) -> Tk:
-        WINDOW_TITLE: Final[str] = "apptitle"
+        WINDOW_TITLE: Final[str] = "Moodsic"
         MIN_WINDOW_WIDTH_IN_PIXELS: Final[int] = 600
         MIN_WINDOW_HEIGHT_IN_PIXELS: Final[int] = 720
 
@@ -82,10 +84,11 @@ class GUI:
 
     def _refresh_view(self) -> None:
         self._lyrics_label.config(text="\n".join(self._predictor.lyrics))
-        # TODO - treat NEUTRAL case
-        self._sentiment_label.config(
-            text=f"You seem to be experiencing {self._predictor.sentiment.upper()}"
-        )
+        if "neutral" in self._predictor.sentiment:
+            label_text = "You seem pretty neutral today"
+        else:
+            label_text = f"You seem to be experiencing {self._predictor.sentiment.upper()}"
+        self._sentiment_label.config(text=label_text)
 
     def _on_submit_action(self) -> None:
         prompt = self._user_input.get("1.0", "end-1c")
@@ -97,7 +100,9 @@ class GUI:
     def _change_playing_state(self) -> None:
         self._is_playing = not self._is_playing
         if self._is_playing:
-            wave_obj = sa.WaveObject.from_wave_file("../Outputs/name.wav")
+            wave_obj = sa.WaveObject.from_wave_file(
+                f"{Constants.OUTPUT_SAVE_DIR}/{self._predictor.output_name}.wav"
+            )
             self._song = wave_obj.play()
             self._play_song_button.config(text="Stop")
         else:
@@ -105,7 +110,9 @@ class GUI:
             self._play_song_button.config(text="Play")
 
     def _create_user_input_section(self) -> None:
-        label = tk.Label(self._main_window, text="How are you feeling today ?", font=self.FONT_LARGE)
+        label = tk.Label(
+            self._main_window, text="How are you feeling today ?", font=self.FONT_LARGE
+        )
         label.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
         user_input = tk.Text(self._main_window, height=2, width=60, font=self.FONT_SMALL)
         user_input.grid(row=1, column=0, padx=10, pady=10, columnspan=3)

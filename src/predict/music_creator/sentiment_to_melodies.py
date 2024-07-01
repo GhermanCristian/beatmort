@@ -21,18 +21,14 @@ class MelodyInfo:
 class SentimentToMelodies:
     INSTRUMENTS: dict[Sentiment, list[Type[instrument.Instrument]]] = {
         Sentiment.JOY: [
-            instrument.UnpitchedPercussion,
-            instrument.Alto,  # mai strica filmu
             instrument.Marimba,
             instrument.Piano,
-            instrument.Recorder,  # mai strica filmu
-            instrument.Soprano,
+            instrument.Recorder,
             instrument.SteelDrum,
             instrument.Vibraphone,
             instrument.Xylophone,
         ],
         Sentiment.FEAR: [
-            instrument.AcousticGuitar,
             instrument.Choir,
             instrument.ChurchBells,
             instrument.Dulcimer,
@@ -41,7 +37,7 @@ class SentimentToMelodies:
             instrument.Piano,
             instrument.PipeOrgan,
             instrument.Sampler,
-            instrument.Shakuhachi,  # nu e foarte fear
+            instrument.Shakuhachi,
             instrument.Sitar,
             instrument.StringInstrument,
             instrument.Timpani,
@@ -49,22 +45,19 @@ class SentimentToMelodies:
             instrument.Ukulele,
         ],
         Sentiment.ANGER: [
-            instrument.BrassInstrument,  # ?
-            instrument.ElectricGuitar,  # nu e foarte angry
+            instrument.BrassInstrument,
             instrument.Piano,
             instrument.Sampler,
             instrument.Timpani,
         ],
         Sentiment.SADNESS: [
             instrument.Celesta,
-            instrument.Contrabass,
             instrument.Flute,
             instrument.Glockenspiel,
             instrument.Harp,
             instrument.Piano,
-            instrument.StringInstrument,  # asta e mai mult fear / anticipation
             instrument.Violin,
-            instrument.Violoncello,  # e un pic cam agresiv
+            instrument.Violoncello,
         ],
         Sentiment.NEUTRAL: [
             instrument.AcousticBass,
@@ -72,7 +65,6 @@ class SentimentToMelodies:
             instrument.UnpitchedPercussion,
             instrument.Alto,
             instrument.Banjo,
-            instrument.Baritone,
             instrument.Bass,
             instrument.BassClarinet,
             instrument.Bassoon,
@@ -80,12 +72,10 @@ class SentimentToMelodies:
             instrument.ChurchBells,
             instrument.Clarinet,
             instrument.Clavichord,
-            instrument.Contrabass,
             instrument.ElectricBass,
             instrument.ElectricGuitar,
             instrument.ElectricPiano,
             instrument.EnglishHorn,
-            instrument.Flute,
             instrument.FretlessBass,
             instrument.Glockenspiel,
             instrument.Guitar,
@@ -112,36 +102,27 @@ class SentimentToMelodies:
             instrument.Accordion,
             instrument.UnpitchedPercussion,
             instrument.AltoSaxophone,
-            instrument.Bagpipes,
             instrument.Banjo,
-            instrument.BaritoneSaxophone,
-            instrument.BassClarinet,
             instrument.Bassoon,
             instrument.Contrabassoon,
             instrument.ElectricOrgan,
-            instrument.Harmonica,
             instrument.Koto,
-            instrument.Oboe,
             instrument.Shehnai,
-            instrument.SopranoSaxophone,
             instrument.Trombone,
         ],
         Sentiment.ANTICIPATION: [
             instrument.BrassInstrument,
-            instrument.Choir,
             instrument.Dulcimer,
             instrument.ElectricBass,
             instrument.Horn,
             instrument.Mandolin,
             instrument.MezzoSoprano,
             instrument.Piano,
-            instrument.Sitar, # ?
             instrument.StringInstrument,
-            instrument.Tenor,
             instrument.Timpani,
+            instrument.Trumpet,
             instrument.TubularBells,
             instrument.Ukulele,
-            instrument.Xylophone, # ?
         ],
         Sentiment.SURPRISE: [
             instrument.Accordion,
@@ -153,7 +134,6 @@ class SentimentToMelodies:
             instrument.Bassoon,
             instrument.BassTrombone,
             instrument.BrassInstrument,
-            instrument.Choir,
             instrument.ChurchBells,
             instrument.Clarinet,
             instrument.Clavichord,
@@ -163,9 +143,7 @@ class SentimentToMelodies:
             instrument.Harpsichord,
             instrument.Koto,
             instrument.Shamisen,
-            instrument.Soprano,
             instrument.SopranoSaxophone,
-            instrument.Trombone,  # un pic prea jos
             instrument.Trumpet,
             instrument.Viola,
             instrument.Violin,
@@ -173,7 +151,6 @@ class SentimentToMelodies:
         ],
         Sentiment.TRUST: [
             instrument.AcousticBass,
-            instrument.Baritone,
             instrument.Celesta,
             instrument.Glockenspiel,
             instrument.Guitar,
@@ -189,12 +166,12 @@ class SentimentToMelodies:
     N_GROUPS: dict[Sentiment, list[int]] = {
         Sentiment.JOY: [2, 4],
         Sentiment.FEAR: [1, 2, 4],
-        Sentiment.ANGER: [1, 2],
+        Sentiment.ANGER: [2, 4],
         Sentiment.SADNESS: [1, 2],
         Sentiment.NEUTRAL: [1, 2],
         Sentiment.DISGUST: [1, 2, 4],
         Sentiment.ANTICIPATION: [1, 2],
-        Sentiment.SURPRISE: [1],
+        Sentiment.SURPRISE: [1, 2],
         Sentiment.TRUST: [1, 2, 4],
     }
 
@@ -214,11 +191,11 @@ class SentimentToMelodies:
         Sentiment.JOY: [1, 2],
         Sentiment.FEAR: [-3, -2],
         Sentiment.ANGER: [-2, -1, -2],
-        Sentiment.SADNESS: [-2, -1],
+        Sentiment.SADNESS: [-1, 0],
         Sentiment.NEUTRAL: [0],
-        Sentiment.DISGUST: [-2, 2],
-        Sentiment.ANTICIPATION: [1, 2],
-        Sentiment.SURPRISE: [-1, 1, 2],
+        Sentiment.DISGUST: [-1, 1],
+        Sentiment.ANTICIPATION: [0, 1],
+        Sentiment.SURPRISE: [-1, 0, 1],
         Sentiment.TRUST: [1, 2],
     }
 
@@ -234,7 +211,6 @@ class SentimentToMelodies:
         Sentiment.TRUST: ["B"],
     }
 
-    # TODO - look into tremolo vs vibrato
     PAUSE_DURATIONS: dict[Sentiment, list[float]] = {
         Sentiment.JOY: [0, 0.125, 0.25],
         Sentiment.FEAR: [0.75, 1, 1.25, 1.5],
@@ -267,7 +243,7 @@ class SentimentToMelodies:
         Sentiment.NEUTRAL: [1, 2],
         Sentiment.DISGUST: [2, 3],
         Sentiment.ANTICIPATION: [2],
-        Sentiment.SURPRISE: [2, 3],
+        Sentiment.SURPRISE: [2],
         Sentiment.TRUST: [1, 2],
     }
 
@@ -278,6 +254,17 @@ class SentimentToMelodies:
         identical: bool = False,
         durations: bool = False,
     ) -> list:
+        """Samples n_items from a list of properties.
+
+        Args:
+            property_list (list): Properties that are sampled
+            n_items (int): Number of items to be retrieved
+            identical (bool, optional): If set, all retrieved items are identical. Defaults to False.
+            durations (bool, optional): If set, the properties are sorted in decreasing order. Defaults to False.
+
+        Returns:
+            list: List of sampled properties
+        """
         n_properties = len(property_list)
         if identical:
             return [random.choice(property_list)] * n_items
@@ -287,6 +274,14 @@ class SentimentToMelodies:
         return samples
 
     def run(self, sentiment: Sentiment) -> list[MelodyInfo]:
+        """Randomly selects the properties that will be applied to each of the song melodies
+
+        Args:
+            sentiment (Sentiment): Sentiment which the melodies will follow
+
+        Returns:
+            list[MelodyInfo]: Information about every melody
+        """
         n_melodies: int = random.choice(self.N_MELODIES[sentiment])
         instrument_types: list[Type[instrument.Instrument]] = self._sample_properties(
             self.INSTRUMENTS[sentiment], n_melodies
@@ -317,13 +312,6 @@ class SentimentToMelodies:
         articulation_types: list[Optional[Type[articulations.Articulation]]] = (
             self._sample_properties(self.ARTICULATIONS[sentiment], n_melodies)
         )
-        print("instrument_types", instrument_types)
-        print("n groups", n_groups)
-        print("durations", durations)
-        print("pause_durations", pause_durations)
-        print("octave_offsets", octave_offsets)
-        print("song_keys", song_keys)
-        print("articulations", articulation_types)
         melodies = [
             MelodyInfo(
                 instrument_types[i](),
@@ -338,5 +326,4 @@ class SentimentToMelodies:
             )
             for i in range(n_melodies)
         ]
-        print("offsets", [m.offset for m in melodies])
         return melodies

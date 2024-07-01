@@ -41,7 +41,6 @@ def train_music_creator() -> None:
     index = data_loader.create_indices(filtered_notes)
     data_container: DataContainerMusic = data_loader.run(filtered_notes, seed_size, index)
     DataLoaderMusic.save_seed_to_disk(data_container)
-    print("After data_container")
 
     model_creator = ModelCreatorMusic(
         validation_size=0.2,
@@ -61,9 +60,7 @@ def train_music_creator() -> None:
 def train_lyric_generator() -> None:
     data_loader = DataLoaderLyrics()
     data_container, tokenizer = data_loader.run()
-    model_creator = ModelCreatorLyrics(
-        Constants.LYRICS_MAX_SEQ_LEN, tokenizer.word_index, 512, data_container
-    )
+    model_creator = ModelCreatorLyrics(tokenizer.word_index, 512, data_container)
     model = model_creator.get_new_model()
     train_history = model_creator.train_model(model, 1000)
     print(train_history.history)
